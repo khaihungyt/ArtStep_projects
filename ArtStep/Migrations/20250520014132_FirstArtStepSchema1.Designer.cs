@@ -4,6 +4,7 @@ using ArtStep.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStep.Migrations
 {
     [DbContext(typeof(ArtStepDbContext))]
-    partial class ArtStepDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250520014132_FirstArtStepSchema1")]
+    partial class FirstArtStepSchema1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -40,9 +40,9 @@ namespace ArtStep.Data
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasKey(c => c.CartId);
-                entity.HasMany(c => c.Users)
+                entity.HasOne(c => c.Users)
                       .WithOne(u => u.Cart)
-                      .HasForeignKey(c => c.UserId);
+                      .HasForeignKey<User>(c => c.UserId);
             });
 
             // CartDetail
