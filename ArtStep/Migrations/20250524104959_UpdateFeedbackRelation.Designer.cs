@@ -4,6 +4,7 @@ using ArtStep.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStep.Migrations
 {
     [DbContext(typeof(ArtStepDbContext))]
-    partial class ArtStepDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250524104959_UpdateFeedbackRelation")]
+    partial class UpdateFeedbackRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,9 +275,6 @@ namespace ArtStep.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PhoneNo")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Role")
                         .HasColumnType("longtext");
 
@@ -396,13 +396,13 @@ namespace ArtStep.Migrations
                     b.HasOne("ArtStep.Data.Cart", "Cart")
                         .WithOne("Users")
                         .HasForeignKey("ArtStep.Data.User", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ArtStep.Data.Feedback", "SentFeedbacks")
                         .WithOne("UserSend")
                         .HasForeignKey("ArtStep.Data.User", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Cart");
