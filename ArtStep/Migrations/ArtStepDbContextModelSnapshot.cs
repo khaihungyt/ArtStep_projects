@@ -17,7 +17,7 @@ namespace ArtStep.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.16")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -50,9 +50,11 @@ namespace ArtStep.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("CartId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts");
                 });
@@ -262,6 +264,15 @@ namespace ArtStep.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ArtStep.Data.Cart", b =>
+                {
+                    b.HasOne("ArtStep.Data.User", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
                 {
                     b.HasOne("ArtStep.Data.Cart", "Cart")
@@ -348,22 +359,9 @@ namespace ArtStep.Migrations
                     b.Navigation("ShoeCustom");
                 });
 
-            modelBuilder.Entity("ArtStep.Data.User", b =>
-                {
-                    b.HasOne("ArtStep.Data.Cart", "Cart")
-                        .WithOne("Users")
-                        .HasForeignKey("ArtStep.Data.User", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-                });
-
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
                 {
                     b.Navigation("CartDetails");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ArtStep.Data.CartDetail", b =>

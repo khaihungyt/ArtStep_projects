@@ -41,8 +41,9 @@ namespace ArtStep.Data
             {
                 entity.HasKey(c => c.CartId);
                 entity.HasOne(c => c.Users)
-                      .WithOne(u => u.Cart)
-                      .HasForeignKey<User>(c => c.UserId);
+                      .WithMany()
+                      .HasForeignKey(c => c.UserId)
+                      .IsRequired(false);
             });
 
             // CartDetail
@@ -84,7 +85,8 @@ namespace ArtStep.Data
 
                 entity.HasOne(m => m.CartDetail)
                 .WithMany(m => m.Message)
-                .HasForeignKey(m => m.CartDetailId);
+                .HasForeignKey(m => m.CartDetailId)
+                .IsRequired(false);
             });
 
             // Order

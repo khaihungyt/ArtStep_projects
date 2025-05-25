@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj": {}
+    "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {}
   },
   "projects": {
-    "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj": {
+    "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
+        "projectUniqueName": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
         "projectName": "ArtStep",
-        "projectPath": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "D:\\EXE201\\ArtStep\\ArtStep\\obj\\",
+        "projectPath": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+        "packagesPath": "C:\\Users\\shogu\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\visualstudio\\SDKs\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\shogu\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -44,15 +44,29 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.3, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.21.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[8.0.3, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -78,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
