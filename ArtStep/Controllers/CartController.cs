@@ -62,7 +62,7 @@ namespace ArtStep.Controllers
 
             return Ok(response);
         }
-
+        /// Add an item to the cart
         [HttpPost]
         public async Task<ActionResult<Cart>> AddToCart([FromBody] CartItemDto cartItemDto)
         {
