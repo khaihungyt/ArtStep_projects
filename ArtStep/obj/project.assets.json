@@ -541,11 +541,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
+      "projectUniqueName": "D:\\EXE201\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
       "projectName": "ArtStep",
-      "projectPath": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
+      "projectPath": "D:\\EXE201\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
       "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "D:\\EXE201\\ArtStep\\ArtStep\\obj\\",
+      "outputPath": "D:\\EXE201\\ArtStep_projects\\ArtStep\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\visualstudio\\SDKs\\NuGetPackages"

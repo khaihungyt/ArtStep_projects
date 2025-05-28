@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nZHcCEZP3jU=",
+  "dgSpecHash": "xOQxhFJflH8=",
   "success": true,
-  "projectFilePath": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
+  "projectFilePath": "D:\\EXE201\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.openapi\\1.6.14\\microsoft.openapi.1.6.14.nupkg.sha512",
