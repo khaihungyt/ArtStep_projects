@@ -60,30 +60,39 @@ namespace ArtStep.Controllers
                 return BadRequest(new { message = "Tên đăng nhập đã tồn tại" });
             }
 
-            var user = new User
+            try
             {
-                UserId = Guid.NewGuid().ToString(),
-                Name = request.Name,
-                Email = request.Email,
-                Role = "user",
-                ImageProfile = request.ImageProfile
-            };
+                // Create User
+                var user = new User
+                {
+                    UserId = Guid.NewGuid().ToString(),
+                    Name = request.Name,
+                    Email = request.Email,
+                    Role = "user",
+                    ImageProfile = request.ImageProfile
+                };
 
-            var account = new Account
+                // Create Account
+                var account = new Account
+                {
+                    AccountId = Guid.NewGuid().ToString(),
+                    UserName = request.UserName,
+                    Password = request.Password,
+                    UserId = user.UserId,
+                    User = user
+                };
+
+                _context.User.Add(user);
+                _context.Accounts.Add(account);
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Đăng ký thành công!" });
+            }
+            catch (Exception ex)
             {
-                AccountId = Guid.NewGuid().ToString(),
-                UserName = request.UserName,
-                Password = request.Password,
-                UserId = user.UserId,
-                User = user
-            };
-
-            _context.User.Add(user);
-            _context.Accounts.Add(account);
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Đăng ký thành công!" });
+                return BadRequest(new { message = "Đăng ký thất bại: " + ex.Message });
+            }
         }
 
         private string GenerateJwtToken(User user)
@@ -93,10 +102,10 @@ namespace ArtStep.Controllers
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
-            new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
-            new Claim(ClaimTypes.Role, user.Role ?? "User")
-        };
+                new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
+            };
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Issuer"],

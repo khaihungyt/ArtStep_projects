@@ -87,7 +87,8 @@ namespace ArtStep.Data
 
                 entity.HasOne(m => m.CartDetail)
                 .WithMany(m => m.Message)
-                .HasForeignKey(m => m.CartDetailId);
+                .HasForeignKey(m => m.CartDetailId)
+                .IsRequired(false);
             });
 
             // Order
