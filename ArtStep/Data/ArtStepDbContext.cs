@@ -84,11 +84,6 @@ namespace ArtStep.Data
                       .OnDelete(DeleteBehavior.Restrict); ;
                 entity.Property(m => m.SendAt).HasColumnType("timestamp")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.HasOne(m => m.CartDetail)
-                .WithMany(m => m.Message)
-                .HasForeignKey(m => m.CartDetailId)
-                .IsRequired(false);
             });
 
             // Order

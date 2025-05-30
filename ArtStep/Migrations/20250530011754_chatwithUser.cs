@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ArtStep.Migrations
 {
     /// <inheritdoc />
-    public partial class FirstArtStepSchema : Migration
+    public partial class chatwithUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,6 +19,8 @@ namespace ArtStep.Migrations
                 columns: table => new
                 {
                     CartId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
@@ -43,33 +45,6 @@ namespace ArtStep.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "User",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Name = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Role = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageProfile = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_User", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_User_Carts_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Carts",
-                        principalColumn: "CartId",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Accounts",
                 columns: table => new
                 {
@@ -80,16 +55,124 @@ namespace ArtStep.Migrations
                     Password = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    isStatus = table.Column<short>(type: "smallint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.AccountId);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "CartsDetail",
+                columns: table => new
+                {
+                    CartDetailID = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    QuantityBuy = table.Column<int>(type: "int", nullable: true),
+                    ShoeCustomId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CartId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartsDetail", x => x.CartDetailID);
                     table.ForeignKey(
-                        name: "FK_Accounts_User_UserId",
+                        name: "FK_CartsDetail_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId");
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Feedback",
+                columns: table => new
+                {
+                    FeedbackId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FeedbackDescription = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    FeedbackStars = table.Column<int>(type: "int", nullable: true),
+                    DesignerReceiveFeedbackId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserSendFeedbackId = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Feedback", x => x.FeedbackId);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Name = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNo = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Role = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ImageProfile = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    isActive = table.Column<short>(type: "smallint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_User_Carts_UserId",
                         column: x => x.UserId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_User_Feedback_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Feedback",
+                        principalColumn: "FeedbackId",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Message",
+                columns: table => new
+                {
+                    MessageId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MessageDescription = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MessageType = table.Column<bool>(type: "tinyint(1)", nullable: true),
+                    SenderId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ReceivedId = table.Column<string>(type: "varchar(255)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    SendAt = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Message", x => x.MessageId);
+                    table.ForeignKey(
+                        name: "FK_Message_User_ReceivedId",
+                        column: x => x.ReceivedId,
                         principalTable: "User",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Message_User_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "User",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -151,34 +234,6 @@ namespace ArtStep.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "CartsDetail",
-                columns: table => new
-                {
-                    CartDetailID = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    QuantityBuy = table.Column<int>(type: "int", nullable: true),
-                    ShoeCustomId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CartId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CartsDetail", x => x.CartDetailID);
-                    table.ForeignKey(
-                        name: "FK_CartsDetail_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "CartId");
-                    table.ForeignKey(
-                        name: "FK_CartsDetail_ShoeCustom_ShoeCustomId",
-                        column: x => x.ShoeCustomId,
-                        principalTable: "ShoeCustom",
-                        principalColumn: "ShoeId");
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "OrderDetail",
                 columns: table => new
                 {
@@ -229,46 +284,6 @@ namespace ArtStep.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "Message",
-                columns: table => new
-                {
-                    MessageId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MessageDescription = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    MessageType = table.Column<bool>(type: "tinyint(1)", nullable: true),
-                    SenderId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    ReceivedId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    SendAt = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    CartDetailId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Message", x => x.MessageId);
-                    table.ForeignKey(
-                        name: "FK_Message_CartsDetail_CartDetailId",
-                        column: x => x.CartDetailId,
-                        principalTable: "CartsDetail",
-                        principalColumn: "CartDetailID");
-                    table.ForeignKey(
-                        name: "FK_Message_User_ReceivedId",
-                        column: x => x.ReceivedId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Message_User_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "User",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Restrict);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_UserId",
                 table: "Accounts",
@@ -286,9 +301,9 @@ namespace ArtStep.Migrations
                 column: "ShoeCustomId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_CartDetailId",
-                table: "Message",
-                column: "CartDetailId");
+                name: "IX_Feedback_DesignerReceiveFeedbackId",
+                table: "Feedback",
+                column: "DesignerReceiveFeedbackId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Message_ReceivedId",
@@ -329,13 +344,42 @@ namespace ArtStep.Migrations
                 name: "IX_ShoeImages_ShoeCustomId",
                 table: "ShoeImages",
                 column: "ShoeCustomId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Accounts_User_UserId",
+                table: "Accounts",
+                column: "UserId",
+                principalTable: "User",
+                principalColumn: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_CartsDetail_ShoeCustom_ShoeCustomId",
+                table: "CartsDetail",
+                column: "ShoeCustomId",
+                principalTable: "ShoeCustom",
+                principalColumn: "ShoeId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Feedback_User_DesignerReceiveFeedbackId",
+                table: "Feedback",
+                column: "DesignerReceiveFeedbackId",
+                principalTable: "User",
+                principalColumn: "UserId",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Feedback_User_DesignerReceiveFeedbackId",
+                table: "Feedback");
+
             migrationBuilder.DropTable(
                 name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "CartsDetail");
 
             migrationBuilder.DropTable(
                 name: "Message");
@@ -345,9 +389,6 @@ namespace ArtStep.Migrations
 
             migrationBuilder.DropTable(
                 name: "ShoeImages");
-
-            migrationBuilder.DropTable(
-                name: "CartsDetail");
 
             migrationBuilder.DropTable(
                 name: "Order");
@@ -363,6 +404,9 @@ namespace ArtStep.Migrations
 
             migrationBuilder.DropTable(
                 name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "Feedback");
         }
     }
 }

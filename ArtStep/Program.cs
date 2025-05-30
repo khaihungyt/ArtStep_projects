@@ -1,4 +1,4 @@
-using ArtStep.Data;
+﻿using ArtStep.Data;
 using ArtStep.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -70,7 +70,22 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//enables cors
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.WithOrigins("https://localhost:7216") // 👈 your frontend
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // 👈 only if using cookies or SignalR
+    });
+});
+
+
 var app = builder.Build();
+
 
 // Swagger
 // Configure the HTTP request pipeline.
@@ -102,7 +117,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseStaticFiles();
-
+app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 
