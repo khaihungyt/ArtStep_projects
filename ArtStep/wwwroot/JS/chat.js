@@ -1,3 +1,5 @@
+import { API_BASE_URL } from './config.js';
+
 class ChatSystem {
     constructor() {
         this.connection = null;
@@ -235,7 +237,7 @@ class ChatSystem {
 
     async loadConversations() {
         try {
-            const response = await fetch('http://localhost:5155/api/Chat/conversations', {
+            const response = await fetch(`${API_BASE_URL}/Chat/conversations`, {
                 headers: {
                     'Authorization': `Bearer ${this.token}`
                 }
@@ -281,7 +283,7 @@ class ChatSystem {
 
     async loadDesigners() {
         try {
-            const response = await fetch('http://localhost:5155/api/Chat/designers', {
+            const response = await fetch(`${API_BASE_URL}/Chat/designers`, {
                 headers: {
                     'Authorization': `Bearer ${this.token}`
                 }
@@ -344,7 +346,7 @@ class ChatSystem {
 
     async loadChatHistory(designerId, shoeCustomId = null) {
         try {
-            let url = `http://localhost:5155/api/Chat/history/${designerId}`;
+            let url = `${API_BASE_URL}/Chat/history/${designerId}`;
             if (shoeCustomId) {
                 url += `?shoeCustomId=${shoeCustomId}`;
             }
@@ -401,7 +403,7 @@ class ChatSystem {
         if (!messageText || !this.currentDesignerId) return;
 
         try {
-            const response = await fetch('http://localhost:5155/api/Chat/send', {
+            const response = await fetch(`${API_BASE_URL}/Chat/send`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

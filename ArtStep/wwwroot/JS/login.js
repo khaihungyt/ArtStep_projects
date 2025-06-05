@@ -1,4 +1,6 @@
-﻿(function ($) {
+﻿import { API_BASE_URL } from './config.js';
+
+(function ($) {
     "use strict";
 
     $(document).ready(function () {
@@ -9,7 +11,7 @@
             const role = localStorage.getItem('role') || 'user';
             const redirectMap = {
                 admin: '/admin/dashboard',
-                user: '/user/home',
+                user: '',
                 designer: '/designer/workspace'
             };
             const redirectUrl = redirectMap[role] || '/home';
@@ -38,7 +40,7 @@
         const password = $(this).find('input[name="pass"]').val().trim();
 
         try {
-            const response = await fetch('http://localhost:5155/api/auth/login', {
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ UserName: username, Password: password })
@@ -51,7 +53,7 @@
             }
 
             const data = await response.json();
-            
+
             // Store token and user data in localStorage
             localStorage.setItem('token', data.token);
             localStorage.setItem('role', data.user?.role?.toLowerCase() || 'user');
@@ -63,7 +65,7 @@
             const role = data.user?.role?.toLowerCase() || 'user';
             const redirectMap = {
                 admin: '/admin/dashboard',
-                user: '/user/home',
+                user: '',
                 designer: '/designer/workspace'
             };
 

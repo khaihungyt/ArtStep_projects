@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DesignCraft - Marketplace Thiết Kế Tùy Chỉnh</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reset và Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 20px;
+        }
+
+        .nav-brand h1 {
+            color: #007bff;
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #007bff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .btn-icon:hover {
+            background-color: #f8f9fa;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #007bff;
+            border: 2px solid #007bff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: #e9ecef;
+            padding: 2rem 0;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            padding: 4rem 0;
+        }
+
+        .featured-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .designs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .design-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .design-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .design-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .design-card-content {
+            padding: 1.5rem;
+        }
+
+        .design-card h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .design-card .artisan {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .design-card .price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .design-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #e9ecef;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #495057;
+        }
+
+        /* Categories Section */
+        .categories-section {
+            background: #f8f9fa;
+            padding: 4rem 0;
+        }
+
+        .categories-section h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .category-card h3 {
+            margin-bottom: 1.5rem;
+            color: #007bff;
+            font-size: 1.3rem;
+        }
+
+        .category-card ul {
+            list-style: none;
+        }
+
+        .category-card li {
+            margin-bottom: 0.75rem;
+        }
+
+        .category-card a {
+            text-decoration: none;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            transition: color 0.3s;
+        }
+
+        .category-card a:hover {
+            color: #007bff;
+        }
+
+        .category-card a::after {
+            content: '→';
+            font-weight: bold;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .step-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .step-card h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .step-card p {
+            color: #6c757d;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: #007bff;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .cta-section p {
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-section .btn-secondary {
+            background: white;
+            color: #007bff;
+            border-color: white;
+        }
+
+        /* Footer */
+        .footer {
+            background: #333;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #007bff;
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #0056b3;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #ccc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .designs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .design-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>DesignCraft</h1>
+            </div>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="#home" class="nav-link">Trang chủ</a>
+                <a href="#designs" class="nav-link">Duyệt thiết kế</a>
+                <a href="#create" class="nav-link">Tạo thiết kế</a>
+                <a href="#artisans" class="nav-link">Nghệ nhân</a>
+            </nav>
+            
+            <div class="nav-actions">
+                <button class="btn-icon" id="cartBtn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </button>
+                <button class="btn-primary" id="loginBtn">Đăng nhập</button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Biến Ý Tưởng Thiết Kế Thành Hiện Thực</h1>
+            <p>Duyệt bộ sưu tập của chúng tôi hoặc tạo thiết kế tùy chỉnh và kết nối với các nghệ nhân tài năng để biến chúng thành hiện thực.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="scrollToSection('designs')">Duyệt thiết kế</button>
+                <button class="btn-secondary" onclick="scrollToSection('create')">Tạo thiết kế tùy chỉnh</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Tìm kiếm thiết kế, phong cách, chất liệu..." id="searchInput">
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Designs -->
+    <section id="designs" class="featured-section">
+        <div class="container">
+            <h2>Thiết kế nổi bật</h2>
+            <div class="designs-grid" id="featuredDesigns">
+                <!-- Designs will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories-section">
+        <div class="container">
+            <h2>Duyệt theo danh mục</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <h3>Phong cách</h3>
+                    <ul>
+                        <li><a href="#" data-filter="sport">Thể thao</a></li>
+                        <li><a href="#" data-filter="casual">Casual</a></li>
+                        <li><a href="#" data-filter="luxury">Sang trọng</a></li>
+                        <li><a href="#" data-filter="vintage">Vintage</a></li>
+                        <li><a href="#" data-filter="minimalist">Tối giản</a></li>
+                    </ul>
+                </div>
+                <div class="category-card">
+                    <h3>Màu sắc</h3>
+                    <ul>
+                        <li><a href="#" data-filter="black">Đen</a></li>
+                        <li><a href="#" data-filter="white">Trắng</a></li>
+                        <li><a href="#" data-filter="red">Đỏ</a></li>
+                        <li><a href="#" data-filter="blue">Xanh dương</a></li>
+                        <li><a href="#" data-filter="green">Xanh lá</a></li>
+                    </ul>
+                </div>
+                <div class="category-card">
+                    <h3>Chất liệu</h3>
+                    <ul>
+                        <li><a href="#" data-filter="leather">Da</a></li>
+                        <li><a href="#" data-filter="cotton">Cotton</a></li>
+                        <li><a href="#" data-filter="silk">Lụa</a></li>
+                        <li><a href="#" data-filter="wood">Gỗ</a></li>
+                        <li><a href="#" data-filter="metal">Kim loại</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>Cách thức hoạt động</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Duyệt & Tùy chỉnh</h3>
+                    <p>Tìm thiết kế bạn yêu thích hoặc tạo thiết kế tùy chỉnh với công cụ trực tuyến của chúng tôi.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Kết nối với Nghệ nhân</h3>
+                    <p>Chat trực tiếp với các nghệ nhân tài năng để hoàn thiện thiết kế và nhận tư vấn chuyên môn.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Xác nhận & Thanh toán</h3>
+                    <p>Hoàn thiện thiết kế, xác nhận đơn hàng và thanh toán an toàn qua nền tảng của chúng tôi.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Theo dõi & Nhận hàng</h3>
+                    <p>Theo dõi tiến độ đơn hàng và nhận sản phẩm thủ công độc đáo của bạn.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Sẵn sàng bắt đầu hành trình thiết kế?</h2>
+            <p>Tham gia cộng đồng những người sáng tạo và nghệ nhân để biến tầm nhìn độc đáo của bạn thành hiện thực.</p>
+            <button class="btn-secondary" onclick="openSignup()">Đăng ký ngay</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DesignCraft</h3>
+                    <p>Kết nối những tâm hồn sáng tạo với các nghệ nhân tài năng để biến những thiết kế độc đáo thành hiện thực.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Liên kết nhanh</h4>
+                    <ul>
+                        <li><a href="#designs">Duyệt thiết kế</a></li>
+                        <li><a href="#create">Tạo thiết kế</a></li>
+                        <li><a href="#artisans">Tìm nghệ nhân</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Hỗ trợ</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Liên hệ</a></li>
+                        <li><a href="#">Chính sách vận chuyển</a></li>
+                        <li><a href="#">Đổi trả</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Pháp lý</h4>
+                    <ul>
+                        <li><a href="#">Điều khoản dịch vụ</a></li>
+                        <li><a href="#">Chính sách bảo mật</a></li>
+                        <li><a href="#">Chính sách bản quyền</a></li>
+                        <li><a href="#">Cookie</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DesignCraft. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global Variables
+        let currentUser = null;
+        let cart = [];
+        let designs = [];
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadMockData();
+            setupEventListeners();
+        });
+
+        // Initialize application
+        function initializeApp() {
+            // Load cart data
+            const cartData = localStorage.getItem('designcraft_cart');
+            if (cartData) {
+                cart = JSON.parse(cartData);
+                updateCartCount();
+            }
+
+            // Setup smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Load mock data
+        function loadMockData() {
+            // Mock designs data
+            designs = [
+                {
+                    id: 1,
+                    title: "Ví da tùy chỉnh với monogram",
+                    category: "accessories",
+                    style: "minimalist",
+                    material: "leather",
+                    color: "brown",
+                    price: 89.99,
+                    image: "https://via.placeholder.com/300x200/8B4513/FFFFFF?text=Ví+Da",
+                    artisan: "Maria Lopez",
+                    rating: 4.9,
+                    reviews: 124
+                },
+                {
+                    id: 2,
+                    title: "Cốc gốm vintage tùy chỉnh",
+                    category: "home-decor",
+                    style: "vintage",
+                    material: "ceramic",
+                    color: "blue",
+                    price: 59.99,
+                    image: "https://via.placeholder.com/300x200/4169E1/FFFFFF?text=Cốc+Gốm",
+                    artisan: "James Thompson",
+                    rating: 4.8,
+                    reviews: 89
+                },
+                {
+                    id: 3,
+                    title: "Áo thun thể thao tùy chỉnh",
+                    category: "apparel",
+                    style: "sport",
+                    material: "cotton",
+                    color: "red",
+                    price: 39.99,
+                    image: "https://via.placeholder.com/300x200/FF0000/FFFFFF?text=Áo+Thun",
+                    artisan: "Alex Kim",
+                    rating: 4.7,
+                    reviews: 156
+                },
+                {
+                    id: 4,
+                    title: "Đồng hồ gỗ thủ công",
+                    category: "accessories",
+                    style: "luxury",
+                    material: "wood",
+                    color: "brown",
+                    price: 199.99,
+                    image: "https://via.placeholder.com/300x200/8B4513/FFFFFF?text=Đồng+Hồ",
+                    artisan: "Thomas Wilson",
+                    rating: 4.9,
+                    reviews: 67
+                }
+            ];
+
+            // Load data into UI
+            loadFeaturedDesigns();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const navMenu = document.getElementById('navMenu');
+            
+            menuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+            });
+
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                filterDesigns(query);
+            });
+
+            // Category filters
+            document.querySelectorAll('[data-filter]').forEach(filter => {
+                filter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filterValue = this.getAttribute('data-filter');
+                    filterByCategory(filterValue);
+                });
+            });
+
+            // Login button
+            const loginBtn = document.getElementById('loginBtn');
+            loginBtn.addEventListener('click', function() {
+                // Mock login
+                currentUser = {
+                    id: 1,
+                    name: "Người dùng",
+                    email: "user@example.com"
+                };
+                localStorage.setItem('designcraft_user', JSON.stringify(currentUser));
+                updateUserInterface();
+            });
+        }
+
+        // Data loading functions
+        function loadFeaturedDesigns() {
+            const container = document.getElementById('featuredDesigns');
+            if (!container) return;
+            
+            container.innerHTML = designs.map(design => createDesignCard(design)).join('');
+        }
+
+        // Card creation functions
+        function createDesignCard(design) {
+            return `
+                <div class="design-card" onclick="viewDesign(${design.id})">
+                    <img src="${design.image}" alt="${design.title}">
+                    <div class="design-card-content">
+                        <div class="design-tags">
+                            <span class="tag">${design.style}</span>
+                            <span class="tag">${design.material}</span>
+                        </div>
+                        <h3>${design.title}</h3>
+                        <p class="artisan">Bởi ${design.artisan}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                            <span class="price">$${design.price}</span>
+                            <button class="btn-primary" onclick="event.stopPropagation(); addToCart(${design.id})" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                Thêm vào giỏ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Interaction functions
+        function viewDesign(designId) {
+            const design = designs.find(d => d.id === designId);
+            if (design) {
+                alert(`Xem chi tiết thiết kế: ${design.title}\nGiá: $${design.price}\nNghệ nhân: ${design.artisan}`);
+            }
+        }
+
+        function addToCart(designId) {
+            const design = designs.find(d => d.id === designId);
+            if (design) {
+                cart.push(design);
+                localStorage.setItem('designcraft_cart', JSON.stringify(cart));
+                updateCartCount();
+                alert(`Đã thêm "${design.title}" vào giỏ hàng!`);
+            }
+        }
+
+        function updateCartCount() {
+            const cartCount = document.querySelector('.cart-count');
+            if (cartCount) {
+                cartCount.textContent = cart.length;
+            }
+        }
+
+        function openSignup() {
+            alert('Chức năng đăng ký sẽ được triển khai!');
+        }
+
+        // Filter functions
+        function filterDesigns(query) {
+            const filteredDesigns = designs.filter(design => 
+                design.title.toLowerCase().includes(query) ||
+                design.artisan.toLowerCase().includes(query) ||
+                design.style.toLowerCase().includes(query) ||
+                design.material.toLowerCase().includes(query)
+            );
+            
+            const container = document.getElementById('featuredDesigns');
+            if (container) {
+                container.innerHTML = filteredDesigns.map(design => createDesignCard(design)).join('');
+            }
+        }
+
+        function filterByCategory(category) {
+            const filteredDesigns = designs.filter(design => 
+                design.style === category || 
+                design.color === category || 
+                design.material === category
+            );
+            
+            const container = document.getElementById('featuredDesigns');
+            if (container) {
+                container.innerHTML = filteredDesigns.map(design => createDesignCard(design)).join('');
+            }
+            
+            // Scroll to designs section
+            scrollToSection('designs');
+        }
+
+        // Utility functions
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        function updateUserInterface() {
+            const loginBtn = document.getElementById('loginBtn');
+            if (currentUser && loginBtn) {
+                loginBtn.textContent = currentUser.name;
+                loginBtn.onclick = function() {
+                    alert(`Xin chào ${currentUser.name}!`);
+                };
+            }
+        }
+
+        console.log('DesignCraft Marketplace Version 2 đã được khởi tạo thành công!');
+    </script>
+</body>
+</html>

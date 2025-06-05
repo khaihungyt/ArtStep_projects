@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {}
+    "C:\\Users\\shogu\\source\\repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {}
   },
   "projects": {
-    "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {
+    "C:\\Users\\shogu\\source\\repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+        "projectUniqueName": "C:\\Users\\shogu\\source\\repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
         "projectName": "ArtStep",
-        "projectPath": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+        "projectPath": "C:\\Users\\shogu\\source\\repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
         "packagesPath": "C:\\Users\\shogu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\obj\\",
+        "outputPath": "C:\\Users\\shogu\\source\\repos\\ArtStep_projects\\ArtStep\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[8.0.3, )"
             },
+            "Microsoft.AspNetCore.Rewrite": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -71,6 +75,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.6.2, )"
+            },
+            "VNPAY.NET": {
+              "target": "Package",
+              "version": "[8.5.0, )"
             }
           },
           "imports": [

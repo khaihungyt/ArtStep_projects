@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ArtStep.Data;
 using System.Security.Claims;
+using VNPAY.NET.Utilities;
+using VNPAY.NET;
+using VNPAY.NET.Enums;
+using VNPAY.NET.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ArtStep.Controllers
 {
@@ -12,10 +17,23 @@ namespace ArtStep.Controllers
     public class OrderController : ControllerBase
     {
         private readonly ArtStepDbContext _context;
-
-        public OrderController(ArtStepDbContext context)
+        private readonly IVnpay _vnpay;
+        private readonly IConfiguration _configuration;
+        public OrderController(ArtStepDbContext context, IVnpay vnpay, IConfiguration configuration)
         {
             _context = context;
+            _vnpay = vnpay;
+            _configuration = configuration;
+            var tmnCode = _configuration["Vnpay:TmnCode"];
+            var hashSecret = _configuration["Vnpay:HashSecret"];
+            var baseUrl = _configuration["Vnpay:BaseUrl"];
+            var callbackUrl = _configuration["Vnpay:CallbackUrl"];
+
+            if (!string.IsNullOrEmpty(tmnCode) && !string.IsNullOrEmpty(hashSecret) &&
+                !string.IsNullOrEmpty(baseUrl) && !string.IsNullOrEmpty(callbackUrl))
+            {
+                _vnpay.Initialize(tmnCode, hashSecret, baseUrl, callbackUrl);
+            }
         }
 
         [HttpPost("checkout")]
@@ -155,6 +173,110 @@ namespace ArtStep.Controllers
             {
                 return StatusCode(500, new { message = "An error occurred while retrieving orders", error = ex.Message });
             }
+        }
+
+        [HttpPost("create-vnpay")]
+        public async Task<ActionResult> CreateVNpay([FromBody]double amount)
+        {
+            var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User not authenticated" });
+
+            // Get user's cart with items
+            var cart = await _context.Carts
+                .Include(c => c.CartDetails)
+                .ThenInclude(cd => cd.ShoeCustom)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null || cart.CartDetails == null || !cart.CartDetails.Any())
+            {
+                return BadRequest(new { message = "Cart is empty" });
+            }
+
+            // Create new order
+            var orderId = Guid.NewGuid().ToString();
+            var order = new Order
+            {
+                OrderId = orderId,
+                UserId = userId,
+                Status = "Pending",
+                CreateAt = DateTime.Now,
+                VNPayPaymentId = DateTime.Now.Ticks
+            };
+
+            _context.Order.Add(order);
+
+            var orderDetails = new List<OrderDetail>();
+            foreach (var cartItem in cart.CartDetails)
+            {
+                if (cartItem.ShoeCustom != null)
+                {
+                    var orderDetail = new OrderDetail
+                    {
+                        OrderDetailId = Guid.NewGuid().ToString(),
+                        OrderId = orderId,
+                        ShoeCustomId = cartItem.ShoeCustomId,
+                        QuantityBuy = cartItem.QuantityBuy,
+                        CostaShoe = cartItem.ShoeCustom.PriceAShoe * cartItem.QuantityBuy
+                    };
+                    orderDetails.Add(orderDetail);
+                }
+            }
+
+            _context.OrderDetail.AddRange(orderDetails);
+
+            var cartDetailIds = cart.CartDetails.Select(cd => cd.CartDetailID).ToList();
+            var messagesWithCartDetails = await _context.Message
+                .Where(m => cartDetailIds.Contains(m.CartDetailId))
+                .ToListAsync();
+
+            foreach (var message in messagesWithCartDetails)
+            {
+                message.CartDetailId = null;
+            }
+
+            _context.CartsDetail.RemoveRange(cart.CartDetails);
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
+
+            var totalAmount = orderDetails.Sum(od => od.CostaShoe ?? 0);
+            var request = new PaymentRequest
+            {
+                PaymentId= order.VNPayPaymentId.Value,
+                Money = amount,
+                Description = "Order payment",
+                IpAddress = ipAddress,
+                BankCode = BankCode.ANY,
+                CreatedDate = DateTime.Now,
+                Currency = Currency.VND,
+                Language = DisplayLanguage.Vietnamese
+            };
+
+            var paymentUrl = _vnpay.GetPaymentUrl(request);
+            return Ok(paymentUrl);
+        }
+
+        [HttpGet("vnpay-callback")]
+        [AllowAnonymous]
+        public async Task<ActionResult> VNPayCallback()
+        {
+            IQueryCollection query = Request.Query;
+            if (!query.Any())
+            {
+                return Redirect("/cart?payment_info=error");
+            }
+            var paymentResult = _vnpay.GetPaymentResult(query);
+            if (paymentResult.IsSuccess)
+            {
+                var order = _context.Order.Include(o => o.OrderDetails).FirstOrDefault(o => o.VNPayPaymentId == paymentResult.PaymentId);
+                if(order == null) return Redirect("/cart?payment_info=order_not_found");
+                order.Status = "Paid";
+                _context.Order.Update(order);
+                var totalAmount = order.OrderDetails.Sum(od => od.CostaShoe ?? 0);
+                return Redirect($"/cart?payment_info=order_success&orderId={order.OrderId}&totalAmount={totalAmount}&itemCount={order.OrderDetails.Count}");
+            }
+            return Redirect($"/cart?payment_info=payment_fail");
         }
     }
 }

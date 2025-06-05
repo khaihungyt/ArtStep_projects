@@ -63,31 +63,32 @@ namespace ArtStep.Controllers
             try
             {
                 // Create User
-                var user = new User
-                {
-                    UserId = Guid.NewGuid().ToString(),
-                    Name = request.Name,
-                    Email = request.Email,
-                    Role = "user",
-                    ImageProfile = request.ImageProfile
-                };
+            var user = new User
+            {
+                UserId = Guid.NewGuid().ToString(),
+                Name = request.Name,
+                Email = request.Email,
+                Role = "user",
+                ImageProfile = request.ImageProfile
+            };
 
                 // Create Account
-                var account = new Account
-                {
-                    AccountId = Guid.NewGuid().ToString(),
-                    UserName = request.UserName,
-                    Password = request.Password,
-                    UserId = user.UserId,
-                    User = user
-                };
+            var account = new Account
+            {
+                AccountId = Guid.NewGuid().ToString(),
+                UserName = request.UserName,
+                Password = request.Password,
+                UserId = user.UserId,
+                User = user
+            };
 
-                _context.User.Add(user);
-                _context.Accounts.Add(account);
+            _context.User.Add(user);
+            _context.Accounts.Add(account);
 
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "Đăng ký thành công!" });
-            }
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Đăng ký thành công!" });
+        }
             catch (Exception ex)
             {
                 return BadRequest(new { message = "Đăng ký thất bại: " + ex.Message });
@@ -101,10 +102,10 @@ namespace ArtStep.Controllers
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
-                new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
-                new Claim(ClaimTypes.Role, user.Role ?? "User")
-            };
+            new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
+            new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
+            new Claim(ClaimTypes.Role, user.Role ?? "User")
+        };
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

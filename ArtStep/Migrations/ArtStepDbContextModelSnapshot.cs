@@ -36,6 +36,9 @@ namespace ArtStep.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("longtext");
 
+                    b.Property<short?>("isStatus")
+                        .HasColumnType("smallint");
+
                     b.HasKey("AccountId");
 
                     b.HasIndex("UserId")
@@ -52,9 +55,15 @@ namespace ArtStep.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("CartId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1")
+                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -93,6 +102,30 @@ namespace ArtStep.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
+                {
+                    b.Property<string>("FeedbackId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("DesignerReceiveFeedbackId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("FeedbackDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("FeedbackStars")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserSendFeedbackId")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("DesignerReceiveFeedbackId");
+
+                    b.ToTable("Feedback");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -146,6 +179,9 @@ namespace ArtStep.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<long?>("VNPayPaymentId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("OrderId");
 
@@ -247,6 +283,9 @@ namespace ArtStep.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Role")
                         .HasColumnType("longtext");
 
@@ -270,6 +309,10 @@ namespace ArtStep.Migrations
                         .WithMany()
                         .HasForeignKey("UserId");
 
+                    b.HasOne("ArtStep.Data.User", null)
+                        .WithOne("Cart")
+                        .HasForeignKey("ArtStep.Data.Cart", "UserId1");
+
                     b.Navigation("Users");
                 });
 
@@ -286,6 +329,16 @@ namespace ArtStep.Migrations
                     b.Navigation("Cart");
 
                     b.Navigation("ShoeCustom");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
+                {
+                    b.HasOne("ArtStep.Data.User", "DesignersReceived")
+                        .WithMany("ReceivedFeedbacks")
+                        .HasForeignKey("DesignerReceiveFeedbackId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DesignersReceived");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -359,6 +412,17 @@ namespace ArtStep.Migrations
                     b.Navigation("ShoeCustom");
                 });
 
+            modelBuilder.Entity("ArtStep.Data.User", b =>
+                {
+                    b.HasOne("ArtStep.Data.Feedback", "SentFeedbacks")
+                        .WithOne("UserSend")
+                        .HasForeignKey("ArtStep.Data.User", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SentFeedbacks");
+                });
+
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
                 {
                     b.Navigation("CartDetails");
@@ -372,6 +436,11 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Category", b =>
                 {
                     b.Navigation("ShoeCustoms");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
+                {
+                    b.Navigation("UserSend");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Order", b =>
@@ -392,7 +461,11 @@ namespace ArtStep.Migrations
                 {
                     b.Navigation("Account");
 
+                    b.Navigation("Cart");
+
                     b.Navigation("Orders");
+
+                    b.Navigation("ReceivedFeedbacks");
 
                     b.Navigation("ShoeCustoms");
                 });

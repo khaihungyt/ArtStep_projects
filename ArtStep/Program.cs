@@ -1,12 +1,14 @@
-using ArtStep.Data;
+﻿using ArtStep.Data;
 using ArtStep.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Text.Json.Serialization;
+using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +28,7 @@ builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSingleton<IVnpay, Vnpay>();
 // Add DbContext
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<ArtStepDbContext>(options =>
@@ -70,7 +72,22 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//enables cors
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy.WithOrigins("https://localhost:7216") // 👈 your frontend
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials(); // 👈 only if using cookies or SignalR
+    });
+});
+
+
 var app = builder.Build();
+
 
 // Swagger
 // Configure the HTTP request pipeline.
@@ -82,6 +99,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+var rewriteOptions = new RewriteOptions()
+    .AddRewrite(@"^([a-zA-Z0-9_-]+)$", "$1.html", skipRemainingRules: true);
+
+app.UseRewriter(rewriteOptions);
 // Set default starting page
 app.UseDefaultFiles(new DefaultFilesOptions
 {
@@ -102,7 +123,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseStaticFiles();
-
+app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 

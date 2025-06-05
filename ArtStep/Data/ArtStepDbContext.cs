@@ -18,6 +18,8 @@ namespace ArtStep.Data
         public DbSet<ShoeImage> ShoeImages { get; set; }
         public DbSet<ShoeCustom> ShoeCustom { get; set; }
         public DbSet<User> User { get; set; }
+
+        public DbSet<Feedback> Feedback { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Account
@@ -99,7 +101,8 @@ namespace ArtStep.Data
                 entity.Property(m => m.CreateAt)
                       .HasColumnType("timestamp")
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
+                entity.Property(m => m.VNPayPaymentId)
+                      .HasColumnType("bigint");
             });
 
             // OrderDetail
@@ -131,6 +134,24 @@ namespace ArtStep.Data
                 entity.HasOne(sc => sc.Category)
                       .WithMany(c => c.ShoeCustoms)
                       .HasForeignKey(sc => sc.CategoryId);
+            });
+
+            //Feedback for Designer
+
+            modelBuilder.Entity<Feedback>(entity =>
+            {
+                entity.HasKey(fb => fb.FeedbackId);
+
+                // User sent feedback (user)
+                entity.HasOne(fb => fb.UserSend)
+                      .WithOne(u => u.SentFeedbacks)
+                      .HasForeignKey<User>(fb => fb.UserId);
+
+                // User recieve feedback (designer)
+                entity.HasOne(fb => fb.DesignersReceived)
+                      .WithMany(u => u.ReceivedFeedbacks)
+                      .HasForeignKey(fb => fb.DesignerReceiveFeedbackId)
+                      .OnDelete(DeleteBehavior.Restrict);
             });
         }
     }

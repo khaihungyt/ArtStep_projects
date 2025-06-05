@@ -30,22 +30,17 @@ namespace ArtStep.Controllers
                 var senderId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(senderId))
                     return Unauthorized(new { message = "User not authenticated" });
-
-                // Validate CartDetailId if provided
                 string? validCartDetailId = null;
                 if (!string.IsNullOrEmpty(messageDto.ShoeCustomId))
                 {
-                    // Check if the CartDetailId exists in the database
                     var cartDetailExists = await _context.CartsDetail
                         .AnyAsync(cd => cd.CartDetailID == messageDto.ShoeCustomId);
-                    
                     if (cartDetailExists)
                     {
                         validCartDetailId = messageDto.ShoeCustomId;
                     }
                     else
                     {
-                        // CartDetailId not found, continue without cart reference
                     }
                 }
 
