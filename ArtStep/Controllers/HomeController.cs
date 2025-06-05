@@ -78,6 +78,7 @@ namespace ArtStep.Controllers
                     Price = sc.PriceAShoe,
                     Style = sc.Category != null ? sc.Category.CategoryName : null,
                     Designer = sc.Designer != null ? sc.Designer.Name : null,
+                    DesignerUserId = sc.Designer != null ? sc.Designer.UserId : null,
                     ImageUrl = sc.Images.Select(i => i.ImageLink).FirstOrDefault()
                 })
                 .ToListAsync();
@@ -94,6 +95,7 @@ namespace ArtStep.Controllers
 
             return Ok(categories);
         }
+
 
         [HttpGet("designers")]
         public async Task<IActionResult> GetDesigners()

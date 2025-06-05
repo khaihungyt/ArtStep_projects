@@ -17,7 +17,7 @@ namespace ArtStep.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.13")
+                .HasAnnotation("ProductVersion", "8.0.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -35,6 +35,9 @@ namespace ArtStep.Migrations
 
                     b.Property<string>("UserName")
                         .HasColumnType("longtext");
+
+                    b.Property<short?>("isStatus")
+                        .HasColumnType("smallint");
 
                     b.HasKey("AccountId");
 
@@ -93,12 +96,33 @@ namespace ArtStep.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
+                {
+                    b.Property<string>("FeedbackId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("DesignerReceiveFeedbackId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("FeedbackDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("FeedbackStars")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserSendFeedbackId")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("DesignerReceiveFeedbackId");
+
+                    b.ToTable("Feedback");
+                });
+
             modelBuilder.Entity("ArtStep.Data.Message", b =>
                 {
                     b.Property<string>("MessageId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("CartDetailId")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("MessageDescription")
@@ -119,8 +143,6 @@ namespace ArtStep.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("MessageId");
-
-                    b.HasIndex("CartDetailId");
 
                     b.HasIndex("ReceivedId");
 
@@ -245,8 +267,14 @@ namespace ArtStep.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Role")
                         .HasColumnType("longtext");
+
+                    b.Property<short?>("isActive")
+                        .HasColumnType("smallint");
 
                     b.HasKey("UserId");
 
@@ -277,12 +305,18 @@ namespace ArtStep.Migrations
                     b.Navigation("ShoeCustom");
                 });
 
+            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
+                {
+                    b.HasOne("ArtStep.Data.User", "DesignersReceived")
+                        .WithMany("ReceivedFeedbacks")
+                        .HasForeignKey("DesignerReceiveFeedbackId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("DesignersReceived");
+                });
+
             modelBuilder.Entity("ArtStep.Data.Message", b =>
                 {
-                    b.HasOne("ArtStep.Data.CartDetail", "CartDetail")
-                        .WithMany("Message")
-                        .HasForeignKey("CartDetailId");
-
                     b.HasOne("ArtStep.Data.User", "UserReceived")
                         .WithMany()
                         .HasForeignKey("ReceivedId")
@@ -292,8 +326,6 @@ namespace ArtStep.Migrations
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("CartDetail");
 
                     b.Navigation("UserReceived");
 
@@ -353,10 +385,18 @@ namespace ArtStep.Migrations
                     b.HasOne("ArtStep.Data.Cart", "Cart")
                         .WithOne("Users")
                         .HasForeignKey("ArtStep.Data.User", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ArtStep.Data.Feedback", "SentFeedbacks")
+                        .WithOne("UserSend")
+                        .HasForeignKey("ArtStep.Data.User", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cart");
+
+                    b.Navigation("SentFeedbacks");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
@@ -366,14 +406,14 @@ namespace ArtStep.Migrations
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
-                {
-                    b.Navigation("Message");
-                });
-
             modelBuilder.Entity("ArtStep.Data.Category", b =>
                 {
                     b.Navigation("ShoeCustoms");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
+                {
+                    b.Navigation("UserSend");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Order", b =>
@@ -395,6 +435,8 @@ namespace ArtStep.Migrations
                     b.Navigation("Account");
 
                     b.Navigation("Orders");
+
+                    b.Navigation("ReceivedFeedbacks");
 
                     b.Navigation("ShoeCustoms");
                 });
