@@ -9,7 +9,5 @@
         public string? CartId { get; set; }
         public virtual Cart? Cart { get; set; }
         public virtual ShoeCustom? ShoeCustom { get; set; }
-        public virtual ICollection<Message>? Message { get; set; }
-
     }
 }

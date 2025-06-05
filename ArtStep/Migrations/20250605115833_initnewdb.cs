@@ -5,13 +5,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ArtStep.Migrations
 {
-    /// <inheritdoc />
     public partial class initnewdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    CartId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.CartId);
+                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -125,10 +139,18 @@ namespace ArtStep.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ImageProfile = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    isActive = table.Column<short>(type: "smallint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_User_Feedback_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_User_Feedback_UserId",
                         column: x => x.UserId,
@@ -412,6 +434,9 @@ namespace ArtStep.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
+                name: "CartsDetail");
+
+            migrationBuilder.DropTable(
                 name: "Message");
 
             migrationBuilder.DropTable(
@@ -419,9 +444,6 @@ namespace ArtStep.Migrations
 
             migrationBuilder.DropTable(
                 name: "ShoeImages");
-
-            migrationBuilder.DropTable(
-                name: "CartsDetail");
 
             migrationBuilder.DropTable(
                 name: "Order");
@@ -437,6 +459,9 @@ namespace ArtStep.Migrations
 
             migrationBuilder.DropTable(
                 name: "User");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
 
             migrationBuilder.DropTable(
                 name: "Feedback");

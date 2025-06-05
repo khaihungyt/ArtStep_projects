@@ -10,6 +10,8 @@
         public string? Role { get; set; }
         
         public string? ImageProfile { get; set; }
+        
+        public short? isActive { get; set; }
         public virtual Account? Account { get; set; }
 
         public virtual Cart? Cart { get; set; }

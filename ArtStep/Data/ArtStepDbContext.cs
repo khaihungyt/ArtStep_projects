@@ -43,9 +43,9 @@ namespace ArtStep.Data
             {
                 entity.HasKey(c => c.CartId);
                 entity.HasOne(c => c.Users)
-                      .WithMany()
-                      .HasForeignKey(c => c.UserId)
-                      .IsRequired(false);
+                      .WithOne(u => u.Cart)
+                      .HasForeignKey<User>(c => c.UserId)
+                 .OnDelete(DeleteBehavior.Restrict);
             });
 
             // CartDetail
@@ -84,11 +84,6 @@ namespace ArtStep.Data
                       .OnDelete(DeleteBehavior.Restrict); ;
                 entity.Property(m => m.SendAt).HasColumnType("timestamp")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.HasOne(m => m.CartDetail)
-                .WithMany(m => m.Message)
-                .HasForeignKey(m => m.CartDetailId)
-                .IsRequired(false);
             });
 
             // Order
