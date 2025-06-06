@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sales Revenue | Designer Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/CSS/designer/styles.css" />
+    <link rel="stylesheet" href="/CSS/designer/designs_revenue.css" />
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar (same as your original) -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Designer Portal</span>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="designs_dash.html" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="designs_list.html" class="sidebar-link">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>My Designs</span>
+                </a>
+                <a href="designs_revenue.html" class="sidebar-link active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Sales Revenue</span>
+                </a>
+                <a href="designs_new.html" class="sidebar-link">
+                    <i class="fas fa-pen-fancy"></i>
+                    <span>Create Design</span>
+                </a>
+                <a href="designs_profile.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="designs_chat.html" class="sidebar-link">
+                    <i class="fas fa-message"></i>
+                    <span>Message</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="sidebar-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <div class="sales-header">
+                    <h1 class="page-title">Sales Revenue</h1>
+
+                    <div class="sales-filters">
+                        <div class="date-range">
+                            <label for="start-date">From:</label>
+                            <input type="date" id="start-date" class="date-input">
+
+                            <label for="end-date">To:</label>
+                            <input type="date" id="end-date" class="date-input">
+
+                            <button id="apply-filter" class="btn btn-primary">
+                                <i class="fas fa-filter"></i> Apply
+                            </button>
+                        </div>
+
+                        <div class="view-options">
+                            <button id="view-summary" class="btn btn-outline active">
+                                <i class="fas fa-list"></i> Summary
+                            </button>
+                            <button id="view-chart" class="btn btn-outline">
+                                <i class="fas fa-chart-bar"></i> Chart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary View -->
+                <div id="summary-view" class="sales-view">
+                    <div class="sales-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-revenue">$0.00</div>
+                            <div class="stat-label">Total Revenue</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-sales">0</div>
+                            <div class="stat-label">Total Sales</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="avg-price">$0.00</div>
+                            <div class="stat-label">Avg. Price</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="top-product">-</div>
+                            <div class="stat-label">Top Product</div>
+                        </div>
+                    </div>
+
+                    <div class="sales-table-container">
+                        <table class="sales-table">
+                            <thead>
+                                <tr>
+                                    <th>Shoe Name</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Price Each</th>
+                                    <th>Total Revenue</th>
+                                    <th>Profit Margin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-table-body">
+                                <!-- Will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chart View (hidden by default) -->
+                <div id="chart-view" class="sales-view" style="display: none;">
+                    <div class="chart-container">
+                        <canvas id="sales-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/designer/sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/designer/designs_revenue.js"></script>
+</body>
+</html>

@@ -31,7 +31,7 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href="/designs" className="text-muted-foreground hover:text-primary">
-                  Browse Designs
+                                  List Designs
                 </Link>
               </li>
               <li>
@@ -44,11 +44,7 @@ export default function Footer() {
                   Find Artisans
                 </Link>
               </li>
-              <li>
-                <Link href="/how-it-works" className="text-muted-foreground hover:text-primary">
-                  How It Works
-                </Link>
-              </li>
+              
             </ul>
           </div>
 

@@ -10,6 +10,9 @@
         public string? SenderId { get; set; }
         public string? ReceivedId {  get; set; }
         public DateTime? SendAt { get; set; }
+        
+        public bool IsRead { get; set; } = false;
+        public DateTime? ReadTime { get; set; }
 
         public virtual User? UserSend { get; set; }
 

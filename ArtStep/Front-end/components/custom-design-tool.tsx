@@ -1,5 +1,6 @@
 "use client"
 
+import state from "./canvas/store"
 import { useState } from "react"
 import Image from "next/image"
 import {
@@ -68,12 +69,8 @@ export default function CustomDesignTool() {
           </div>
         </div>
 
-        <div className="relative bg-white border border-dashed rounded-lg h-[500px] flex items-center justify-center">
-          <div className="text-center text-muted-foreground">
-            <p>Your design canvas</p>
-            <p className="text-sm">Use the tools on the right to add elements to your design</p>
-          </div>
-        </div>
+             
+
       </div>
 
       {/* Design Tools */}

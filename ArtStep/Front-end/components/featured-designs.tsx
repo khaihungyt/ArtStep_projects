@@ -65,7 +65,7 @@ export default function FeaturedDesigns() {
             </CardContent>
             <CardFooter className="p-4 pt-0 flex justify-between items-center">
               <span className="font-bold text-lg">${design.price}</span>
-              <Badge>Customize</Badge>
+                      <Badge className="bg-gradient-to-r from-red-500 via-yellow-400 via-green-400 via-blue-400 to-purple-500 text-white font-semibold hover:brightness-110">Customize</Badge>
             </CardFooter>
           </Card>
         </Link>

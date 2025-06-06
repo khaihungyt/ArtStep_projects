@@ -20,7 +20,7 @@ export default function Header() {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link href="/designs" className="text-foreground hover:text-primary transition-colors">
-            Browse Designs
+            List Design
           </Link>
           <Link href="/create" className="text-foreground hover:text-primary transition-colors">
             Create Design
@@ -89,7 +89,7 @@ export default function Header() {
               className="text-foreground hover:text-primary transition-colors py-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              Browse Designs
+                          List Design
             </Link>
             <Link
               href="/create"
@@ -105,13 +105,7 @@ export default function Header() {
             >
               Find Artisans
             </Link>
-            <Link
-              href="/how-it-works"
-              className="text-foreground hover:text-primary transition-colors py-2"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              How It Works
-            </Link>
+          
             <div className="pt-4 border-t flex items-center justify-between">
               <Button variant="outline" size="sm" className="w-[48%]">
                 <ShoppingCart className="h-4 w-4 mr-2" />

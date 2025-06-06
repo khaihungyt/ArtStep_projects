@@ -1,5 +1,7 @@
 ﻿using ArtStep.Data;
 using ArtStep.Hubs;
+using CloudinaryDotNet;
+using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.Rewrite;
@@ -30,9 +32,20 @@ builder.Services.AddSignalR(options =>
     options.StreamBufferCapacity = 10;
 });
 
+// Set Cloudinary credentials
+DotEnv.Load();
+var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+var cloudinary = new Cloudinary(cloudinaryUrl)
+{
+    Api = { Secure = true }
+};
+builder.Services.AddSingleton(cloudinary);
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IVnpay, Vnpay>();
+builder.Services.AddMemoryCache();
 
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<ArtStepDbContext>(options =>

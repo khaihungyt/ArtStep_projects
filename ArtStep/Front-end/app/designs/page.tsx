@@ -1,4 +1,4 @@
-import { Filter } from "lucide-react"
+﻿import { Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -10,7 +10,7 @@ import DesignGrid from "@/components/design-grid"
 export default function DesignsPage() {
   return (
     <div className="container px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Browse Designs</h1>
+      <h1 className="text-3xl font-bold mb-8">List designs</h1>
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Filters Sidebar */}

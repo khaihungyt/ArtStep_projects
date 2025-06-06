@@ -161,6 +161,50 @@ namespace ArtStep.Hubs
             }
         }
 
+        public async Task MarkMessagesAsRead(string senderId)
+        {
+            try
+            {
+                Console.WriteLine($"ChatHub: MarkMessagesAsRead called - senderId: {senderId}");
+
+                var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    Console.WriteLine("ChatHub: UserId is null or empty");
+                    await Clients.Caller.SendAsync("Error", "Authentication required");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(senderId))
+                {
+                    Console.WriteLine("ChatHub: SenderId is null or empty");
+                    await Clients.Caller.SendAsync("Error", "Sender ID is required");
+                    return;
+                }
+
+                // Notify the sender that their messages have been read
+                await Clients.Group($"User_{senderId}").SendAsync("MessagesMarkedAsRead", new
+                {
+                    readByUserId = userId,
+                    readAt = DateTime.UtcNow
+                });
+
+                // Confirm to the current user that messages were marked as read
+                await Clients.Caller.SendAsync("MessagesReadConfirmation", new
+                {
+                    senderId = senderId,
+                    readAt = DateTime.UtcNow
+                });
+
+                Console.WriteLine($"ChatHub: Messages marked as read for conversation between {userId} and {senderId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ChatHub: Error marking messages as read: {ex.Message}");
+                await Clients.Caller.SendAsync("Error", "Failed to mark messages as read");
+            }
+        }
+
         // Test method to verify hub is working
         public async Task TestConnection()
         {

@@ -125,11 +125,17 @@ namespace ArtStep.Migrations
                     b.Property<string>("MessageId")
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("MessageDescription")
                         .HasColumnType("longtext");
 
                     b.Property<bool?>("MessageType")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("ReadTime")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ReceivedId")
                         .HasColumnType("varchar(255)");
