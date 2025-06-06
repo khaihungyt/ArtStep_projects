@@ -109,24 +109,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Set default starting page
-app.UseDefaultFiles(new DefaultFilesOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "html")
-    ),
-    RequestPath = "",
-    DefaultFileNames = new List<string> { "home.html" }
-});
+//// Set default starting page
+//app.UseDefaultFiles(new DefaultFilesOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "html")
+//    ),
+//    RequestPath = "",
+//    DefaultFileNames = new List<string> { "home.html" }
+//});
 
-// Set static files in wwwroot/html
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "html")
-    ),
-    RequestPath = ""
-});
+//// Set static files in wwwroot/html
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    FileProvider = new PhysicalFileProvider(
+//        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "html")
+//    ),
+//    RequestPath = ""
+//});
 
 app.UseStaticFiles();
 app.UseCors("FrontendPolicy");
