@@ -1,7 +1,48 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\EXE201\\ArtStep\\",
-  "Documents": [],
+  "WorkspaceRootPath": "D:\\F\\ArtStep_projects\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\app\\wallet\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\app\\wallet\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\app\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\app\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\app\\designs\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\app\\designs\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\components\\header.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\components\\header.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\components\\footer.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\components\\footer.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\components\\design-grid.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\components\\design-grid.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\front-end\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\front-end\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\artstep.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\artstep.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,15 +50,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -26,6 +63,134 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "page.tsx",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\app\\wallet\\page.tsx",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\app\\wallet\\page.tsx",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\app\\wallet\\page.tsx",
+              "RelativeToolTip": "ArtStep\\Front-end\\app\\wallet\\page.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-06-06T03:10:36.321Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "page.tsx",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\app\\designs\\page.tsx",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\app\\designs\\page.tsx",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\app\\designs\\page.tsx",
+              "RelativeToolTip": "ArtStep\\Front-end\\app\\designs\\page.tsx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-06-06T03:05:20.89Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "header.tsx",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\components\\header.tsx",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\components\\header.tsx",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\components\\header.tsx",
+              "RelativeToolTip": "ArtStep\\Front-end\\components\\header.tsx",
+              "ViewState": "AgIAAFIAAAAAAAAAAAAAAGsAAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-06-06T03:04:31.176Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "footer.tsx",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\components\\footer.tsx",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\components\\footer.tsx",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\components\\footer.tsx",
+              "RelativeToolTip": "ArtStep\\Front-end\\components\\footer.tsx",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAACEAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-06-06T03:03:22.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "design-grid.tsx",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\components\\design-grid.tsx",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\components\\design-grid.tsx",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\components\\design-grid.tsx",
+              "RelativeToolTip": "ArtStep\\Front-end\\components\\design-grid.tsx",
+              "ViewState": "AgIAABsAAAAAAAAAAAAAAAUAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-06-06T03:02:24.951Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "page.tsx",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\app\\page.tsx",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\app\\page.tsx",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\app\\page.tsx",
+              "RelativeToolTip": "ArtStep\\Front-end\\app\\page.tsx",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwEIAAABaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2025-06-06T02:58:17.281Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "index.html",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\index.html",
+              "RelativeDocumentMoniker": "ArtStep\\Front-end\\index.html",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Front-end\\index.html",
+              "RelativeToolTip": "ArtStep\\Front-end\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-06T02:57:33.509Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ArtStep.http",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.http",
+              "RelativeDocumentMoniker": "ArtStep\\ArtStep.http",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.http",
+              "RelativeToolTip": "ArtStep\\ArtStep.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-06-06T01:05:46.19Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\docker-compose.yml",
+              "RelativeDocumentMoniker": "ArtStep\\docker-compose.yml",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\docker-compose.yml",
+              "RelativeToolTip": "ArtStep\\docker-compose.yml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAIwBkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2025-06-06T00:57:25.857Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Dockerfile",
+              "RelativeDocumentMoniker": "ArtStep\\Dockerfile",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Dockerfile",
+              "RelativeToolTip": "ArtStep\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-06-06T00:49:49.144Z",
+              "EditorCaption": ""
             }
           ]
         },

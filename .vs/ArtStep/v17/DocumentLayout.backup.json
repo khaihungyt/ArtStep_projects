@@ -1,7 +1,20 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\EXE201\\ArtStep\\",
-  "Documents": [],
+  "WorkspaceRootPath": "D:\\F\\ArtStep_projects\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\artstep.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\artstep.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|d:\\f\\artstep_projects\\artstep\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{81D6A470-8697-4DD1-A944-435D4D98CA33}|ArtStep\\ArtStep.csproj|solutionrelative:artstep\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,15 +22,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Bookmark",
@@ -26,6 +35,43 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ArtStep.http",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.http",
+              "RelativeDocumentMoniker": "ArtStep\\ArtStep.http",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.http",
+              "RelativeToolTip": "ArtStep\\ArtStep.http",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
+              "WhenOpened": "2025-06-06T01:05:46.19Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\docker-compose.yml",
+              "RelativeDocumentMoniker": "ArtStep\\docker-compose.yml",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\docker-compose.yml",
+              "RelativeToolTip": "ArtStep\\docker-compose.yml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAIwBkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2025-06-06T00:57:25.857Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "D:\\F\\ArtStep_projects\\ArtStep\\Dockerfile",
+              "RelativeDocumentMoniker": "ArtStep\\Dockerfile",
+              "ToolTip": "D:\\F\\ArtStep_projects\\ArtStep\\Dockerfile",
+              "RelativeToolTip": "ArtStep\\Dockerfile",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAwBkAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-06-06T00:49:49.144Z",
+              "EditorCaption": ""
             }
           ]
         },

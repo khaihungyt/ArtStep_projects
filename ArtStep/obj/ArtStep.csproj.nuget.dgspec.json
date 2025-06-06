@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj": {}
+    "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {}
   },
   "projects": {
-    "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj": {
+    "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
+        "projectUniqueName": "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
         "projectName": "ArtStep",
-        "projectPath": "D:\\EXE201\\ArtStep\\ArtStep\\ArtStep.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "D:\\EXE201\\ArtStep\\ArtStep\\obj\\",
+        "projectPath": "D:\\F\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "D:\\F\\ArtStep_projects\\ArtStep\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\visualstudio\\SDKs\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -78,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
