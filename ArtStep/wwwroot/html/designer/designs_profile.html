@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/CSS/designer/styles.css">
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Designer Portal</span>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="designs_dash.html" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="designs_list.html" class="sidebar-link">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>My Designs</span>
+                </a>
+                <a href="designs_revenue.html" class="sidebar-link ">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Sales Revenue</span>
+                </a>
+                <a href="designs_new.html" class="sidebar-link">
+                    <i class="fas fa-pen-fancy"></i>
+                    <span>Create Design</span>
+                </a>
+                <a href="designs_profile.html" class="sidebar-link active">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="sidebar-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <h1 class="page-title">My Profile</h1>
+
+                <div class="profile-header">
+                    <div class="profile-cover">
+                        <img src="https://placehold.co/1200x350" alt="Cover" id="profile-cover-img">
+                        <button class="btn btn-icon" id="change-cover-btn">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                        <input type="file" id="cover-upload" accept="image/*" class="hidden">
+                    </div>
+
+                    <div class="profile-info">
+                        <div class="profile-avatar">
+                            <img src="https://placehold.co/300x300" alt="Sarah Johnson" id="profile-avatar-img">
+                            <button class="btn btn-icon avatar-edit-btn" id="change-avatar-btn">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                            <input type="file" id="avatar-upload" accept="image/*" class="hidden">
+                        </div>
+                        <div class="profile-details">
+                            <h2 class="profile-name">SarahDesigns</h2>
+                            <p class="profile-location">San Francisco, CA</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-tabs">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="profile">Profile</button>
+                        <button class="tab-btn" data-tab="account">Account</button>
+                        <button class="tab-btn" data-tab="payments">Payments</button>
+                        <button class="tab-btn" data-tab="notifications">Notifications</button>
+                    </div>
+
+                    <div class="tab-content active" id="profile-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Profile Information</h3>
+                            </div>
+                            <div class="card-content">
+                                <form id="profile-form" class="profile-form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="display-name">Display Name</label>
+                                            <input type="text" id="display-name" name="displayName" value="SarahDesigns" required>
+                                            <div class="form-description">This is how your name will appear to others.</div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="full-name">Full Name</label>
+                                            <input type="text" id="full-name" name="name" value="Sarah Johnson" required>
+                                            <div class="form-description">Your legal name for payment processing.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="bio">Bio</label>
+                                        <textarea id="bio" name="bio" rows="5" required>Passionate footwear designer with 5+ years of experience. Specializing in vibrant, nature-inspired designs with a modern twist.</textarea>
+                                        <div class="form-description">Tell customers about yourself and your design style.</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="location">Location</label>
+                                        <input type="text" id="location" name="location" value="San Francisco, CA">
+                                        <div class="form-description">Your public location.</div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="website">Website</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-globe"></i>
+                                                <input type="url" id="website" name="website" value="https://sarahdesigns.com">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="twitter">Twitter</label>
+                                            <div class="input-with-icon">
+                                                <i class="fab fa-twitter"></i>
+                                                <input type="text" id="twitter" name="twitter" value="sarahdesigns">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="instagram">Instagram</label>
+                                            <div class="input-with-icon">
+                                                <i class="fab fa-instagram"></i>
+                                                <input type="text" id="instagram" name="instagram" value="sarahdesigns">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="facebook">Facebook</label>
+                                            <div class="input-with-icon">
+                                                <i class="fab fa-facebook"></i>
+                                                <input type="text" id="facebook" name="facebook" value="sarahdesigns">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="account-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Account Settings</h3>
+                            </div>
+                            <div class="card-content">
+                                <form id="account-form" class="account-form">
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-envelope"></i>
+                                            <input type="email" id="email" name="email" value="sarah@example.com" required>
+                                        </div>
+                                        <div class="form-description">Your email address is used for notifications and login.</div>
+                                    </div>
+
+                                    <div class="section-title">
+                                        <h3>Change Password</h3>
+                                        <p>Update your password to enhance account security.</p>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="current-password">Current Password</label>
+                                        <div class="input-with-icon">
+                                            <i class="fas fa-lock"></i>
+                                            <input type="password" id="current-password" name="currentPassword" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="new-password">New Password</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-lock"></i>
+                                                <input type="password" id="new-password" name="newPassword">
+                                            </div>
+                                            <div class="form-description">Must be at least 8 characters with uppercase, lowercase and numbers.</div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="confirm-password">Confirm Password</label>
+                                            <div class="input-with-icon">
+                                                <i class="fas fa-lock"></i>
+                                                <input type="password" id="confirm-password" name="confirmPassword">
+                                            </div>
+                                            <div class="form-description">Retype your new password to confirm.</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="section-title">
+                                        <h3>Two-Factor Authentication</h3>
+                                        <div class="two-factor-status">
+                                            <i class="fas fa-shield-alt"></i>
+                                            <p>Two-factor authentication is enabled</p>
+                                        </div>
+                                        <p class="section-description">An extra layer of security for your account.</p>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-outline">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="payments-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Payment Information</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="section-title">
+                                    <h3>Payment Methods</h3>
+                                    <p>Manage your payment methods and see your payment history.</p>
+                                </div>
+
+                                <div class="payment-method">
+                                    <div class="payment-method-info">
+                                        <i class="fas fa-credit-card"></i>
+                                        <div>
+                                            <p class="payment-card-number">•••• •••• •••• 4242</p>
+                                            <p class="payment-card-expiry">Expires 12/2025</p>
+                                        </div>
+                                        <button class="btn btn-outline btn-sm">Edit</button>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary btn-block">
+                                    <i class="fas fa-credit-card"></i>
+                                    Add Payment Method
+                                </button>
+
+                                <div class="section-title payment-history-title">
+                                    <h3>Payment History</h3>
+                                </div>
+
+                                <div class="payment-history">
+                                    <div class="payment-history-header">
+                                        <div>Date</div>
+                                        <div>Description</div>
+                                        <div>Amount</div>
+                                        <div>Status</div>
+                                    </div>
+                                    <div class="payment-history-item">
+                                        <div>May 1, 2024</div>
+                                        <div>Commission Payout</div>
+                                        <div>$420.50</div>
+                                        <div>Completed</div>
+                                    </div>
+                                    <div class="payment-history-item">
+                                        <div>Apr 1, 2024</div>
+                                        <div>Commission Payout</div>
+                                        <div>$385.75</div>
+                                        <div>Completed</div>
+                                    </div>
+                                    <div class="payment-history-item">
+                                        <div>Mar 1, 2024</div>
+                                        <div>Commission Payout</div>
+                                        <div>$512.20</div>
+                                        <div>Completed</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="notifications-tab">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Notification Preferences</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="section-title">
+                                    <h3>Email Notifications</h3>
+                                    <p>Choose which email notifications you'd like to receive.</p>
+                                </div>
+
+                                <div class="notification-options">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="new-orders" name="notifications" value="new-orders" checked>
+                                        <label for="new-orders">New orders for your designs</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="design-reviews" name="notifications" value="design-reviews" checked>
+                                        <label for="design-reviews">Customer reviews on your designs</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="platform-updates" name="notifications" value="platform-updates" checked>
+                                        <label for="platform-updates">Platform updates and announcements</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="payment-notifications" name="notifications" value="payment-notifications" checked>
+                                        <label for="payment-notifications">Payment notifications</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="marketing" name="notifications" value="marketing">
+                                        <label for="marketing">Marketing and promotional emails</label>
+                                    </div>
+                                </div>
+
+                                <div class="section-title">
+                                    <h3>App Notifications</h3>
+                                    <p>Configure push notifications for the mobile app.</p>
+                                </div>
+
+                                <div class="notification-options">
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="app-orders" name="app-notifications" value="app-orders" checked>
+                                        <label for="app-orders">New orders</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="app-messages" name="app-notifications" value="app-messages" checked>
+                                        <label for="app-messages">Customer messages</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="app-reviews" name="app-notifications" value="app-reviews" checked>
+                                        <label for="app-reviews">Reviews and ratings</label>
+                                    </div>
+                                    <div class="checkbox-item">
+                                        <input type="checkbox" id="app-design-approval" name="app-notifications" value="app-design-approval" checked>
+                                        <label for="app-design-approval">Design approval status</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Preferences</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/designer/sidebar.js"></script>
+    <script src="/js/designer/profile.js"></script>
+</body>
+</html>

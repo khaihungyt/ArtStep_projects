@@ -4,5 +4,7 @@
     {
         public string? ImageId { get; set; }
         public string? ImageLink { get; set; }
+
+
     }
 }

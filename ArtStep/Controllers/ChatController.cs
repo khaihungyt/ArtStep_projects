@@ -58,7 +58,7 @@ namespace ArtStep.Controllers
                     SenderId = senderId,
                     ReceivedId = messageDto.ReceiverId,
                     SendAt = DateTime.Now,
-                    CartDetailId = validCartDetailId // This will be null if not valid
+                    //CartDetailId = validCartDetailId // This will be null if not valid
                 };
 
                 _context.Message.Add(message);
@@ -108,10 +108,10 @@ namespace ArtStep.Controllers
                                (m.SenderId == designerId && m.ReceivedId == userId));
 
                 // Filter by shoe if specified
-                if (!string.IsNullOrEmpty(shoeCustomId))
-                {
-                    query = query.Where(m => m.CartDetailId == shoeCustomId);
-                }
+                //if (!string.IsNullOrEmpty(shoeCustomId))
+                //{
+                //    query = query.Where(m => m.CartDetailId == shoeCustomId);
+                //}
 
                 var messages = await query
                     .OrderBy(m => m.SendAt)
@@ -124,7 +124,7 @@ namespace ArtStep.Controllers
                         receiverId = m.ReceivedId,
                         receiverName = m.UserReceived != null ? m.UserReceived.Name : "Unknown",
                         sendAt = m.SendAt,
-                        shoeCustomId = m.CartDetailId,
+                        //shoeCustomId = m.CartDetailId,
                         isFromCurrentUser = m.SenderId == userId
                     })
                     .ToListAsync();

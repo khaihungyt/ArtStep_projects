@@ -18,6 +18,7 @@ builder.Services.AddControllers()
         // Remove reference handler to get clean JSON
         options.JsonSerializerOptions.MaxDepth = 32;
         options.JsonSerializerOptions.PropertyNamingPolicy = null; // Keep original property names
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
 // Add SignalR
