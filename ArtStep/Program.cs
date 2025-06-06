@@ -1,5 +1,7 @@
 ﻿using ArtStep.Data;
 using ArtStep.Hubs;
+using CloudinaryDotNet;
+using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -18,15 +20,24 @@ builder.Services.AddControllers()
         // Remove reference handler to get clean JSON
         options.JsonSerializerOptions.MaxDepth = 32;
         options.JsonSerializerOptions.PropertyNamingPolicy = null; // Keep original property names
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
 // Add SignalR
 builder.Services.AddSignalR();
 
+// Set Cloudinary credentials
+DotEnv.Load();
+var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+var cloudinary = new Cloudinary(cloudinaryUrl)
+{
+    Api = { Secure = true }
+};
+builder.Services.AddSingleton(cloudinary);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
 // Add DbContext
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");

@@ -38,7 +38,7 @@
         const password = $(this).find('input[name="pass"]').val().trim();
 
         try {
-            const response = await fetch('http://localhost:5155/api/auth/login', {
+            const response = await fetch('https://localhost:5155/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ UserName: username, Password: password })

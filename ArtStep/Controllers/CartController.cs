@@ -167,7 +167,7 @@ namespace ArtStep.Controllers
             //foreach (var message in messagesWithCartDetail)
             //{
             //    message.CartDetailId = null;
-            //}
+        //}
 
             _context.CartsDetail.Remove(cartDetail);
             await _context.SaveChangesAsync();

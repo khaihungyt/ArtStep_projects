@@ -7,6 +7,7 @@
             public string? Name { get; set; }
             public string? Email { get; set; }
             public string? Role { get; set; } 
-            public string? ImageProfile { get; set; }
+            public string? PhoneNo { get; set; }
+            public IFormFile? ImageProfile { get; set; }
     }
 }

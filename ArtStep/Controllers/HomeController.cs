@@ -96,6 +96,7 @@ namespace ArtStep.Controllers
             return Ok(categories);
         }
 
+
         [HttpGet("designers")]
         public async Task<IActionResult> GetDesigners()
         {

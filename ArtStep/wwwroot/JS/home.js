@@ -49,7 +49,7 @@
 
     async function fetchDesigners() {
         try {
-            const response = await fetch('http://localhost:5155/api/designers');
+            const response = await fetch('https://localhost:5155/api/designers');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -84,7 +84,7 @@
 
     async function fetchCategories() {
         try {
-            const response = await fetch('http://localhost:5155/api/categories');
+            const response = await fetch('https://localhost:5155/api/categories');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -137,7 +137,7 @@
         }).toString();
 
         try {
-            const response = await fetch(`http://localhost:5155/api/products?${queryParams}`);
+            const response = await fetch(`https://localhost:5155/api/products?${queryParams}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -344,7 +344,7 @@
                 quantity: 1
             };
 
-            const response = await fetch('http://localhost:5155/api/Cart', {
+            const response = await fetch('https://localhost:5155/api/Cart', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
