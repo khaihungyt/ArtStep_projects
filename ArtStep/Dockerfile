@@ -1,16 +1,19 @@
-# ================= BACKEND (.NET) ==================
+# Stage: build backend
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["ArtStep.csproj", "."]
 RUN dotnet restore "ArtStep.csproj"
 COPY . .
+WORKDIR /src
 RUN dotnet build "ArtStep.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
+# Stage: publish backend
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "ArtStep.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# Stage: runtime for backend
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

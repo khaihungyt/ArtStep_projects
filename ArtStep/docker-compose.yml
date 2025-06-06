@@ -1,8 +1,9 @@
-﻿version: "3"
+﻿version: "3.9"
+
 services:
   backend:
     build:
-      context: .           # thư mục chứa Dockerfile
+      context: .
       dockerfile: Dockerfile
       target: final
     ports:
@@ -16,7 +17,7 @@ services:
       dockerfile: Dockerfile
       target: final-frontend
     ports:
-    - "7216:7216"
+      - "7216:7216"
     networks:
       - artstep-network
 
