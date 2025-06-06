@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                                 <div class="mt-2">
                                     ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
-                        `<button onclick="chatWithDesigner('${designerId}', '${designerName}', '${shoeId}')" 
+                        `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
                                             <i class="bi bi-chat-dots"></i> Chat with Designer
                                         </button>` :
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <i class="bi bi-info-circle"></i> Designer Account
                                         </button>` :
                             !localStorage.getItem('token') ?
-                                `<button onclick="chatWithDesigner('${designerId}', '${designerName}', '${shoeId}')" 
+                                `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
                                             <i class="bi bi-chat-dots"></i> Chat with Designer
                                         </button>` :
@@ -413,8 +413,8 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
 
-    window.chatWithDesigner = function (designerUserId, designerName, shoeId) {
-        console.log('chatWithDesigner called with:', designerUserId, designerName, shoeId);
+    window.chatWithDesigner = function (designerUserId, designerName) {
+        console.log('chatWithDesigner called with:', designerUserId, designerName);
 
         const token = localStorage.getItem('token');
         const userRole = localStorage.getItem('role');
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!window.chatSystem) {
             window.chatSystem = new ChatSystem();
         }
-        window.chatSystem.startChatWithDesigner(designerUserId, designerName, shoeId);
+        window.chatSystem.startChatWithDesigner(designerUserId, designerName);
     }
 
     window.goToCart = function () {

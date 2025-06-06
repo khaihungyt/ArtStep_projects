@@ -30,19 +30,6 @@ namespace ArtStep.Controllers
                 var senderId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (string.IsNullOrEmpty(senderId))
                     return Unauthorized(new { message = "User not authenticated" });
-                string? validCartDetailId = null;
-                if (!string.IsNullOrEmpty(messageDto.ShoeCustomId))
-                {
-                    var cartDetailExists = await _context.CartsDetail
-                        .AnyAsync(cd => cd.CartDetailID == messageDto.ShoeCustomId);
-                    if (cartDetailExists)
-                    {
-                        validCartDetailId = messageDto.ShoeCustomId;
-                    }
-                    else
-                    {
-                    }
-                }
 
                 // Create message record
                 var message = new Message
@@ -52,8 +39,7 @@ namespace ArtStep.Controllers
                     MessageType = true, // true for sent, false for received
                     SenderId = senderId,
                     ReceivedId = messageDto.ReceiverId,
-                    SendAt = DateTime.Now,
-                    CartDetailId = validCartDetailId // This will be null if not valid
+                    SendAt = DateTime.Now
                 };
 
                 _context.Message.Add(message);
@@ -70,8 +56,7 @@ namespace ArtStep.Controllers
                         senderId = senderId,
                         senderName = sender?.Name ?? "Unknown",
                         message = messageDto.MessageText,
-                        timestamp = message.SendAt,
-                        shoeCustomId = validCartDetailId
+                        timestamp = message.SendAt
                     });
 
                 return Ok(new
@@ -88,7 +73,7 @@ namespace ArtStep.Controllers
         }
 
         [HttpGet("history/{designerId}")]
-        public async Task<ActionResult> GetChatHistory(string designerId, string? shoeCustomId = null)
+        public async Task<ActionResult> GetChatHistory(string designerId)
         {
             try
             {
@@ -96,19 +81,11 @@ namespace ArtStep.Controllers
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized(new { message = "User not authenticated" });
 
-                var query = _context.Message
+                var messages = await _context.Message
                     .Include(m => m.UserSend)
                     .Include(m => m.UserReceived)
                     .Where(m => (m.SenderId == userId && m.ReceivedId == designerId) ||
-                               (m.SenderId == designerId && m.ReceivedId == userId));
-
-                // Filter by shoe if specified
-                if (!string.IsNullOrEmpty(shoeCustomId))
-                {
-                    query = query.Where(m => m.CartDetailId == shoeCustomId);
-                }
-
-                var messages = await query
+                               (m.SenderId == designerId && m.ReceivedId == userId))
                     .OrderBy(m => m.SendAt)
                     .Select(m => new
                     {
@@ -119,7 +96,6 @@ namespace ArtStep.Controllers
                         receiverId = m.ReceivedId,
                         receiverName = m.UserReceived != null ? m.UserReceived.Name : "Unknown",
                         sendAt = m.SendAt,
-                        shoeCustomId = m.CartDetailId,
                         isFromCurrentUser = m.SenderId == userId
                     })
                     .ToListAsync();
@@ -197,6 +173,5 @@ namespace ArtStep.Controllers
     {
         public string ReceiverId { get; set; } = string.Empty;
         public string MessageText { get; set; } = string.Empty;
-        public string? ShoeCustomId { get; set; }
     }
 } 

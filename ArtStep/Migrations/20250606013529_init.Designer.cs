@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStep.Migrations
 {
     [DbContext(typeof(ArtStepDbContext))]
-    [Migration("20250605115833_initnewdb")]
-    partial class initnewdb
+    [Migration("20250606013529_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,17 +56,9 @@ namespace ArtStep.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("CartId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1")
-                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -136,9 +128,6 @@ namespace ArtStep.Migrations
                     b.Property<string>("MessageId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("CartDetailId")
-                        .HasColumnType("varchar(255)");
-
                     b.Property<string>("MessageDescription")
                         .HasColumnType("longtext");
 
@@ -157,8 +146,6 @@ namespace ArtStep.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("MessageId");
-
-                    b.HasIndex("CartDetailId");
 
                     b.HasIndex("ReceivedId");
 
@@ -292,6 +279,9 @@ namespace ArtStep.Migrations
                     b.Property<string>("Role")
                         .HasColumnType("longtext");
 
+                    b.Property<short?>("isActive")
+                        .HasColumnType("smallint");
+
                     b.HasKey("UserId");
 
                     b.ToTable("User");
@@ -304,19 +294,6 @@ namespace ArtStep.Migrations
                         .HasForeignKey("ArtStep.Data.Account", "UserId");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ArtStep.Data.Cart", b =>
-                {
-                    b.HasOne("ArtStep.Data.User", "Users")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("ArtStep.Data.User", null)
-                        .WithOne("Cart")
-                        .HasForeignKey("ArtStep.Data.Cart", "UserId1");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
@@ -346,10 +323,6 @@ namespace ArtStep.Migrations
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
                 {
-                    b.HasOne("ArtStep.Data.CartDetail", "CartDetail")
-                        .WithMany("Message")
-                        .HasForeignKey("CartDetailId");
-
                     b.HasOne("ArtStep.Data.User", "UserReceived")
                         .WithMany()
                         .HasForeignKey("ReceivedId")
@@ -359,8 +332,6 @@ namespace ArtStep.Migrations
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("CartDetail");
 
                     b.Navigation("UserReceived");
 
@@ -417,11 +388,19 @@ namespace ArtStep.Migrations
 
             modelBuilder.Entity("ArtStep.Data.User", b =>
                 {
+                    b.HasOne("ArtStep.Data.Cart", "Cart")
+                        .WithOne("Users")
+                        .HasForeignKey("ArtStep.Data.User", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("ArtStep.Data.Feedback", "SentFeedbacks")
                         .WithOne("UserSend")
                         .HasForeignKey("ArtStep.Data.User", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cart");
 
                     b.Navigation("SentFeedbacks");
                 });
@@ -429,11 +408,8 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
                 {
                     b.Navigation("CartDetails");
-                });
 
-            modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
-                {
-                    b.Navigation("Message");
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Category", b =>
@@ -463,8 +439,6 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.User", b =>
                 {
                     b.Navigation("Account");
-
-                    b.Navigation("Cart");
 
                     b.Navigation("Orders");
 

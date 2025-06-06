@@ -47,8 +47,8 @@ namespace ArtStep.Controllers
 
             return Ok(new
             {
-                Token = token,
-                User = userInfo
+                token = token,
+                user = userInfo
             });
         }
 
@@ -97,15 +97,15 @@ namespace ArtStep.Controllers
 
         private string GenerateJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
-            new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
-            new Claim(ClaimTypes.Role, user.Role ?? "User")
-        };
+                new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
+            };
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],

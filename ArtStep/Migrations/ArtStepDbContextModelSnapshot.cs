@@ -17,7 +17,7 @@ namespace ArtStep.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.16")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -55,15 +55,7 @@ namespace ArtStep.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
                     b.HasKey("CartId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1")
-                        .IsUnique();
 
                     b.ToTable("Carts");
                 });
@@ -301,19 +293,6 @@ namespace ArtStep.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ArtStep.Data.Cart", b =>
-                {
-                    b.HasOne("ArtStep.Data.User", "Users")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("ArtStep.Data.User", null)
-                        .WithOne("Cart")
-                        .HasForeignKey("ArtStep.Data.Cart", "UserId1");
-
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
                 {
                     b.HasOne("ArtStep.Data.Cart", "Cart")
@@ -406,11 +385,19 @@ namespace ArtStep.Migrations
 
             modelBuilder.Entity("ArtStep.Data.User", b =>
                 {
+                    b.HasOne("ArtStep.Data.Cart", "Cart")
+                        .WithOne("Users")
+                        .HasForeignKey("ArtStep.Data.User", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("ArtStep.Data.Feedback", "SentFeedbacks")
                         .WithOne("UserSend")
                         .HasForeignKey("ArtStep.Data.User", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Cart");
 
                     b.Navigation("SentFeedbacks");
                 });
@@ -425,11 +412,6 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Category", b =>
                 {
                     b.Navigation("ShoeCustoms");
-                });
-
-            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
-                {
-                    b.Navigation("UserSend");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Feedback", b =>
@@ -454,8 +436,6 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.User", b =>
                 {
                     b.Navigation("Account");
-
-                    b.Navigation("Cart");
 
                     b.Navigation("Orders");
 

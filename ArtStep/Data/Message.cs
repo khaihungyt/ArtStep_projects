@@ -14,8 +14,5 @@
         public virtual User? UserSend { get; set; }
 
         public virtual User? UserReceived { get; set; }
-        public string? CartDetailId { get; set; }
-        public virtual CartDetail? CartDetail { get; set; }
-
     }
 }

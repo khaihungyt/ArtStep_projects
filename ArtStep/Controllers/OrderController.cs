@@ -88,17 +88,6 @@ namespace ArtStep.Controllers
 
                 _context.OrderDetail.AddRange(orderDetails);
 
-                // Handle foreign key constraint: Set CartDetailId to NULL in messages before deleting cart details
-                var cartDetailIds = cart.CartDetails.Select(cd => cd.CartDetailID).ToList();
-                var messagesWithCartDetails = await _context.Message
-                    .Where(m => cartDetailIds.Contains(m.CartDetailId))
-                    .ToListAsync();
-
-                foreach (var message in messagesWithCartDetails)
-                {
-                    message.CartDetailId = null;
-                }
-
                 // Clear the cart after successful order creation
                 _context.CartsDetail.RemoveRange(cart.CartDetails);
                 _context.Carts.Remove(cart);
@@ -226,18 +215,11 @@ namespace ArtStep.Controllers
 
             _context.OrderDetail.AddRange(orderDetails);
 
-            var cartDetailIds = cart.CartDetails.Select(cd => cd.CartDetailID).ToList();
-            var messagesWithCartDetails = await _context.Message
-                .Where(m => cartDetailIds.Contains(m.CartDetailId))
-                .ToListAsync();
-
-            foreach (var message in messagesWithCartDetails)
-            {
-                message.CartDetailId = null;
-            }
-
+            // Clear the cart after successful order creation
             _context.CartsDetail.RemoveRange(cart.CartDetails);
             _context.Carts.Remove(cart);
+
+            // Save all changes
             await _context.SaveChangesAsync();
 
             var totalAmount = orderDetails.Sum(od => od.CostaShoe ?? 0);

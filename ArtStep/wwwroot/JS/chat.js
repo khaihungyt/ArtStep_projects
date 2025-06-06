@@ -3,67 +3,85 @@ import { API_BASE_URL } from './config.js';
 class ChatSystem {
     constructor() {
         this.connection = null;
-        this.currentUserId = localStorage.getItem('userId');
-        this.currentUserName = localStorage.getItem('username');
         this.currentUserRole = localStorage.getItem('role');
         this.token = localStorage.getItem('token');
         this.currentDesignerId = null;
-        this.currentShoeCustomId = null;
         this.isConnected = false;
         
-        // Only initialize chat for users with 'User' role
-        if (this.currentUserRole && this.currentUserRole.toLowerCase() === 'user') {
-            this.initializeSignalR();
-            this.createChatUI();
-            this.bindEvents();
-            this.startTimestampUpdater();
+     
+        
+        if (this.currentUserRole) {
+            if (this.token) {
+                this.initializeSignalR();
+                this.createChatUI();
+                this.bindEvents();
+                this.startTimestampUpdater();
+            } else {
+                console.warn('ChatSystem: No token found, chat functionality limited');
+            }
         }
     }
 
     async initializeSignalR() {
         if (!this.token) {
+            console.warn('No token available for SignalR connection');
             return;
         }
 
-        this.connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chatHub", {
-                accessTokenFactory: () => this.token,
-                skipNegotiation: true,
-                transport: signalR.HttpTransportType.WebSockets
-            })
-            .withAutomaticReconnect()
-            .build();
-
-        this.connection.on("ReceiveMessage", (data) => {
-            this.handleIncomingMessage(data);
-        });
-
-        this.connection.on("MessageSent", (data) => {
-            this.handleMessageSent(data);
-        });
-
-        this.connection.onreconnecting((error) => {
-            // Connection reconnecting
-        });
-
-        this.connection.onreconnected((connectionId) => {
-            // Rejoin user group after reconnection
-            if (this.currentUserId) {
-                this.connection.invoke("JoinUserGroup", this.currentUserId);
-            }
-        });
-
-        this.connection.onclose((error) => {
-            this.isConnected = false;
-        });
-
         try {
-            await this.connection.start();
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub", {
+                    accessTokenFactory: () => this.token,
+                    transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling,
+                    skipNegotiation: false,
+                    withCredentials: true,
+                    headers: {
+                        'Authorization': `Bearer ${this.token}`
+                    }
+                })
+                .withAutomaticReconnect({
+                    nextRetryDelayInMilliseconds: retryContext => {
+                        if (retryContext.previousRetryCount < 3) {
+                            return Math.random() * 10000;
+                        } else {
+                            return null;
+                        }
+                    }
+                })
+                .configureLogging(signalR.LogLevel.Debug)
+                .build();
+
+            // Set up event handlers
+            connection.on("ReceiveMessage", (data) => {
+                this.handleIncomingMessage(data);
+            });
+
+            connection.on("MessageSent", (data) => {
+                this.handleMessageSent(data);
+            });
+
+            connection.onreconnecting((error) => {
+                this.isConnected = false;
+            });
+
+            connection.onreconnected((connectionId) => {
+                this.isConnected = true;
+                if (this.currentUserId) {
+                    connection.invoke("JoinUserGroup", this.currentUserId);
+                }
+            });
+
+            connection.onclose((error) => {
+                this.isConnected = false;
+            });
+
+            await connection.start();
+            this.connection = connection;
             this.isConnected = true;
             
             // Join user group
             if (this.currentUserId) {
-                await this.connection.invoke("JoinUserGroup", this.currentUserId);
+                await connection.invoke("JoinUserGroup", this.currentUserId);
             }
         } catch (err) {
             this.isConnected = false;
@@ -71,7 +89,6 @@ class ChatSystem {
     }
 
     createChatUI() {
-        // Create chat button (bottom right)
         const chatButton = document.createElement('div');
         chatButton.id = 'chat-button';
         chatButton.className = 'chat-button';
@@ -80,7 +97,6 @@ class ChatSystem {
             <span class="chat-badge" id="chat-badge" style="display: none;">0</span>
         `;
 
-        // Create chat popup
         const chatPopup = document.createElement('div');
         chatPopup.id = 'chat-popup';
         chatPopup.className = 'chat-popup';
@@ -187,7 +203,7 @@ class ChatSystem {
     }
 
     showChatPopup() {
-        if (!this.token) {
+        if (!this.isAuthenticated()) {
             this.showToast('Please login to use chat', 'error');
             return;
         }
@@ -197,7 +213,6 @@ class ChatSystem {
             popup.style.display = 'flex';
         }
         this.showConversations();
-        this.loadConversations();
     }
 
     hideChatPopup() {
@@ -237,11 +252,31 @@ class ChatSystem {
 
     async loadConversations() {
         try {
+            // Get fresh token from localStorage in case it was updated
+            this.token = localStorage.getItem('token');
+            
+            if (!this.token) {
+                this.showToast('Please login to view conversations', 'error');
+                this.displayConversations([]);
+                return;
+            }
+
             const response = await fetch(`${API_BASE_URL}/Chat/conversations`, {
                 headers: {
-                    'Authorization': `Bearer ${this.token}`
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
                 }
             });
+
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                localStorage.removeItem('role');
+                this.showToast('Session expired. Please login again.', 'error');
+                this.displayConversations([]);
+                return;
+            }
 
             if (response.ok) {
                 const data = await response.json();
@@ -339,23 +374,39 @@ class ChatSystem {
 
     openConversation(designerId, designerName) {
         this.currentDesignerId = designerId;
-        this.currentShoeCustomId = null; // Reset shoe context when opening from conversations
         this.showChatView(designerName);
         this.loadChatHistory(designerId);
     }
 
-    async loadChatHistory(designerId, shoeCustomId = null) {
+    async loadChatHistory(designerId) {
         try {
-            let url = `${API_BASE_URL}/Chat/history/${designerId}`;
-            if (shoeCustomId) {
-                url += `?shoeCustomId=${shoeCustomId}`;
+            // Get fresh token from localStorage
+            this.token = localStorage.getItem('token');
+            
+            if (!this.token) {
+                this.showToast('Please login to view chat history', 'error');
+                this.displayMessages([]);
+                return;
             }
+
+            let url = `${API_BASE_URL}/Chat/history/${designerId}`;
 
             const response = await fetch(url, {
                 headers: {
-                    'Authorization': `Bearer ${this.token}`
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
                 }
             });
+
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                localStorage.removeItem('role');
+                this.showToast('Session expired. Please login again.', 'error');
+                this.displayMessages([]);
+                return;
+            }
 
             if (response.ok) {
                 const data = await response.json();
@@ -403,6 +454,14 @@ class ChatSystem {
         if (!messageText || !this.currentDesignerId) return;
 
         try {
+            // Get fresh token from localStorage
+            this.token = localStorage.getItem('token');
+            
+            if (!this.token) {
+                this.showToast('Please login to send messages', 'error');
+                return;
+            }
+
             const response = await fetch(`${API_BASE_URL}/Chat/send`, {
                 method: 'POST',
                 headers: {
@@ -411,10 +470,18 @@ class ChatSystem {
                 },
                 body: JSON.stringify({
                     receiverId: this.currentDesignerId,
-                    messageText: messageText,
-                    shoeCustomId: this.currentShoeCustomId
+                    messageText: messageText
                 })
             });
+
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userId');
+                localStorage.removeItem('username');
+                localStorage.removeItem('role');
+                this.showToast('Session expired. Please login again.', 'error');
+                return;
+            }
 
             if (response.ok) {
                 input.value = '';
@@ -454,7 +521,7 @@ class ChatSystem {
         // If chat is open and it's from current conversation, refresh the chat history
         if (this.currentDesignerId === data.senderId) {
             // Reload chat history to get the complete message with proper formatting
-            this.loadChatHistory(this.currentDesignerId, this.currentShoeCustomId);
+            this.loadChatHistory(this.currentDesignerId);
         }
         
         // Update conversations list to reflect new message
@@ -526,8 +593,8 @@ class ChatSystem {
         }, 3000);
     }
 
-    // Method to start chat with specific designer and shoe
-    startChatWithDesigner(designerId, designerName, shoeCustomId = null) {
+    // Method to start chat with specific designer
+    startChatWithDesigner(designerId, designerName) {
         if (!designerId) {
             this.showToast('Designer information is missing', 'error');
             return;
@@ -540,7 +607,6 @@ class ChatSystem {
         }
 
         this.currentDesignerId = designerId;
-        this.currentShoeCustomId = shoeCustomId;
         
         // Force show popup and chat view directly
         const popup = document.getElementById('chat-popup');
@@ -552,7 +618,7 @@ class ChatSystem {
         
         // Show chat view directly without going through conversations
         this.showChatViewDirect(designerName || 'Designer');
-        this.loadChatHistory(designerId, shoeCustomId);
+        this.loadChatHistory(designerId);
     }
 
     showChatViewDirect(designerName) {
@@ -597,21 +663,34 @@ class ChatSystem {
             }
         }, 30000); // Update every 30 seconds
     }
+
+    // Method to check if user is properly authenticated
+    isAuthenticated() {
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
+        
+        const isValid = !!(token && role);
+        
+        if (!isValid) {
+            console.warn('Authentication check failed:', {
+                hasToken: !!token,
+                hasRole: !!role,
+            });
+        }
+        
+        return isValid;
+    }
 }
 
-// Initialize chat system when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Only initialize if user is logged in
     if (localStorage.getItem('token')) {
         window.chatSystem = new ChatSystem();
     }
 });
 
-// Make ChatSystem available globally
 window.ChatSystem = ChatSystem;
 
-// Global function to start chat from product pages
-window.startChatWithDesigner = function(designerId, designerName, shoeCustomId = null) {
+window.startChatWithDesigner = function(designerId, designerName) {
     if (!window.chatSystem) {
         if (!localStorage.getItem('token')) {
             alert('Please login to chat with designers');
@@ -619,5 +698,5 @@ window.startChatWithDesigner = function(designerId, designerName, shoeCustomId =
         }
         window.chatSystem = new ChatSystem();
     }
-    window.chatSystem.startChatWithDesigner(designerId, designerName, shoeCustomId);
+    window.chatSystem.startChatWithDesigner(designerId, designerName);
 }; 
