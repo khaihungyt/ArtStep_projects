@@ -1,4 +1,6 @@
-﻿(function ($) {
+﻿import { API_BASE_URL } from './config.js';
+
+(function ($) {
     "use strict";
 
     $(document).ready(function () {
@@ -9,7 +11,7 @@
             const role = localStorage.getItem('role') || 'user';
             const redirectMap = {
                 admin: '/admin/dashboard',
-                user: '/user/home',
+                user: '',
                 designer: '/designer/workspace'
             };
             const redirectUrl = redirectMap[role] || '/home';
@@ -51,20 +53,28 @@
             }
 
             const data = await response.json();
-            
+
+            // Helper function to get case-insensitive property
+            const getCaseInsensitiveProperty = (obj, propName) => {
+                if (!obj) return null;
+                const keys = Object.keys(obj);
+                const foundKey = keys.find(key => key.toLowerCase() === propName.toLowerCase());
+                return foundKey ? obj[foundKey] : null;
+            };
+
             // Store token and user data in localStorage
             localStorage.setItem('token', data.token);
-            localStorage.setItem('role', data.user?.role?.toLowerCase() || 'user');
-            localStorage.setItem('username', data.user?.name || '');
-            localStorage.setItem('userId', data.user?.userId || '');
+            localStorage.setItem('role', getCaseInsensitiveProperty(data.user, 'role')?.toLowerCase() || 'user');
+            localStorage.setItem('username', getCaseInsensitiveProperty(data.user, 'name') || '');
+            localStorage.setItem('userId', getCaseInsensitiveProperty(data.user, 'userId') || '');
 
             toastr.success('Đăng nhập thành công!');
 
-            const role = data.user?.role?.toLowerCase() || 'user';
+            const role = getCaseInsensitiveProperty(data.user, 'role')?.toLowerCase() || 'user';
             const redirectMap = {
                 admin: '/admin/dashboard',
-                user: '/user/home',
-                designer: '/designer/workspace'
+                user: '',
+                designer: '/designer/designs_dash'
             };
 
             const redirectUrl = redirectMap[role] || '/home';

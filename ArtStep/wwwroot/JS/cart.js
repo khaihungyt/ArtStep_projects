@@ -1,4 +1,77 @@
-document.addEventListener('DOMContentLoaded', function () {
+import { API_BASE_URL } from './config.js';
+
+// Helper to get query params
+function getQueryParam(name) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(name);
+}
+
+document.addEventListener('DOMContentLoaded', async function () {
+    // Handle VNPay callback result
+    const paymentInfo = getQueryParam('payment_info');
+    if (paymentInfo) {
+        if (paymentInfo === 'order_success') {
+            // Get extra info if available
+            const orderId = getQueryParam('orderId');
+            const totalAmount = getQueryParam('totalAmount');
+            const itemCount = getQueryParam('itemCount');
+            await Swal.fire({
+                title: 'Order Placed Successfully!',
+                html: `
+                    <div class="text-center">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2"><strong>Order ID:</strong> ${orderId || ''}</p>
+                        <p class="mb-2"><strong>Total Amount:</strong> ${totalAmount ? formatVND(Number(totalAmount)) : ''}</p>
+                        <p class="mb-2"><strong>Items:</strong> ${itemCount || ''} items</p>
+                        <p class="mb-0"><strong>Status:</strong> Paid</p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: '<i class="bi bi-house"></i> Go to Home',
+                confirmButtonColor: '#28a745',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+            window.location.href = 'home';
+            return;
+        } else if (paymentInfo === 'payment_fail') {
+            await Swal.fire({
+                title: 'Payment Failed',
+                text: 'Your payment was not successful. Please try again or choose another payment method.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+            });
+            // Optionally, you can redirect or let the user stay on the cart page
+        } else if (paymentInfo === 'cart_empty') {
+            await Swal.fire({
+                title: 'Cart Empty',
+                text: 'Your cart is empty. Please add items to your cart before checking out.',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#ffc107'
+            });
+        } else if (paymentInfo === 'invalid_user') {
+            await Swal.fire({
+                title: 'Invalid User',
+                text: 'User information is invalid. Please log in again.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+            });
+            window.location.href = 'Login.html';
+            return;
+        } else if (paymentInfo === 'error') {
+            await Swal.fire({
+                title: 'Error',
+                text: 'An error occurred during payment processing.',
+                icon: 'error',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    }
+
     const navbarAuth = document.getElementById('navbarAuth');
     const token = localStorage.getItem('token');
 
@@ -69,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Update UI immediately for smooth experience
             updateItemQuantityUI(cartDetailId, newQuantity);
 
-            const response = await fetch(`http://localhost:5155/api/Cart/${cartDetailId}`, {
+            const response = await fetch(`${API_BASE_URL}/Cart/${cartDetailId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -99,58 +172,85 @@ document.addEventListener('DOMContentLoaded', function () {
 
     window.checkout = async function() {
         try {
-            // Show loading state
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
             const checkoutBtn = document.getElementById('checkout-btn');
             const originalText = checkoutBtn.innerHTML;
             checkoutBtn.disabled = true;
             checkoutBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
 
-            const response = await fetch('http://localhost:5155/api/Order/checkout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token.trim()}`,
-                    'Content-Type': 'application/json'
-                }
-            });
+            if (paymentMethod === 'cod') {
+                // Existing logic for Cash on Delivery
+                const response = await fetch(`${API_BASE_URL}/Order/checkout`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token.trim()}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to process checkout');
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to process checkout');
+                }
+
+                const result = await response.json();
+
+                // Show success message with SweetAlert
+                await Swal.fire({
+                    title: 'Order Placed Successfully!',
+                    html: `
+                        <div class="text-center">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                            <p class="mt-3 mb-2"><strong>Order ID:</strong> ${result.orderId}</p>
+                            <p class="mb-2"><strong>Total Amount:</strong> ${formatVND(result.totalAmount)}</p>
+                            <p class="mb-2"><strong>Items:</strong> ${result.itemCount} items</p>
+                            <p class="mb-0"><strong>Status:</strong> ${result.status}</p>
+                        </div>
+                    `,
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="bi bi-house"></i> Go to Home',
+                    cancelButtonText: '<i class="bi bi-receipt"></i> View Orders',
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Go to home page
+                        window.location.href = 'home';
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        // Go to orders page (you can create this later)
+                        showToast('Info', 'Orders page coming soon!', 'info');
+                        window.location.href = 'home';
+                    }
+                });
+            } else if (paymentMethod === 'bank') {
+                // Get the total amount from the DOM (remove " VND" and commas, parse as float)
+                let totalText = document.getElementById('cart-total').textContent;
+                let totalAmount = parseInt(totalText.replace(/[^\d]/g, ''), 10);
+
+                const response = await fetch(`${API_BASE_URL}/Order/create-vnpay`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token.trim()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(totalAmount)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to create VNPay order');
+                }
+
+                const paymentUrl = await response.text();
+                if (paymentUrl) {
+                    window.location.href = paymentUrl;
+                } else {
+                    throw new Error('VNPay payment URL not received');
+                }
             }
-
-            const result = await response.json();
-
-            // Show success message with SweetAlert
-            await Swal.fire({
-                title: 'Order Placed Successfully!',
-                html: `
-                    <div class="text-center">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                        <p class="mt-3 mb-2"><strong>Order ID:</strong> ${result.orderId}</p>
-                        <p class="mb-2"><strong>Total Amount:</strong> ${formatVND(result.totalAmount)}</p>
-                        <p class="mb-2"><strong>Items:</strong> ${result.itemCount} items</p>
-                        <p class="mb-0"><strong>Status:</strong> ${result.status}</p>
-                    </div>
-                `,
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonText: '<i class="bi bi-house"></i> Go to Home',
-                cancelButtonText: '<i class="bi bi-receipt"></i> View Orders',
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#6c757d',
-                allowOutsideClick: false,
-                allowEscapeKey: false
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Go to home page
-                    window.location.href = 'home.html';
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    // Go to orders page (you can create this later)
-                    showToast('Info', 'Orders page coming soon!', 'info');
-                    window.location.href = 'home.html';
-                }
-            });
-
         } catch (error) {
             console.error('Error during checkout:', error);
             
@@ -268,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!result.isConfirmed) return;
 
         try {
-            const response = await fetch(`http://localhost:5155/api/Cart/${cartDetailId}`, {
+            const response = await fetch(`${API_BASE_URL}/Cart/${cartDetailId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token.trim()}`
@@ -318,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!result.isConfirmed) return;
 
         try {
-            const response = await fetch('http://localhost:5155/api/Cart', {
+            const response = await fetch(`${API_BASE_URL}/Cart`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token.trim()}`
@@ -343,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             showLoading();
 
-            const response = await fetch('http://localhost:5155/api/Cart', {
+            const response = await fetch(`${API_BASE_URL}/Cart`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token.trim()}`

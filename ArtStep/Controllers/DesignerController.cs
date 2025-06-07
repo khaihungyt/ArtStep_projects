@@ -168,7 +168,7 @@ namespace ArtStep.Controllers
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
             if (userIdClaim == null)
-            {
+        {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
 
@@ -214,6 +214,9 @@ namespace ArtStep.Controllers
 
             var userId = userIdClaim.Value;
 
+            // 1. Xác thực người dùng (giả lập userId)
+            // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = "user002";
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });

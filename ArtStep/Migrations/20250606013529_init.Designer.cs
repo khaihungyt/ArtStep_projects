@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStep.Migrations
 {
     [DbContext(typeof(ArtStepDbContext))]
-    [Migration("20250530011754_chatwithUser")]
-    partial class chatwithUser
+    [Migration("20250606013529_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.16")
+                .HasAnnotation("ProductVersion", "8.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -169,6 +169,9 @@ namespace ArtStep.Migrations
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<long?>("VNPayPaymentId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("OrderId");
 

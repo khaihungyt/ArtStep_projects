@@ -119,6 +119,23 @@
                             <span class="text-light">Shipping:</span>
                             <span id="shipping" class="text-success">Free</span>
                         </div>
+                        <div class="mb-3">
+                            <label class="form-label text-white">Payment Method:</label>
+                            <div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" checked>
+                                    <label class="form-check-label text-white" for="cod">
+                                        Cash on Delivery
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="bank">
+                                    <label class="form-check-label text-white" for="bank">
+                                        Bank Transfer (VNPay)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                         <hr style="border-color: #555;">
                         <div class="d-flex justify-content-between mb-3">
                             <strong class="text-white">Total:</strong>
@@ -199,9 +216,9 @@
     <!-- SignalR Client -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <!-- Chat System -->
-    <script src="../JS/chat.js" defer></script>
+    <script type="module" src="../JS/chat.js"></script>
     <!-- Custom JS -->
-    <script src="../JS/cart.js" defer></script>
+    <script  type="module"  src="../JS/cart.js" defer></script>
 </body>
 
 </html> 

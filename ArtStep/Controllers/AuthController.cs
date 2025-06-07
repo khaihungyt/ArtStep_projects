@@ -56,8 +56,8 @@ namespace ArtStep.Controllers
 
             return Ok(new
             {
-                Token = token,
-                User = userInfo
+                token = token,
+                user = userInfo
             });
         }
 
@@ -109,17 +109,12 @@ namespace ArtStep.Controllers
                 _context.Accounts.Add(account);
                 await _context.SaveChangesAsync();
 
-                return Ok(new { message = "Đăng ký thành công!" });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = "Đăng ký thất bại: " + ex.Message });
-            }
+            return Ok(new { message = "Đăng ký thành công!" });
         }
 
         private string GenerateJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
@@ -130,7 +125,7 @@ namespace ArtStep.Controllers
             };
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(0.5),
                 signingCredentials: credentials

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ArtStep.Migrations
 {
     /// <inheritdoc />
-    public partial class chatwithUser : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -186,7 +186,8 @@ namespace ArtStep.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreateAt = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
+                    CreateAt = table.Column<DateTime>(type: "timestamp", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    VNPayPaymentId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {

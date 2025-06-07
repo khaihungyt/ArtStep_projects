@@ -160,15 +160,6 @@ namespace ArtStep.Controllers
             if (cartDetail == null)
                 return NotFound();
 
-            //var messagesWithCartDetail = await _context.Message
-            //    .Where(m => m.CartDetailId == cartDetailId)
-            //    .ToListAsync();
-
-            //foreach (var message in messagesWithCartDetail)
-            //{
-            //    message.CartDetailId = null;
-        //}
-
             _context.CartsDetail.Remove(cartDetail);
             await _context.SaveChangesAsync();
             return Ok();
@@ -187,16 +178,6 @@ namespace ArtStep.Controllers
 
             if (cart != null)
             {
-                var cartDetailIds = cart.CartDetails.Select(cd => cd.CartDetailID).ToList();
-                //var messagesWithCartDetails = await _context.Message
-                //    .Where(m => cartDetailIds.Contains(m.CartDetailId))
-                //    .ToListAsync();
-
-                //foreach (var message in messagesWithCartDetails)
-                //{
-                //    message.CartDetailId = null;
-                //}
-
                 _context.CartsDetail.RemoveRange(cart.CartDetails);
                 _context.Carts.Remove(cart);
                 await _context.SaveChangesAsync();
