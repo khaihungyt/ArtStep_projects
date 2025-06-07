@@ -1,9 +1,10 @@
 ﻿using ArtStep.Data;
 using ArtStep.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Validations;
-
+using System.IdentityModel.Tokens.Jwt;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ArtStep.Controllers
@@ -20,10 +21,16 @@ namespace ArtStep.Controllers
         }
         // GET: api/<DesignerController>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ShoeCustomDTO>> GetAllDesignAsync()
         {
-            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = "user002";
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var userId = userIdClaim.Value;
             var listShoe = await _context.ShoeCustom
             .AsNoTracking() // Improve performance for read-only operations
             .Include(sc => sc.Designer)
@@ -59,13 +66,18 @@ namespace ArtStep.Controllers
 
 
         [HttpGet("view_revenue")]
+        [Authorize]
         public async Task<ActionResult<OrderRevenueResponseDTO>> GetAllSalesData()
         {
             try
             {
-                // 1. Xác thực người dùng
-                // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var userId = "user002";
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+                }
+
+                var userId = userIdClaim.Value;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized(new { Message = "Invalid token" });
@@ -81,13 +93,18 @@ namespace ArtStep.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public async Task<IActionResult> UpdateDesign([FromBody] EditDesignRequestDTO updateDto)
         {
             try
             {
-                // 1. Xác thực người dùng
-               // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var userId = "user002";
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+                }
+
+                var userId = userIdClaim.Value;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized(new { Message = "Invalid token" });
@@ -145,12 +162,17 @@ namespace ArtStep.Controllers
         }
 
         // DELETE api/<DesignerController>/5
-        [HttpPatch("{designId}")]
-        public async Task<IActionResult> HideDesign(string designId)
+        [HttpPatch("{ShoeId}")]
+        [Authorize]
+        public async Task<IActionResult> HideDesign(string ShoeId)
         {
-            // 1. Xác thực người dùng
-            // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = "user002";
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var userId = userIdClaim.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });
@@ -159,7 +181,7 @@ namespace ArtStep.Controllers
             // 2. Tìm kiếm thiết kế của người dùng
             var design = await _context.ShoeCustom
                 .Include(s => s.Designer)
-                .FirstOrDefaultAsync(s => s.ShoeId == designId && s.Designer.UserId == userId);
+                .FirstOrDefaultAsync(s => s.ShoeId == ShoeId && s.Designer.UserId == userId);
 
             if (design == null)
             {
@@ -178,14 +200,20 @@ namespace ArtStep.Controllers
 
 
         [HttpPost("Create_Design")]
+        [Authorize]
         public async Task<IActionResult> CreateDesign([FromBody] CreateDesignRequestDTO model)
         {
 
 
 
-            // 1. Xác thực người dùng (giả lập userId)
-            // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = "user002";
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var userId = userIdClaim.Value;
+
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });

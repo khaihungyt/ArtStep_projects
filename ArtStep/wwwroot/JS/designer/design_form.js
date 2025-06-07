@@ -214,6 +214,11 @@
     const ApiManager = {
         async loadCategories() {
             try {
+                const token = localStorage.getItem('accessToken');
+                if (!token) {
+                    console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                    return;
+                }
                 const response = await fetch("/api/categories");
                 if (!response.ok) throw new Error("Failed to fetch categories");
 
@@ -237,9 +242,15 @@
         async submitDesign(formData) {
             console.log(formData);
             try {
+                const token = localStorage.getItem('accessToken');
+                if (!token) {
+                    console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                    return;
+                }
                 const response = await fetch('/api/Designer/Create_Design', {
                     method: 'POST',
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({

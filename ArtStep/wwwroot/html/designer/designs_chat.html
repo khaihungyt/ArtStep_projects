@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Designer Chat | Designer Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="/CSS/designer/styles.css">
+    <link rel="stylesheet" href="/CSS/designer/designs_chat.css" />
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar (same as original) -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="sidebar-title">Designer Portal</span>
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="designs_dash.html" class="sidebar-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="designs_list.html" class="sidebar-link">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span>My Designs</span>
+                </a>
+                <a href="designs_revenue.html" class="sidebar-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Sales Revenue</span>
+                </a>
+                <a href="designs_new.html" class="sidebar-link">
+                    <i class="fas fa-pen-fancy"></i>
+                    <span>Create Design</span>
+                </a>
+                <a href="designs_chat.html" class="sidebar-link active">
+                    <i class="fas fa-comments"></i>
+                    <span>Messages</span>
+                </a>
+                <a href="designs_profile.html" class="sidebar-link">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="sidebar-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h1 class="page-title">Messages</h1>
+                </div>
+
+                <div class="chat-layout">
+                    <!-- Conversations List (đã bỏ time) -->
+                    <div class="conversations-list">
+                        <div class="conversation active" data-conversation-id="support">
+                            <div class="conversation-avatar">
+                                <img src="https://via.placeholder.com/40" alt="Customer">
+                            </div>
+                            <div class="conversation-details">
+                                <div class="conversation-name">Customer Support</div>
+                                <div class="conversation-preview">Hello, we have a question about your design...</div>
+                            </div>
+                        </div>
+                        <div class="conversation" data-conversation-id="john">
+                            <div class="conversation-avatar">
+                                <img src="https://via.placeholder.com/40" alt="Customer">
+                            </div>
+                            <div class="conversation-details">
+                                <div class="conversation-name">John Smith</div>
+                                <div class="conversation-preview">I love your new collection!</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Area -->
+                    <div class="chat-area">
+                        <div class="chat-messages">
+                            <div class="message received">
+                                <div class="message-avatar">
+                                    <img src="https://via.placeholder.com/32" alt="Customer">
+                                </div>
+                                <div class="message-content">
+                                    <div class="message-text">Hello, we have a question about your latest shoe design</div>
+                                </div>
+                            </div>
+                            <div class="message sent">
+                                <div class="message-content">
+                                    <div class="message-text">Hi there! What would you like to know?</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <textarea placeholder="Type your message here..."></textarea>
+                            <div class="chat-buttons">
+                                <button class="btn btn-primary send-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                                <button class="btn btn-outline upload-btn">
+                                    <i class="fas fa-image"></i>
+                                    <input type="file" id="file-upload" accept="image/*" style="display: none;">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/designer/sidebar.js"></script>
+    <script src="/js/designer/designs_chat.js"></script>
+</body>
+</html>

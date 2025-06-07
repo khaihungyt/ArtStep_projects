@@ -34,9 +34,15 @@
     // ====================== DATA FETCHING ======================
     async function fetchDesigns() {
         try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                return;
+            }
             const response = await fetch('/api/designer', {
                 method: 'GET',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 }
             });
@@ -62,6 +68,11 @@
 
     async function fetchCategories() {
         try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                return;
+            }
             const response = await fetch('/api/categories');
 
             if (!response.ok) throw new Error('Failed to fetch categories');
@@ -323,11 +334,18 @@
         const formData = createFormData();
 
         try {
+
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                return;
+            }
             showAlert('Saving changes...', 'info');
 
             const response = await fetch('/api/Designer/update', {
                 method: 'PUT',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData)
