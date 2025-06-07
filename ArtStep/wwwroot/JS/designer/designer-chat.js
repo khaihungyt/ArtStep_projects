@@ -686,9 +686,31 @@ class DesignerChatSystem {
         img.setAttribute('data-file-name', file.name);
         img.setAttribute('data-file-size', file.size);
         
-        // Get current selection/cursor position
+        // Focus on the editor first to ensure we're working with the right element
+        editor.focus();
+        
+        // Get current selection/cursor position, but ensure it's within the editor
         const selection = window.getSelection();
-        const range = selection.getRangeAt(0);
+        let range;
+        
+        // Check if current selection is within the editor
+        if (selection.rangeCount > 0) {
+            const currentRange = selection.getRangeAt(0);
+            if (editor.contains(currentRange.commonAncestorContainer) || 
+                currentRange.commonAncestorContainer === editor) {
+                range = currentRange;
+            } else {
+                // Selection is outside editor, create new range at end of editor
+                range = document.createRange();
+                range.selectNodeContents(editor);
+                range.collapse(false);
+            }
+        } else {
+            // No selection, insert at the end of editor
+            range = document.createRange();
+            range.selectNodeContents(editor);
+            range.collapse(false);
+        }
         
         // Insert image at cursor
         range.deleteContents();
@@ -705,7 +727,7 @@ class DesignerChatSystem {
         selection.removeAllRanges();
         selection.addRange(range);
         
-        // Focus back on editor
+        // Ensure editor remains focused
         editor.focus();
     }
 
