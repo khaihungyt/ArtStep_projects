@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Validations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ArtStep.Controllers
@@ -24,7 +25,7 @@ namespace ArtStep.Controllers
         [Authorize]
         public async Task<ActionResult<ShoeCustomDTO>> GetAllDesignAsync()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -71,7 +72,7 @@ namespace ArtStep.Controllers
         {
             try
             {
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
                 {
                     return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -98,7 +99,7 @@ namespace ArtStep.Controllers
         {
             try
             {
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
                 {
                     return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -166,7 +167,7 @@ namespace ArtStep.Controllers
         [Authorize]
         public async Task<IActionResult> HideDesign(string ShoeId)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
         {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -206,7 +207,7 @@ namespace ArtStep.Controllers
 
 
 
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });

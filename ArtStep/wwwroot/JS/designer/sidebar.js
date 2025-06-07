@@ -1,7 +1,7 @@
-document.addEventListener('DOMContentLoaded', function() {
+﻿document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebar-toggle');
-    
+   
     // Check if sidebar state is stored in localStorage
     const sidebarState = localStorage.getItem('sidebarState');
     if (sidebarState === 'collapsed') {
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
+   
     // Initial check and add resize listener
     handleMobileSidebar();
     window.addEventListener('resize', handleMobileSidebar);

@@ -156,7 +156,9 @@ namespace ArtStep.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ReceivedId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SendAt = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP")
+                    SendAt = table.Column<DateTime>(type: "timestamp", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    IsRead = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ReadTime = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {

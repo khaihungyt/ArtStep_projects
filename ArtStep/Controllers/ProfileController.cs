@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace ArtStep.Controllers
 {
@@ -27,7 +28,7 @@ namespace ArtStep.Controllers
         [Authorize]
         public async Task<IActionResult> GetProfile()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -59,7 +60,7 @@ namespace ArtStep.Controllers
         [HttpPost("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDTO request)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -110,7 +111,7 @@ namespace ArtStep.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromForm] string oldPassword, [FromForm] string newPassword)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });

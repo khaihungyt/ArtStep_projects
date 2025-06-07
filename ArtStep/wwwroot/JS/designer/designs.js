@@ -34,7 +34,7 @@
     // ====================== DATA FETCHING ======================
     async function fetchDesigns() {
         try {
-            const token = localStorage.getItem('accessToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
                 return;
@@ -68,7 +68,7 @@
 
     async function fetchCategories() {
         try {
-            const token = localStorage.getItem('accessToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
                 return;
@@ -335,7 +335,7 @@
 
         try {
 
-            const token = localStorage.getItem('accessToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
                 return;

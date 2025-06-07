@@ -41,15 +41,6 @@ var cloudinary = new Cloudinary(cloudinaryUrl)
 };
 builder.Services.AddSingleton(cloudinary);
 
-// Set Cloudinary credentials
-DotEnv.Load();
-var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
-var cloudinary = new Cloudinary(cloudinaryUrl)
-{
-    Api = { Secure = true }
-};
-builder.Services.AddSingleton(cloudinary);
-
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
