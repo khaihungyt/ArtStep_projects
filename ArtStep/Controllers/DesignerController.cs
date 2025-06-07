@@ -216,7 +216,7 @@ namespace ArtStep.Controllers
 
             // 1. Xác thực người dùng (giả lập userId)
             // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = "user002";
+            // userId = "user002";
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });

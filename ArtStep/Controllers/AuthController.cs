@@ -109,7 +109,12 @@ namespace ArtStep.Controllers
                 _context.Accounts.Add(account);
                 await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Đăng ký thành công!" });
+                return Ok(new { message = "Đăng ký thành công!" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         private string GenerateJwtToken(User user)
