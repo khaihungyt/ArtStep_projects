@@ -65,22 +65,25 @@ namespace ArtStep.Controllers
             }
             return Ok(shoeDetail);
         }
-        // POST api/<DetailShoeController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //// POST api/<DetailShoeController>
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
 
         // PUT api/<DetailShoeController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[HttpPost("addtoCart")]
 
-        // DELETE api/<DetailShoeController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
+
+        //// DELETE api/<DetailShoeController>/5
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

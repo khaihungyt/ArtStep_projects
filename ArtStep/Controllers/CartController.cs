@@ -153,57 +153,38 @@ namespace ArtStep.Controllers
             return Ok();
         }
 
-        //[HttpDelete("{cartDetailId}")]
-        //public async Task<IActionResult> RemoveFromCart(string cartDetailId)
-        //{
-        //    var cartDetail = await _context.CartsDetail.FindAsync(cartDetailId);
-        //    if (cartDetail == null)
-        //        return NotFound();
+        [HttpDelete("{cartDetailId}")]
+        public async Task<IActionResult> RemoveFromCart(string cartDetailId)
+        {
+            var cartDetail = await _context.CartsDetail.FindAsync(cartDetailId);
+            if (cartDetail == null)
+                return NotFound();
 
-        //    var messagesWithCartDetail = await _context.Message
-        //        .Where(m => m.CartDetailId == cartDetailId)
-        //        .ToListAsync();
+            _context.CartsDetail.Remove(cartDetail);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
-        //    foreach (var message in messagesWithCartDetail)
-        //    {
-        //        message.CartDetailId = null;
-        //    }
+        [HttpDelete]
+        public async Task<IActionResult> ClearCart()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-        //    _context.CartsDetail.Remove(cartDetail);
-        //    await _context.SaveChangesAsync();
-        //    return Ok();
-        //}
+            var cart = await _context.Carts
+                .Include(c => c.CartDetails)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
 
-        //[HttpDelete]
-        //public async Task<IActionResult> ClearCart()
-        //{
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (string.IsNullOrEmpty(userId))
-        //        return Unauthorized();
+            if (cart != null)
+            {
+                _context.CartsDetail.RemoveRange(cart.CartDetails);
+                _context.Carts.Remove(cart);
+                await _context.SaveChangesAsync();
+            }
 
-        //    var cart = await _context.Carts
-        //        .Include(c => c.CartDetails)
-        //        .FirstOrDefaultAsync(c => c.UserId == userId);
-
-        //    if (cart != null)
-        //    {
-        //        var cartDetailIds = cart.CartDetails.Select(cd => cd.CartDetailID).ToList();
-        //        var messagesWithCartDetails = await _context.Message
-        //            .Where(m => cartDetailIds.Contains(m.CartDetailId))
-        //            .ToListAsync();
-
-        //        foreach (var message in messagesWithCartDetails)
-        //        {
-        //            message.CartDetailId = null;
-        //        }
-
-        //        _context.CartsDetail.RemoveRange(cart.CartDetails);
-        //        _context.Carts.Remove(cart);
-        //        await _context.SaveChangesAsync();
-        //    }
-
-        //    return Ok();
-        //}
+            return Ok();
+        }
     }
 
     public class CartItemDto

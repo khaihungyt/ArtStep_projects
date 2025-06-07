@@ -56,73 +56,81 @@ namespace ArtStep.Controllers
 
             return Ok(new
             {
-                Token = token,
-                User = userInfo
+                token = token,
+                user = userInfo
             });
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterFromUser([FromForm] RegisterRequestCustom request)
         {
-            if (_context.Accounts.Any(a => a.UserName == request.UserName))
+            try
             {
-                return BadRequest(new { message = "Tên đăng nhập đã tồn tại" });
-            }
 
-            string? imageUrl = null;
-            if (request.ImageProfile != null)
-            {
-                var uploadParams = new ImageUploadParams
+                if (_context.Accounts.Any(a => a.UserName == request.UserName))
                 {
-                    File = new FileDescription(request.ImageProfile.FileName, request.ImageProfile.OpenReadStream()),
-                    PublicId = $"profile_images/{Guid.NewGuid()}"
+                    return BadRequest(new { message = "Tên đăng nhập đã tồn tại" });
+                }
+
+                string? imageUrl = null;
+                if (request.ImageProfile != null)
+                {
+                    var uploadParams = new ImageUploadParams
+                    {
+                        File = new FileDescription(request.ImageProfile.FileName, request.ImageProfile.OpenReadStream()),
+                        PublicId = $"profile_images/{Guid.NewGuid()}"
+                    };
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                    imageUrl = uploadResult.SecureUrl?.ToString();
+                }
+
+                var user = new User
+                {
+                    UserId = Guid.NewGuid().ToString(),
+                    Name = request.Name,
+                    Email = request.Email,
+                    PhoneNo = request.PhoneNo,
+                    Role = request.Role.ToLower(),
+                    isActive = 1,
+                    ImageProfile = imageUrl
                 };
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                imageUrl = uploadResult.SecureUrl?.ToString();
+
+                var account = new Data.Account
+                {
+                    AccountId = Guid.NewGuid().ToString(),
+                    UserName = request.UserName,
+                    Password = request.Password,
+                    UserId = user.UserId,
+                    isStatus = 1,
+                    User = user
+                };
+
+                _context.User.Add(user);
+                _context.Accounts.Add(account);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Đăng ký thành công!" });
             }
-
-            var user = new User
+            catch (Exception e)
             {
-                UserId = Guid.NewGuid().ToString(),
-                Name = request.Name,
-                Email = request.Email,
-                PhoneNo = request.PhoneNo,
-                Role = "user",
-                isActive = 1,
-                ImageProfile = imageUrl
-            };
-
-            var account = new Data.Account
-            {
-                AccountId = Guid.NewGuid().ToString(),
-                UserName = request.UserName,
-                Password = request.Password,
-                UserId = user.UserId,
-                isStatus = 1,
-                User = user
-            };
-
-            _context.User.Add(user);
-            _context.Accounts.Add(account);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Đăng ký thành công!" });
+                return BadRequest(e.Message);
+            }
         }
 
         private string GenerateJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Convert.FromBase64String(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-            new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
-            new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
-            new Claim(ClaimTypes.Role, user.Role ?? "User")
-        };
+                new Claim(ClaimTypes.Name, user.Name ?? user.Email ?? "Unknown"),
+                new Claim(ClaimTypes.NameIdentifier, user.UserId ?? ""),
+                new Claim(ClaimTypes.Role, user.Role ?? "User")
+            };
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(0.5),
                 signingCredentials: credentials

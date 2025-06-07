@@ -96,7 +96,8 @@ namespace ArtStep.Data
                 entity.Property(m => m.CreateAt)
                       .HasColumnType("timestamp")
                       .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
+                entity.Property(m => m.VNPayPaymentId)
+                      .HasColumnType("bigint");
             });
 
             // OrderDetail

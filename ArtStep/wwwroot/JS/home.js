@@ -1,4 +1,6 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿import { API_BASE_URL } from './config.js';
+
+document.addEventListener('DOMContentLoaded', function () {
     const navbarAuth = document.getElementById('navbarAuth');
     const token = localStorage.getItem('token');
 
@@ -49,7 +51,7 @@
 
     async function fetchDesigners() {
         try {
-            const response = await fetch('https://localhost:5155/api/designers');
+            const response = await fetch('/api/designers');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -84,21 +86,18 @@
 
     async function fetchCategories() {
         try {
-            const response = await fetch('https://localhost:5155/api/categories');
+            const response = await fetch('/api/categories');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
 
-            // Handle clean JSON response format
             const categories = data || [];
 
             if (!Array.isArray(categories)) {
                 console.error('Categories data is not an array:', data);
                 return;
             }
-
-            // Update the style filter dropdown instead of a container
             if (styleFilter) {
                 styleFilter.innerHTML = '<option value="">All Categories</option>';
                 categories.forEach(category => {
@@ -137,13 +136,12 @@
         }).toString();
 
         try {
-            const response = await fetch(`https://localhost:5155/api/products?${queryParams}`);
+            const response = await fetch(`/api/products?${queryParams}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data = await response.json();
 
-            // Handle clean JSON response format
+            const data = await response.json();
             const products = data.products || [];
             const totalProducts = data.total || 0;
 
@@ -151,6 +149,7 @@
                 console.error('Products data is not an array:', data);
                 return;
             }
+
 
             const productList = document.getElementById('productList');
             if (!productList) {
@@ -160,36 +159,32 @@
 
             productList.innerHTML = '';
             products.forEach(product => {
-                console.log('Product data:', product); // Debug log
 
                 const designerId = product.designerUserId || product.DesignerUserId;
                 const designerName = product.designer || product.Designer;
                 const shoeId = product.shoeId || product.ShoeId;
-
-                console.log('Designer info:', { designerId, designerName, shoeId }); // Debug log
-
                 const productCard = `
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 shadow-sm">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm">
                             <img src="${product.imageUrl || product.ImageUrl || 'placeholder.jpg'}" 
                                  class="card-img-top" alt="${product.name || product.Name}" 
-                                 style="height: 200px; object-fit: cover;">
-                            <div class="card-body d-flex flex-column">
+                             style="height: 200px; object-fit: cover;">
+                        <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">${product.name || product.Name}</h5>
-                                <p class="card-text text-muted">
+                            <p class="card-text text-muted">
                                     Style: ${product.style || product.Style || 'N/A'}<br>
                                     Designer: ${designerName || 'N/A'}
-                                </p>
+                            </p>
                                 <h4 class="card-subtitle mb-2 text-primary mt-auto">$${product.price || product.Price || 0}</h4>
                                 <div class="d-flex gap-2 mt-2">
                                     <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">View Details</button>
                                     <button onclick="addToCart('${shoeId}')" class="btn btn-outline-primary">
                                         <i class="lnr lnr-cart"></i>
                                     </button>
-                                </div>
+                        </div>
                                 <div class="mt-2">
                                     ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
-                        `<button onclick="chatWithDesigner('${designerId}', '${designerName}', '${shoeId}')" 
+                        `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
                                             <i class="bi bi-chat-dots"></i> Chat with Designer
                                         </button>` :
@@ -198,7 +193,7 @@
                                             <i class="bi bi-info-circle"></i> Designer Account
                                         </button>` :
                             !localStorage.getItem('token') ?
-                                `<button onclick="chatWithDesigner('${designerId}', '${designerName}', '${shoeId}')" 
+                                `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
                                             <i class="bi bi-chat-dots"></i> Chat with Designer
                                         </button>` :
@@ -206,25 +201,22 @@
                                             <i class="bi bi-chat-dots"></i> Designer Not Available
                                         </button>`
                     }
-                                </div>
-                            </div>
+                    </div>
+                </div>
                         </div>
                     </div>
-                `;
+            `;
                 productList.innerHTML += productCard;
             });
-
             renderPagination(totalProducts);
         } catch (error) {
             console.error('There was a problem with the fetch operation for products:', error);
             const productList = document.getElementById('productList');
             if (productList) {
-                productList.innerHTML = '<p class="text-danger">Đã xảy ra lỗi khi tải sản phẩm.</p>';
+                productList.innerHTML = '<p class="text-danger">An error occurred while loading the product.</p>';
             }
         }
     }
-
-    //tải phân trang
     function renderPagination(totalProducts) {
         paginationElement.innerHTML = '';
 
@@ -233,8 +225,6 @@
         if (totalPages <= 1) {
             return;
         }
-
-        // Previous button
         const prevLi = document.createElement('li');
         prevLi.classList.add('page-item', currentPage === 1 ? 'disabled' : '');
         prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
@@ -259,8 +249,6 @@
             });
             paginationElement.appendChild(pageLi);
         }
-
-        // Next button
         const nextLi = document.createElement('li');
         nextLi.classList.add('page-item', currentPage === totalPages ? 'disabled' : '');
         nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
@@ -273,8 +261,6 @@
         });
         paginationElement.appendChild(nextLi);
     }
-
-    // Filter Event Listeners
     const priceFilter = document.getElementById('priceFilter');
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
@@ -316,14 +302,13 @@
     }
     fetchProducts();
 
-    // Add to Cart function
     window.addToCart = async function (shoeId) {
         const token = localStorage.getItem('token');
 
         if (!token) {
             const result = await Swal.fire({
                 title: 'Login Required',
-                text: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!',
+                text: 'Please login to add products to cart!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Đăng nhập',
@@ -333,7 +318,7 @@
             });
 
             if (result.isConfirmed) {
-                window.location.href = 'Login.html';
+                window.location.href = 'Login';
             }
             return;
         }
@@ -377,7 +362,7 @@
                     localStorage.removeItem('token');
                     const result = await Swal.fire({
                         title: 'Session Expired',
-                        text: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại!',
+                        text: 'Your session has expired.Please log in again.!',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: 'Đăng nhập',
@@ -387,7 +372,7 @@
                     });
 
                     if (result.isConfirmed) {
-                        window.location.href = 'Login.html';
+                        window.location.href = 'Login';
                     }
                     return;
                 }
@@ -396,23 +381,23 @@
 
             const result = await Swal.fire({
                 title: 'Success!',
-                text: responseData.message || 'Đã thêm sản phẩm vào giỏ hàng!',
+                text: responseData.message || 'Successfully add to cart!',
                 icon: 'success',
                 showCancelButton: true,
-                confirmButtonText: 'Xem giỏ hàng',
-                cancelButtonText: 'Tiếp tục mua sắm',
+                confirmButtonText: 'View cart',
+                cancelButtonText: 'Contiunue shopping!',
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#28a745'
             });
 
             if (result.isConfirmed) {
-                window.location.href = 'cart.html';
+                window.location.href = 'cart';
             }
         } catch (error) {
             console.error('Error adding to cart:', error);
             await Swal.fire({
                 title: 'Error!',
-                text: error.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại!',
+                text: error.message || 'Error when add item to cart!',
                 icon: 'error',
                 timer: 3000,
                 showConfirmButton: false,
@@ -422,14 +407,12 @@
         }
     }
 
-    // View Product Details function
     window.viewProductDetails = function (shoeId) {
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
 
-    // Chat with Designer function
-    window.chatWithDesigner = function (designerUserId, designerName, shoeId) {
-        console.log('chatWithDesigner called with:', designerUserId, designerName, shoeId);
+    window.chatWithDesigner = function (designerUserId, designerName) {
+        console.log('chatWithDesigner called with:', designerUserId, designerName);
 
         const token = localStorage.getItem('token');
         const userRole = localStorage.getItem('role');
@@ -438,7 +421,7 @@
             console.log('No token found, showing login prompt');
             Swal.fire({
                 title: 'Login Required',
-                text: 'Vui lòng đăng nhập để chat với designer!',
+                text: 'Please login to chat with designer!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Đăng nhập',
@@ -447,60 +430,49 @@
                 cancelButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'Login.html';
+                    window.location.href = 'login';
                 }
             });
             return;
         }
-
-        // Check if user has the correct role
         if (!userRole || userRole.toLowerCase() !== 'user') {
             console.log('User role check failed:', userRole);
             Swal.fire({
                 title: 'Access Denied',
-                text: 'Chỉ có khách hàng mới có thể chat với designer!',
+                text: 'Only customers can chat with designers!',
                 icon: 'warning',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#3085d6'
             });
             return;
         }
-
-        console.log('Token and role found, checking chat system...');
-
-        // Initialize chat system if it doesn't exist
         if (!window.chatSystem) {
-            console.log('Initializing new chat system...');
             window.chatSystem = new ChatSystem();
         }
-
-        console.log('Starting chat with designer...');
-        // Start chat with the specific designer
-        window.chatSystem.startChatWithDesigner(designerUserId, designerName, shoeId);
+        window.chatSystem.startChatWithDesigner(designerUserId, designerName);
     }
 
-    // Cart navigation function
     window.goToCart = function () {
         const token = localStorage.getItem('token');
 
         if (!token) {
             Swal.fire({
                 title: 'Login Required',
-                text: 'Vui lòng đăng nhập để xem giỏ hàng!',
+                text: 'Please login to view cart!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Đăng nhập',
-                cancelButtonText: 'Hủy',
+                confirmButtonText: 'Login',
+                cancelButtonText: 'Cancel',
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = 'Login.html';
+                    window.location.href = 'login';
                 }
             });
             return;
         }
 
-        window.location.href = 'cart.html';
+        window.location.href = 'cart';
     }
 });

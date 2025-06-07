@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const res = await fetch('https://localhost:5155/api/Profile/GetProfile', {
+            const res = await fetch('/api/Profile/GetProfile', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('phoneNo', phoneInput.value.trim());
 
         try {
-            const res = await fetch('https://localhost:5155/api/Profile/UpdateProfile', {
+            const res = await fetch('/api/Profile/UpdateProfile', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`

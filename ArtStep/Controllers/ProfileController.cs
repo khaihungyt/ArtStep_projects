@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace ArtStep.Controllers
 {
@@ -23,11 +24,12 @@ namespace ArtStep.Controllers
             _cloudinary = cloudinary;
         }
 
-        [HttpGet("GetProfile")]
+
         [Authorize]
+        [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -45,13 +47,15 @@ namespace ArtStep.Controllers
                     u.PhoneNo,
                     u.Role,
                     u.ImageProfile,
-                    isActive = u.isActive == 1 ? true : false
+                    isActive = u.isActive == 1
                 })
                 .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound(new { message = "Người dùng không tồn tại." });
             }
+
             return Ok(user);
         }
 
@@ -59,7 +63,7 @@ namespace ArtStep.Controllers
         [HttpPost("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDTO request)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -110,7 +114,7 @@ namespace ArtStep.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromForm] string oldPassword, [FromForm] string newPassword)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
