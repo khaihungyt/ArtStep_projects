@@ -423,4 +423,4 @@ packages/
 temp/
 # JetBrains Rider
 *.sln.iml
->>>>>>> main
+/ArtStep/.env

@@ -145,6 +145,7 @@
             padding: 12px 16px;
             border-radius: 18px;
             position: relative;
+            min-width: 40%;
         }
 
         .message.sent .message-bubble {
@@ -427,15 +428,15 @@
                         <div class="chat-input" id="chat-input" style="display: none;">
                             <div class="input-group">
                                 <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
-                                <button class="image-btn" id="image-btn" title="Upload Images">
-                                    <i class="fas fa-image"></i>
-                                </button>
                                 <div class="message-editor" 
                                      id="message-input" 
                                      contenteditable="true" 
                                      data-placeholder="Type a message..." 
                                      role="textbox">
                                 </div>
+                                <button class="image-btn" id="image-btn" title="Upload Images">
+                                    <i class="fas fa-image"></i>
+                                </button>
                                 <button class="send-btn" id="send-btn">
                                     <i class="fas fa-paper-plane"></i>
                                 </button>

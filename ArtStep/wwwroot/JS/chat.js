@@ -148,15 +148,15 @@ class ChatSystem {
                     <div class="chat-input">
                         <input type="file" id="image-input-popup" accept="image/*" multiple style="display: none;">
                         <div class="message-input-container">
-                            <button class="image-btn" id="image-btn-popup" title="Upload Images">
-                                <i class="bi bi-image"></i>
-                            </button>
                             <div class="message-editor-popup" 
                                  id="message-input" 
                                  contenteditable="true" 
                                  data-placeholder="Type a message..." 
                                  role="textbox">
                             </div>
+                            <button class="image-btn" id="image-btn-popup" title="Upload Images">
+                                <i class="bi bi-image"></i>
+                            </button>
                         </div>
                         <button class="send-btn" id="send-message" title="Send message">
                             <i class="bi bi-send"></i>
@@ -957,14 +957,27 @@ class ChatSystem {
         img.setAttribute('data-file-name', file.name);
         img.setAttribute('data-file-size', file.size);
         
-        // Get current selection/cursor position
+        // Focus on the editor first to ensure we're working with the right element
+        editor.focus();
+        
+        // Get current selection/cursor position, but ensure it's within the editor
         const selection = window.getSelection();
         let range;
         
+        // Check if current selection is within the editor
         if (selection.rangeCount > 0) {
-            range = selection.getRangeAt(0);
+            const currentRange = selection.getRangeAt(0);
+            if (editor.contains(currentRange.commonAncestorContainer) || 
+                currentRange.commonAncestorContainer === editor) {
+                range = currentRange;
+            } else {
+                // Selection is outside editor, create new range at end of editor
+                range = document.createRange();
+                range.selectNodeContents(editor);
+                range.collapse(false);
+            }
         } else {
-            // If no selection, insert at the end
+            // No selection, insert at the end of editor
             range = document.createRange();
             range.selectNodeContents(editor);
             range.collapse(false);
@@ -985,7 +998,7 @@ class ChatSystem {
         selection.removeAllRanges();
         selection.addRange(range);
         
-        // Focus back on editor
+        // Ensure editor remains focused
         editor.focus();
     }
 
