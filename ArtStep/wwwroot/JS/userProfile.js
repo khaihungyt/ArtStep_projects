@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneInput = profileTab.querySelector('#phoneNo');
     const roleInput = profileTab.querySelector('#role');
     const isActiveChk = profileTab.querySelector('#isActive');
-
+    
     // Hàm load profile
     async function loadProfile() {
         try {
@@ -141,4 +141,5 @@ changePwdForm.addEventListener('submit', async (e) => {
         toastr.error('Lỗi khi gửi yêu cầu đổi mật khẩu.');
         console.error(err);
     }
+
 });

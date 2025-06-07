@@ -67,35 +67,35 @@ namespace ArtStep.Controllers
             }
             var userId = userIdClaim.Value;
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId.ToString() == userId);
+            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user == null)
             {
                 return NotFound(new { message = "Không tìm thấy người dùng." });
             }
 
-            if (request.Avatar != null && request.Avatar.Length > 0)
-            {
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(request.Avatar.FileName, request.Avatar.OpenReadStream()),
-                    PublicId = $"profile_images/{user.UserId}_{System.Guid.NewGuid()}"
-                };
+            //if (request.Avatar != null && request.Avatar.Length > 0)
+            //{
+            //    var uploadParams = new ImageUploadParams
+            //    {
+            //        File = new FileDescription(request.Avatar.FileName, request.Avatar.OpenReadStream()),
+            //        PublicId = $"profile_images/{user.UserId}_{System.Guid.NewGuid()}"
+            //    };
 
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    user.ImageProfile = uploadResult.SecureUrl.ToString();
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Không thể upload ảnh lên Cloudinary." });
-                }
-            }
+            //    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            //    if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+            //    {
+            //        user.ImageProfile = uploadResult.SecureUrl.ToString();
+            //    }
+            //    else
+            //    {
+            //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Không thể upload ảnh lên Cloudinary." });
+            //    }
+            //}
 
             user.Name = request.Name?.Trim() ?? user.Name;
             user.Email = request.Email?.Trim() ?? user.Email;
             user.PhoneNo = request.PhoneNo?.Trim() ?? user.PhoneNo;
-
+            user.ImageProfile = request.Avatar?.Trim() ?? user.ImageProfile;
             try
             {
                 _context.User.Update(user);
@@ -117,7 +117,7 @@ namespace ArtStep.Controllers
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
             var userId = userIdClaim.Value;
-            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.User.UserId.ToString() == userId);
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.User.UserId == userId);
 
             if (account == null)
             {
