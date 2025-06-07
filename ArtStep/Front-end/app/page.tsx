@@ -24,9 +24,13 @@ export default function Home() {
                                 Customize
                             </span>
                         </Button>
-                        <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20">
+                        <Button
+                            size="lg"
+                            className="bg-gray-700 text-white border border-white hover:bg-white/20"
+                        >
                             Create Custom Design
                         </Button>
+
                     </div>
                 </div>
             </section>
