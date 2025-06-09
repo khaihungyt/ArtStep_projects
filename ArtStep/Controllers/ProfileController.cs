@@ -24,8 +24,9 @@ namespace ArtStep.Controllers
             _cloudinary = cloudinary;
         }
 
-        [HttpGet("GetProfile")]
+
         [Authorize]
+        [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
@@ -46,13 +47,15 @@ namespace ArtStep.Controllers
                     u.PhoneNo,
                     u.Role,
                     u.ImageProfile,
-                    isActive = u.isActive == 1 ? true : false
+                    isActive = u.isActive == 1
                 })
                 .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound(new { message = "Người dùng không tồn tại." });
             }
+
             return Ok(user);
         }
 

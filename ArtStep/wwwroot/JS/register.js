@@ -12,7 +12,7 @@
     const formData = new FormData(form);
 
     try {
-        const response = await fetch('https://localhost:5155/api/register', {
+        const response = await fetch('/api/auth/register', {
             method: 'POST',
             body: formData
         });

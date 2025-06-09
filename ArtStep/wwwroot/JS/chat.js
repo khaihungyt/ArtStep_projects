@@ -148,15 +148,15 @@ class ChatSystem {
                     <div class="chat-input">
                         <input type="file" id="image-input-popup" accept="image/*" multiple style="display: none;">
                         <div class="message-input-container">
+                            <button class="image-btn" id="image-btn-popup" title="Upload Images">
+                                <i class="bi bi-image"></i>
+                            </button>
                             <div class="message-editor-popup" 
                                  id="message-input" 
                                  contenteditable="true" 
                                  data-placeholder="Type a message..." 
                                  role="textbox">
                             </div>
-                            <button class="image-btn" id="image-btn-popup" title="Upload Images">
-                                <i class="bi bi-image"></i>
-                            </button>
                         </div>
                         <button class="send-btn" id="send-message" title="Send message">
                             <i class="bi bi-send"></i>

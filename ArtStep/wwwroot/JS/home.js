@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchDesigners() {
         try {
-            const response = await fetch('https://localhost:5155/api/designers');
+            const response = await fetch('/api/designers');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function fetchCategories() {
         try {
-            const response = await fetch('https://localhost:5155/api/categories');
+            const response = await fetch('/api/categories');
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).toString();
 
         try {
-            const response = await fetch(`https://localhost:5155/api/products?${queryParams}`);
+            const response = await fetch(`/api/products?${queryParams}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

@@ -13,7 +13,7 @@
         const email = emailInput.value.trim();
 
         try {
-            const res = await fetch(`https://localhost:5155/api/Auth/forgot?email=${encodeURIComponent(email)}`);
+            const res = await fetch(`/api/Auth/forgot?email=${encodeURIComponent(email)}`);
             const data = await res.json();
 
             if (res.ok) {
@@ -36,7 +36,7 @@
         const newPassword = newPasswordInput.value;
 
         try {
-            const res = await fetch('https://localhost:5155/api/Auth/reset', {
+            const res = await fetch('/api/Auth/reset', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

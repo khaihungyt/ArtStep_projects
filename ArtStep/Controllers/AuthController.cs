@@ -90,7 +90,7 @@ namespace ArtStep.Controllers
                     Name = request.Name,
                     Email = request.Email,
                     PhoneNo = request.PhoneNo,
-                    Role = "user",
+                    Role = request.Role.ToLower(),
                     isActive = 1,
                     ImageProfile = imageUrl
                 };

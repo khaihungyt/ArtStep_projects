@@ -24,6 +24,7 @@ export default function Home() {
                                 Customize
                             </span>
                         </Button>
+<<<<<<< HEAD
                         <Button
                             size="lg"
                             className="bg-gray-700 text-white border border-white hover:bg-white/20"
@@ -31,6 +32,11 @@ export default function Home() {
                             Create Custom Design
                         </Button>
 
+=======
+                        <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/20">
+                            Create Custom Design
+                        </Button>
+>>>>>>> origin/Thinh
                     </div>
                 </div>
             </section>
