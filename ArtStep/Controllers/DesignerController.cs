@@ -287,6 +287,52 @@ namespace ArtStep.Controllers
                 });
             }
         }
+        // GET api/<DesignerController>/5
+        [HttpGet("{DesignerId}")]
+        [Authorize]
+        public async Task<ActionResult<ShoeCustomDTO>> GetDesignById(string DesignerId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+            var userId = userIdClaim.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { Message = "Invalid token" });
+            }
+            var design = await _context.ShoeCustom
+                .AsNoTracking()
+                .Include(sc => sc.Designer)
+                .Include(sc => sc.Category)
+                .Include(sc => sc.Images)
+                .FirstOrDefaultAsync(s => s.ShoeId == DesignerId && s.Designer.UserId == userId);
+            if (design == null)
+            {
+                return NotFound();
+            }
+            var designDto = new ShoeCustomDTO
+            {
+                ShoeId = design.ShoeId,
+                ShoeName = design.ShoeName,
+                ShoeDescription = design.ShoeDescription,
+                Quantity = design.Quantity,
+                PriceAShoe = design.PriceAShoe,
+                IsHidden = design.IsHidden,
+                Category = new CategoryDTO
+                {
+                    CategoryId = design.Category.CategoryId,
+                    CategoryName = design.Category.CategoryName
+                },
+                ShoeImages = design.Images.Select(i => new ShoeImageDTO
+                {
+                    ImageId = i.ImageId,
+                    ImageLink = i.ImageLink
+                }).ToList()
+            };
+            return Ok(designDto);
+        }
 
     }
 }

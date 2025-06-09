@@ -1,10 +1,10 @@
-﻿    
+﻿
 // =============================================
 // Global Variables
 // =============================================
 let avatarBase64 = null;
 let currentProfileData = null;
-            
+
 // =============================================
 // Utility Functions
 // =============================================
@@ -59,7 +59,7 @@ async function fetchProfile() {
             console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
             return;
         }
-        const response = await fetch('/api/profile/GetProfile', {
+        const response = await fetch('/api/profile/Profile', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -102,19 +102,19 @@ async function loadProfileData() {
         throw new Error(error);
     }
 }
-    
+
 /**
  * Xử lý upload avatar
  */
 function setupAvatarUpload() {
     const avatarUpload = document.getElementById('avatar-upload');
     const changeAvatarBtn = document.getElementById('change-avatar-btn');
-    
+
     changeAvatarBtn.addEventListener('click', () => avatarUpload.click());
-    
+
     avatarUpload.addEventListener('change', (e) => {
         if (!e.target.files?.length) return;
-        
+
         const file = e.target.files[0];
 
         // Validate file
@@ -129,7 +129,7 @@ function setupAvatarUpload() {
         }
 
         const reader = new FileReader();
-        
+
         reader.onload = (event) => {
             avatarBase64 = event.target.result;
             document.getElementById('profile-avatar-img').src = avatarBase64;
@@ -138,17 +138,17 @@ function setupAvatarUpload() {
         reader.onerror = () => {
             showToast('Error reading image file', 'error');
         };
-        
+
         reader.readAsDataURL(file);
     });
 }
-    
+
 /**
  * Xử lý submit form profile
  */
 function setupProfileForm() {
     const form = document.getElementById('profile-form');
-    
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitBtn = form.querySelector('button[type="submit"]');
@@ -163,12 +163,12 @@ function setupProfileForm() {
             formData.append('name', document.getElementById('full-name').value.trim());
             formData.append('email', document.getElementById('email').value.trim());
             formData.append('phoneNo', document.getElementById('phone').value.trim());
-        
+
             // Thêm avatarBase64 nếu có (truyền trực tiếp dạng string)
             if (avatarBase64) {
                 formData.append('avatar', avatarBase64);
             }
-        
+
             // Validate
             if (!formData.get('name') || !formData.get('email')) {
                 throw new Error('Name and email are required');
@@ -185,7 +185,7 @@ function setupProfileForm() {
                 },
                 body: formData
             });
-        
+
             const data = await response.json();
 
             if (!response.ok) {
@@ -203,11 +203,11 @@ function setupProfileForm() {
         }
     });
 }
-    
+
 // =============================================
 // Account Functions
 // =============================================
-    
+
 /**
  * Xử lý submit form account
  */
@@ -215,19 +215,18 @@ function setupAccountForm() {
     const form = document.getElementById('account-form');
 
     form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        e.preventDefault();
         const submitBtn = form.querySelector('button[type="submit"]');
-            
+
         try {
             setButtonLoading(submitBtn, true);
 
             const formData = {
-            username: document.getElementById('username').value,
                 currentPassword: document.getElementById('current-password').value,
                 newPassword: document.getElementById('new-password').value,
                 confirmPassword: document.getElementById('confirm-password').value
             };
-            
+
             // Validate
             if (formData.newPassword && formData.newPassword !== formData.confirmPassword) {
                 throw new Error('New password and confirmation do not match');
@@ -271,8 +270,8 @@ function setupAccountForm() {
             setButtonLoading(submitBtn, false);
         }
     });
-            }
-            
+}
+
 // =============================================
 // Tab Functionality
 // =============================================
@@ -285,13 +284,13 @@ function setupTabs() {
             // Remove active class from all buttons and contents
             tabButtons.forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+
             // Add active class to clicked button and corresponding content
             this.classList.add('active');
             document.getElementById(`${this.dataset.tab}-tab`).classList.add('active');
         });
-        });
-    }
+    });
+}
 
 // =============================================
 // Initialization
