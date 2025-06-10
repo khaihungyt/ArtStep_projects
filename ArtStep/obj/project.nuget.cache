@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2a2RRwrnk1Y=",
+  "dgSpecHash": "2RzoxsfrjaI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\shogu\\source\\repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+  "projectFilePath": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\shogu\\.nuget\\packages\\cloudinarydotnet\\1.27.5\\cloudinarydotnet.1.27.5.nupkg.sha512",
     "C:\\Users\\shogu\\.nuget\\packages\\dotenv.net\\3.2.1\\dotenv.net.3.2.1.nupkg.sha512",
