@@ -424,3 +424,4 @@ temp/
 # JetBrains Rider
 *.sln.iml
 /ArtStep/.env
+/ArtStep/obj

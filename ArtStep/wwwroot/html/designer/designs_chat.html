@@ -459,7 +459,14 @@
         </main>
     </div>
     <!-- Scripts -->
-    <script src="/js/designer/sidebar.js"></script>
-    <script type="module" src="/js/designer/designer-chat.js"></script>
+    <script src="/JS/designer/sidebar.js"></script>
+    <script type="module" src="/JS/designer/designer-chat.js"></script>
+    <script>
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'SCRIPT') {
+                console.error('Script loading error:', e.target.src, e.message);
+            }
+        });
+    </script>
 </body>
 </html>
