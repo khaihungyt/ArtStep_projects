@@ -34,13 +34,12 @@ builder.Services.AddSignalR(options =>
 });
 
 // Set Cloudinary credentials
-var cloudinaryUrl = "cloudinary://197416554857625:K45aVL5lAnF2Tz0MbWc-X0jw5Wo@dx4ghr0fn"; // Thay YOUR_API_SECRET bằng API secret thật của bạn
+var cloudinaryUrl = "cloudinary://197416554857625:K45aVL5lAnF2Tz0MbWc-X0jw5Wo@dx4ghr0fn";
 var cloudinary = new Cloudinary(cloudinaryUrl)
 {
     Api = { Secure = true }
 };
 
-// ✅ Đăng ký Cloudinary service
 builder.Services.AddSingleton(cloudinary);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
