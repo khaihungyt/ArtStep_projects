@@ -140,10 +140,10 @@
             </div>
             <div class="design-footer">
                 <button class="btn btn-outline edit-btn" data-id="${design.ShoeId}">
-                    <i class="fas fa-edit"></i> Edit
+                    <i class="fas fa-edit"></i> Sửa 
                 </button>
                 <button class="btn btn-secondary preview-btn" data-id="${design.ShoeId}">
-                    <i class="fas fa-eye"></i> Preview
+                    <i class="fas fa-eye"></i> Xem Trước 
                 </button>
             </div>
         `;

@@ -252,9 +252,16 @@ namespace ArtStep.Controllers
             // 4. Thêm vào db context và lưu
             _context.ShoeCustom.Add(newDesign);
             await _context.SaveChangesAsync();
-
+            var response = new ShoeCustomDTO
+            {
+                ShoeName = newDesign.ShoeName,
+                ShoeDescription = newDesign.ShoeDescription,
+                CategoryId = newDesign.CategoryId,
+                PriceAShoe = newDesign.PriceAShoe,
+                Quantity = newDesign.Quantity,
+            };  
             // 5. Trả về kết quả
-            return Ok(newDesign);
+            return Ok(response);
         }
 
         private async Task ProcessShoeImages(ShoeCustom design, List<ShoeImageDTO> updateImages)

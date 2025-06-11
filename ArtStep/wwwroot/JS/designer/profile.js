@@ -192,7 +192,7 @@ function setupProfileForm() {
                 throw new Error(data.message || 'Failed to update profile');
             }
 
-            showToast('Profile updated successfully!', 'success');
+            showToast('Chỉnh sửa thông tin thành công!', 'success');
             avatarBase64 = null; // Reset sau khi update thành công
             currentProfileData = await fetchProfile(); // Refresh data
         } catch (error) {

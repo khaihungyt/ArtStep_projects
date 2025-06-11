@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Designer Dashboard</title>
+    <title>Tin nhắn</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/CSS/designer/styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
@@ -30,11 +30,11 @@
             background: #f8f9fa;
         }
 
-        .conversations-header h3 {
-            margin: 0;
-            color: #333;
-            font-size: 18px;
-        }
+            .conversations-header h3 {
+                margin: 0;
+                color: #333;
+                font-size: 18px;
+            }
 
         .conversations-list {
             flex: 1;
@@ -49,14 +49,14 @@
             position: relative;
         }
 
-        .conversation-item:hover {
-            background-color: #f8f9fa;
-        }
+            .conversation-item:hover {
+                background-color: #f8f9fa;
+            }
 
-        .conversation-item.active {
-            background-color: #e3f2fd;
-            border-right: 3px solid #2196f3;
-        }
+            .conversation-item.active {
+                background-color: #e3f2fd;
+                border-right: 3px solid #2196f3;
+            }
 
         .conversation-user {
             font-weight: 600;
@@ -107,10 +107,10 @@
             align-items: center;
         }
 
-        .chat-header h4 {
-            margin: 0;
-            color: #333;
-        }
+            .chat-header h4 {
+                margin: 0;
+                color: #333;
+            }
 
         #mobile-back-btn {
             border: 1px solid #ddd;
@@ -132,13 +132,13 @@
             display: flex;
         }
 
-        .message.sent {
-            justify-content: flex-end;
-        }
+            .message.sent {
+                justify-content: flex-end;
+            }
 
-        .message.received {
-            justify-content: flex-start;
-        }
+            .message.received {
+                justify-content: flex-start;
+            }
 
         .message-bubble {
             max-width: 70%;
@@ -158,9 +158,11 @@
             color: #333;
             border: 1px solid #e0e0e0;
         }
-        .message.received .message-bubble  img{
-            max-width: 100% !important;
-        }
+
+            .message.received .message-bubble img {
+                max-width: 100% !important;
+            }
+
         .message-time {
             font-size: 11px;
             opacity: 0.7;
@@ -201,28 +203,28 @@
             line-height: 1.4;
         }
 
-        .message-editor:focus {
-            border-color: #2196f3;
-        }
+            .message-editor:focus {
+                border-color: #2196f3;
+            }
 
-        .message-editor:empty:before {
-            content: attr(data-placeholder);
-            color: #999;
-            pointer-events: none;
-        }
+            .message-editor:empty:before {
+                content: attr(data-placeholder);
+                color: #999;
+                pointer-events: none;
+            }
 
-        .message-editor img {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 8px;
-            margin: 4px 2px;
-            cursor: pointer;
-            position: relative;
-        }
+            .message-editor img {
+                max-width: 200px;
+                max-height: 150px;
+                border-radius: 8px;
+                margin: 4px 2px;
+                cursor: pointer;
+                position: relative;
+            }
 
-        .message-editor br {
-            line-height: 1.4;
-        }
+            .message-editor br {
+                line-height: 1.4;
+            }
 
         .image-btn {
             padding: 12px;
@@ -239,10 +241,10 @@
             justify-content: center;
         }
 
-        .image-btn:hover {
-            background: #e0e0e0;
-            color: #333;
-        }
+            .image-btn:hover {
+                background: #e0e0e0;
+                color: #333;
+            }
 
         .send-btn {
             padding: 12px 20px;
@@ -254,27 +256,28 @@
             transition: background-color 0.2s;
         }
 
-        .send-btn:hover {
-            background: #1976d2;
-        }
+            .send-btn:hover {
+                background: #1976d2;
+            }
 
-        .send-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
+            .send-btn:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
 
         .image-preview {
             margin-top: 10px;
             position: relative;
             display: inline-block;
-            max-height: 200px;;
+            max-height: 200px;
+            ;
         }
 
-        .image-preview img {
-            max-height: 100%;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
+            .image-preview img {
+                max-height: 100%;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }
 
         .remove-image-btn {
             position: absolute;
@@ -293,9 +296,9 @@
             font-size: 12px;
         }
 
-        .remove-image-btn:hover {
-            background: #d32f2f;
-        }
+            .remove-image-btn:hover {
+                background: #d32f2f;
+            }
 
         .message img {
             max-width: 300px;
@@ -330,18 +333,18 @@
                 display: none;
             }
 
-            .conversations-panel.mobile-show {
-                display: flex;
-            }
+                .conversations-panel.mobile-show {
+                    display: flex;
+                }
 
             .chat-panel {
                 width: 100%;
                 display: none;
             }
 
-            .chat-panel.mobile-show {
-                display: flex;
-            }
+                .chat-panel.mobile-show {
+                    display: flex;
+                }
         }
     </style>
 </head>
@@ -350,41 +353,41 @@
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <span class="sidebar-title">Designer Portal</span>
+                <span class="sidebar-title">Cổng Thông Tin Thiết Kế</span>
                 <button class="sidebar-toggle" id="sidebar-toggle">
                     <i class="fas fa-chevron-left"></i>
                 </button>
             </div>
             <nav class="sidebar-nav">
-                <a href="designs_dash.html" class="sidebar-link">
+                <a href="designs_dash.html" class="sidebar-link ">
                     <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                    <span>Bảng điều khiển</span>
                 </a>
                 <a href="designs_list.html" class="sidebar-link">
                     <i class="fas fa-shopping-bag"></i>
-                    <span>My Designs</span>
+                    <span>Thiết kế của tôi</span>
                 </a>
                 <a href="designs_revenue.html" class="sidebar-link ">
                     <i class="fas fa-chart-line"></i>
-                    <span>Sales Revenue</span>
+                    <span>Doanh thu</span>
                 </a>
                 <a href="designs_new.html" class="sidebar-link">
                     <i class="fas fa-pen-fancy"></i>
-                    <span>Create Design</span>
+                    <span>Tạo thiết kế</span>
                 </a>
                 <a href="designs_profile.html" class="sidebar-link">
                     <i class="fas fa-user"></i>
-                    <span>Profile</span>
+                    <span>Hồ sơ</span>
                 </a>
                 <a href="designs_chat.html" class="sidebar-link active">
                     <i class="fas fa-message"></i>
-                    <span>Message</span>
+                    <span>Tin nhắn</span>
                 </a>
             </nav>
             <div class="sidebar-footer">
                 <button class="sidebar-logout" id="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
-                    <span>Sign Out</span>
+                    <span>Đăng xuất</span>
                 </button>
             </div>
         </div>
@@ -392,69 +395,69 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="container">
-                <h1 class="page-title">Messages</h1>
+                <h1 class="page-title">Tin nhắn</h1>
+            </div>
+
+            <div class="chat-container">
+                <!-- Conversations Panel -->
+                <div class="conversations-panel" id="conversations-panel">
+                    <div class="conversations-header">
+                        <h3>Cuộc hội thoại</h3>
+                    </div>
+                    <div class="conversations-list" id="conversations-list">
+                        <div class="loading">Đang tải cuộc hội thoại...</div>
+                    </div>
                 </div>
 
-                <div class="chat-container">
-                    <!-- Conversations Panel -->
-                    <div class="conversations-panel" id="conversations-panel">
-                        <div class="conversations-header">
-                            <h3>Conversations</h3>
+                <!-- Chat Panel -->
+                <div class="chat-panel" id="chat-panel">
+                    <div class="chat-header" id="chat-header" style="display: none;">
+                        <button class="btn btn-sm btn-outline-secondary me-2 d-md-none" id="mobile-back-btn" style="display: none;">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <h4 id="chat-user-name">Chọn một cuộc hội thoại</h4>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="empty-chat">
+                            <div>
+                                <i class="fas fa-comments" style="font-size: 48px; color: #ddd; margin-bottom: 16px;"></i>
+                                <div>Chọn một cuộc hội thoại để bắt đầu trò chuyện</div>
+                            </div>
                         </div>
-                        <div class="conversations-list" id="conversations-list">
-                            <div class="loading">Loading conversations...</div>
+                        <div class="message sent">
+                            <div class="message-content">
+                                <div class="message-text">Chào bạn! Bạn muốn biết điều gì?</div>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Chat Panel -->
-                    <div class="chat-panel" id="chat-panel">
-                        <div class="chat-header" id="chat-header" style="display: none;">
-                            <button class="btn btn-sm btn-outline-secondary me-2 d-md-none" id="mobile-back-btn" style="display: none;">
-                                <i class="fas fa-arrow-left"></i>
+                    <div class="chat-input" id="chat-input" style="display: none;">
+                        <div class="input-group">
+                            <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
+                            <button class="image-btn" id="image-btn" title="Tải hình ảnh lên">
+                                <i class="fas fa-image"></i>
                             </button>
-                            <h4 id="chat-user-name">Select a conversation</h4>
-                        </div>
-                        <div class="chat-messages" id="chat-messages">
-                            <div class="empty-chat">
-                                <div>
-                                    <i class="fas fa-comments" style="font-size: 48px; color: #ddd; margin-bottom: 16px;"></i>
-                                    <div>Select a conversation to start chatting</div>
-                                </div>
-                            <div class="message sent">
-                                <div class="message-content">
-                                    <div class="message-text">Hi there! What would you like to know?</div>
+                            <div class="message-editor"
+                                 id="message-input"
+                                 contenteditable="true"
+                                 data-placeholder="Nhập tin nhắn..."
+                                 role="textbox">
                             </div>
-                        </div>
-                        <div class="chat-input" id="chat-input" style="display: none;">
-                            <div class="input-group">
-                                <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
-                                <button class="image-btn" id="image-btn" title="Upload Images">
-                                    <i class="fas fa-image"></i>
-                                </button>
-                                <div class="message-editor" 
-                                     id="message-input" 
-                                     contenteditable="true" 
-                                     data-placeholder="Type a message..." 
-                                     role="textbox">
-                                </div>
-                                <button class="image-btn" id="image-btn" title="Upload Images">
-                                    <i class="fas fa-image"></i>
-                                </button>
-                                <button class="send-btn" id="send-btn">
-                                    <i class="fas fa-paper-plane"></i>
-                                </button>
-                                <button class="btn btn-outline upload-btn">
-                                    <i class="fas fa-image"></i>
-                                    <input type="file" id="file-upload" accept="image/*" style="display: none;">
-                                </button>
-                            </div>
+                            <button class="image-btn" id="image-btn" title="Tải hình ảnh lên">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="send-btn" id="send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <button class="btn btn-outline upload-btn">
+                                <i class="fas fa-image"></i>
+                                <input type="file" id="file-upload" accept="image/*" style="display: none;">
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-
     <!-- Scripts -->
     <script src="/js/designer/sidebar.js"></script>
     <script type="module" src="/js/designer/designer-chat.js"></script>
