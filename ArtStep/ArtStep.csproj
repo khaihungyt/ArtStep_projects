@@ -20,8 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Betalgo.OpenAI" Version="8.7.2" />
     <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
     <PackageReference Include="dotenv.net" Version="3.2.1" />
+    <PackageReference Include="Google.Apis.Aiplatform.v1beta1" Version="1.69.0.3801" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3">

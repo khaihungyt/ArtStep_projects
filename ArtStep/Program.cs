@@ -14,7 +14,8 @@ using System.Text.Json.Serialization;
 using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpClient();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
