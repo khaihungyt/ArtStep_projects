@@ -7,8 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/CSS/designer/styles.css" />
     <link rel="stylesheet" href="/CSS/designer/designlist.css" />
+    <link rel="stylesheet" href="/CSS/page/pageload.css" />
 </head>
 <body>
+    <div class="loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+    </div>
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
@@ -67,7 +71,7 @@
 
 
                         <a href="designs_new.html" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Tạo mới 
+                            <i class="fas fa-plus"></i> Tạo mới
                         </a>
                     </div>
                 </div>
@@ -82,10 +86,10 @@
     <!-- Action Menu -->
     <div class="dropdown-menu" id="design-actions-menu">
         <!--<a href="#" class="dropdown-item edit-design">
-            <i class="fas fa-edit"></i> Sửa 
+            <i class="fas fa-edit"></i> Sửa
         </a>-->
         <a href="#" class="dropdown-item delete-design">
-            <i class="fas fa-trash"></i> Xóa 
+            <i class="fas fa-trash"></i> Xóa
         </a>
     </div>
 
@@ -148,7 +152,7 @@
                     <div id="edit-image-list" class="image-list"></div>
                     <input type="file" id="image-upload" multiple accept="image/*" style="display: none;">
                     <button type="button" id="add-image-btn" class="btn btn-outline">
-                        <i class="fas fa-plus"></i> Thêm ảnh 
+                        <i class="fas fa-plus"></i> Thêm ảnh
                     </button>
                 </div>
 
@@ -161,6 +165,8 @@
     </div>
 
     <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/JS/page/pageload.js"></script>
     <script src="/js/designer/sidebar.js"></script>
     <script src="/js/designer/designs.js"></script>
 </body>
