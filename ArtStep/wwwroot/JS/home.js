@@ -1,72 +1,24 @@
 ﻿import { API_BASE_URL } from './config.js';
+import './header.js';
 
-document.addEventListener('DOMContentLoaded', function () {
-    const navbarAuth = document.getElementById('navbarAuth');
-    const token = localStorage.getItem('token');
-
-    if (token) {
-        navbarAuth.innerHTML = `
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="goToCart()">
-                    <i class="bi bi-cart"></i> Cart
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="profile.html">
-                    <i class="bi bi-person-circle"></i> Profile
-                </a>
-            </li>
-             <li class="nav-item">
-                <a class="nav-link" href="#" id="logoutBtn">
-                    <i class="bi bi-box-arrow-right"></i> Log out
-                </a>
-            </li>
-        `;
-        const logoutBtn = document.getElementById('logoutBtn');
-        logoutBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.removeItem('username');
-            localStorage.removeItem('userId');
-            window.location.reload();
-        });
-    } else {
-        navbarAuth.innerHTML = `
-            <li class="nav-item">
-                <a class="nav-link" href="Login.html">
-                    <i class="bi bi-person-circle"></i> Login
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="Register.html">
-                    <i class="bi bi-person-plus"></i> Register
-                </a>
-            </li>
-        `;
-    }
-
-    //tải danh sách Designers
+document.addEventListener('DOMContentLoaded', async function () {
+    await new Promise(resolve => setTimeout(resolve, 100));
     const designerFilter = document.getElementById('designerFilter');
 
     async function fetchDesigners() {
         try {
             const response = await fetch(`${API_BASE_URL}/designers`);
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
 
-            // Handle clean JSON response format
             const designers = data || [];
 
             if (!Array.isArray(designers)) {
                 console.error('Designers data is not an array:', data);
                 return;
             }
-
-            // Update the designer filter dropdown instead of a container
             if (designerFilter) {
                 designerFilter.innerHTML = '<option value="">All Designers</option>';
                 designers.forEach(designer => {
@@ -82,13 +34,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     fetchDesigners();
 
-    //tải danh sách Categorys
     const styleFilter = document.getElementById('styleFilter');
 
     async function fetchCategories() {
         try {
             const response = await fetch(`${API_BASE_URL}/categories`);
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

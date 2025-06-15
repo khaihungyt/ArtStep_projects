@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ArtStep")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61812cd26f8fda96b07fe7b75e2196aa35441bdf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5e4bd0784653d4818af471cd83f57a73fe6e52fc")]
 [assembly: System.Reflection.AssemblyProductAttribute("ArtStep")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ArtStep")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

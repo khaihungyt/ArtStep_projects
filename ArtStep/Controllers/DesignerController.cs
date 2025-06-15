@@ -1,9 +1,11 @@
 ﻿using ArtStep.Data;
 using ArtStep.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Validations;
-
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ArtStep.Controllers
@@ -20,10 +22,16 @@ namespace ArtStep.Controllers
         }
         // GET: api/<DesignerController>
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<ShoeCustomDTO>> GetAllDesignAsync()
         {
-            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var userId = "user002";
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var userId = userIdClaim.Value;
             var listShoe = await _context.ShoeCustom
             .AsNoTracking() // Improve performance for read-only operations
             .Include(sc => sc.Designer)
@@ -59,13 +67,18 @@ namespace ArtStep.Controllers
 
 
         [HttpGet("view_revenue")]
+        [Authorize]
         public async Task<ActionResult<OrderRevenueResponseDTO>> GetAllSalesData()
         {
             try
             {
-                // 1. Xác thực người dùng
-                // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var userId = "user002";
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+                }
+
+                var userId = userIdClaim.Value;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized(new { Message = "Invalid token" });
@@ -81,13 +94,18 @@ namespace ArtStep.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public async Task<IActionResult> UpdateDesign([FromBody] EditDesignRequestDTO updateDto)
         {
             try
             {
-                // 1. Xác thực người dùng
-               // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var userId = "user002";
+                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+                }
+
+                var userId = userIdClaim.Value;
                 if (string.IsNullOrEmpty(userId))
                 {
                     return Unauthorized(new { Message = "Invalid token" });
@@ -145,12 +163,17 @@ namespace ArtStep.Controllers
         }
 
         // DELETE api/<DesignerController>/5
-        [HttpPatch("{designId}")]
-        public async Task<IActionResult> HideDesign(string designId)
+        [HttpPatch("{ShoeId}")]
+        [Authorize]
+        public async Task<IActionResult> HideDesign(string ShoeId)
         {
-            // 1. Xác thực người dùng
-            // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = "user002";
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+        {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var userId = userIdClaim.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });
@@ -159,7 +182,7 @@ namespace ArtStep.Controllers
             // 2. Tìm kiếm thiết kế của người dùng
             var design = await _context.ShoeCustom
                 .Include(s => s.Designer)
-                .FirstOrDefaultAsync(s => s.ShoeId == designId && s.Designer.UserId == userId);
+                .FirstOrDefaultAsync(s => s.ShoeId == ShoeId && s.Designer.UserId == userId);
 
             if (design == null)
             {
@@ -178,14 +201,23 @@ namespace ArtStep.Controllers
 
 
         [HttpPost("Create_Design")]
+        [Authorize]
         public async Task<IActionResult> CreateDesign([FromBody] CreateDesignRequestDTO model)
         {
 
 
 
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var userId = userIdClaim.Value;
+
             // 1. Xác thực người dùng (giả lập userId)
             // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userId = "user002";
+            // userId = "user002";
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });
@@ -220,9 +252,16 @@ namespace ArtStep.Controllers
             // 4. Thêm vào db context và lưu
             _context.ShoeCustom.Add(newDesign);
             await _context.SaveChangesAsync();
-
+            var response = new ShoeCustomDTO
+            {
+                ShoeName = newDesign.ShoeName,
+                ShoeDescription = newDesign.ShoeDescription,
+                CategoryId = newDesign.CategoryId,
+                PriceAShoe = newDesign.PriceAShoe,
+                Quantity = newDesign.Quantity,
+            };  
             // 5. Trả về kết quả
-            return Ok(newDesign);
+            return Ok(response);
         }
 
         private async Task ProcessShoeImages(ShoeCustom design, List<ShoeImageDTO> updateImages)
@@ -254,6 +293,52 @@ namespace ArtStep.Controllers
                     ShoeCustomId = design.ShoeId,
                 });
             }
+        }
+        // GET api/<DesignerController>/5
+        [HttpGet("{DesignerId}")]
+        [Authorize]
+        public async Task<ActionResult<ShoeCustomDTO>> GetDesignById(string DesignerId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+            var userId = userIdClaim.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { Message = "Invalid token" });
+            }
+            var design = await _context.ShoeCustom
+                .AsNoTracking()
+                .Include(sc => sc.Designer)
+                .Include(sc => sc.Category)
+                .Include(sc => sc.Images)
+                .FirstOrDefaultAsync(s => s.ShoeId == DesignerId && s.Designer.UserId == userId);
+            if (design == null)
+            {
+                return NotFound();
+            }
+            var designDto = new ShoeCustomDTO
+            {
+                ShoeId = design.ShoeId,
+                ShoeName = design.ShoeName,
+                ShoeDescription = design.ShoeDescription,
+                Quantity = design.Quantity,
+                PriceAShoe = design.PriceAShoe,
+                IsHidden = design.IsHidden,
+                Category = new CategoryDTO
+                {
+                    CategoryId = design.Category.CategoryId,
+                    CategoryName = design.Category.CategoryName
+                },
+                ShoeImages = design.Images.Select(i => new ShoeImageDTO
+                {
+                    ImageId = i.ImageId,
+                    ImageLink = i.ImageLink
+                }).ToList()
+            };
+            return Ok(designDto);
         }
 
     }

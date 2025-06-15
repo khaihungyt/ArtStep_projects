@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneInput = profileTab.querySelector('#phoneNo');
     const roleInput = profileTab.querySelector('#role');
     const isActiveChk = profileTab.querySelector('#isActive');
-
+    
     // Hàm load profile
     async function loadProfile() {
         try {
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const res = await fetch('https://localhost:5155/api/Profile/GetProfile', {
+            const res = await fetch('/api/Profile/GetProfile', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('phoneNo', phoneInput.value.trim());
 
         try {
-            const res = await fetch('https://localhost:5155/api/Profile/UpdateProfile', {
+            const res = await fetch('/api/Profile/UpdateProfile', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
@@ -141,4 +141,5 @@ changePwdForm.addEventListener('submit', async (e) => {
         toastr.error('Lỗi khi gửi yêu cầu đổi mật khẩu.');
         console.error(err);
     }
+
 });

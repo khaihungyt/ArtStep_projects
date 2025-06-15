@@ -38,56 +38,56 @@
             this.resetErrors();
             let isValid = true;
 
-            // Validate name
+            // Kiểm tra tên thiết kế
             const name = document.getElementById("design-name").value.trim();
             if (!name) {
-                this.showError("name-error", "Design name is required");
+                this.showError("name-error", "Tên thiết kế là bắt buộc");
                 isValid = false;
             } else if (name.length > 100) {
-                this.showError("name-error", "Maximum 100 characters allowed");
+                this.showError("name-error", "Tối đa 100 ký tự");
                 isValid = false;
             }
 
-            // Validate description
+            // Kiểm tra mô tả
             const description = document.getElementById("design-description").value.trim();
             if (!description) {
-                this.showError("description-error", "Description is required");
+                this.showError("description-error", "Mô tả là bắt buộc");
                 isValid = false;
             } else if (description.length > 500) {
-                this.showError("description-error", "Maximum 500 characters allowed");
+                this.showError("description-error", "Tối đa 500 ký tự");
                 isValid = false;
             }
 
-            // Validate category
+            // Kiểm tra danh mục
             const category = document.getElementById("design-category").value;
             if (!category) {
-                this.showError("category-error", "Please select a category");
+                this.showError("category-error", "Vui lòng chọn danh mục");
                 isValid = false;
             }
 
-            // Validate price
+            // Kiểm tra giá
             const price = parseFloat(document.getElementById("design-price").value);
             if (isNaN(price) || price < 0) {
-                this.showError("price-error", "Please enter a valid price");
+                this.showError("price-error", "Vui lòng nhập giá hợp lệ");
                 isValid = false;
             }
 
-            // Validate quantity
+            // Kiểm tra số lượng
             const quantity = parseInt(document.getElementById("design-quantity").value, 10);
             if (isNaN(quantity)) {
-                this.showError("quantity-error", "Please enter a valid quantity");
+                this.showError("quantity-error", "Vui lòng nhập số lượng hợp lệ");
                 isValid = false;
             } else if (quantity < 1) {
-                this.showError("quantity-error", "Minimum quantity is 1");
+                this.showError("quantity-error", "Số lượng tối thiểu là 1");
                 isValid = false;
             }
 
-            // Validate images
+            // Kiểm tra hình ảnh
             if (ImageManager.getImageCount() < 1) {
-                this.showError("images-error", "At least one image is required");
+                this.showError("images-error", "Cần tải lên ít nhất 1 hình ảnh");
                 isValid = false;
             } else if (ImageManager.getImageCount() > 5) {
-                this.showError("images-error", "Maximum 5 images allowed");
+                this.showError("images-error", "Tối đa 5 hình ảnh được phép");
                 isValid = false;
             }
 
@@ -214,6 +214,11 @@
     const ApiManager = {
         async loadCategories() {
             try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                    return;
+                }
                 const response = await fetch("/api/categories");
                 if (!response.ok) throw new Error("Failed to fetch categories");
 
@@ -221,7 +226,7 @@
                 const categorySelect = document.getElementById("design-category");
 
                 // Clear existing options
-                categorySelect.innerHTML = '<option value="" disabled selected>Select category</option>';
+                categorySelect.innerHTML = '<option value="" disabled selected>Chọn danh mục</option>';
 
                 data.forEach(cat => {
                     const option = document.createElement('option');
@@ -235,11 +240,16 @@
             }
         },
         async submitDesign(formData) {
-            console.log(formData);
             try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+                    return;
+                }
                 const response = await fetch('/api/Designer/Create_Design', {
                     method: 'POST',
                     headers: {
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({

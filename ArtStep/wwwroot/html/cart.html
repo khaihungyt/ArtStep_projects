@@ -15,6 +15,25 @@
     <link rel="stylesheet" href="../CSS/chat.css" />
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <!-- Feedback CSS -->
+    <style>
+        .star-rating {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+        }
+        .star-rating .star {
+            transition: color 0.2s ease;
+            margin-right: 5px;
+        }
+        .star-rating .star:hover,
+        .star-rating .star.active {
+            color: #ffc107;
+        }
+        .star-rating .star:hover ~ .star {
+            color: #ddd;
+        }
+    </style>
 </head>
 
 <body>
@@ -120,20 +139,17 @@
                             <span id="shipping" class="text-success">Miễn phí</span>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label text-white">Phương Thức Thanh Toán:</label>
-                            <div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="cod" checked>
-                                    <label class="form-check-label text-white" for="cod">
-                                        Thanh Toán Khi Nhận Hàng
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="paymentMethod" id="bank" value="bank">
-                                    <label class="form-check-label text-white" for="bank">
-                                        Chuyển Khoản Ngân Hàng (VNPay)
-                                    </label>
-                                </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-white"><i class="bi bi-wallet2"></i> Số Dư Ví:</span>
+                                <span id="wallet-balance-display" class="text-success fw-bold">Đang tải...</span>
+                            </div>
+                            <div id="wallet-status" class="alert alert-info">
+                                <small><i class="bi bi-info-circle"></i> Thanh toán sẽ được thực hiện qua ví điện tử</small>
+                            </div>
+                            <div class="text-center">
+                                <a href="wallet.html" class="btn btn-outline-light btn-sm">
+                                    <i class="bi bi-plus-circle"></i> Nạp Thêm Tiền
+                                </a>
                             </div>
                         </div>
                         <hr style="border-color: #555;">
@@ -148,6 +164,69 @@
                             <i class="bi bi-arrow-left"></i> Tiếp Tục Mua Sắm
                         </a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background: #2c2c2c; color: white;">
+                <div class="modal-header" style="border-bottom: 1px solid #555;">
+                    <h5 class="modal-title" id="feedbackModalLabel">
+                        <i class="bi bi-star-fill"></i> Đánh Giá Nhà Thiết Kế
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="feedback-loading" class="text-center py-3" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2">Đang tải danh sách nhà thiết kế...</p>
+                    </div>
+                    
+                    <div id="feedback-content">
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Cảm ơn bạn đã mua hàng!</strong> Hãy để lại đánh giá cho các nhà thiết kế để giúp họ cải thiện dịch vụ.
+                        </div>
+                        
+                        <form id="feedbackForm">
+                            <div class="mb-3">
+                                <label for="designerSelect" class="form-label">Chọn Nhà Thiết Kế</label>
+                                <select class="form-select" id="designerSelect" required>
+                                    <option value="">-- Chọn nhà thiết kế để đánh giá --</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="starRating" class="form-label">Đánh Giá</label>
+                                <div id="starRating" class="star-rating">
+                                    <i class="bi bi-star star" data-rating="1"></i>
+                                    <i class="bi bi-star star" data-rating="2"></i>
+                                    <i class="bi bi-star star" data-rating="3"></i>
+                                    <i class="bi bi-star star" data-rating="4"></i>
+                                    <i class="bi bi-star star" data-rating="5"></i>
+                                </div>
+                                <input type="hidden" id="selectedRating" required>
+                                <small class="text-muted">Nhấp vào ngôi sao để đánh giá (1-5 sao)</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="feedbackDescription" class="form-label">Nhận Xét</label>
+                                <textarea class="form-control" id="feedbackDescription" rows="4" 
+                                          placeholder="Chia sẻ trải nghiệm của bạn với nhà thiết kế này..." required></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #555;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ Qua</button>
+                    <button type="button" class="btn btn-warning" id="submitFeedbackBtn">
+                        <i class="bi bi-send"></i> Gửi Đánh Giá
+                    </button>
                 </div>
             </div>
         </div>

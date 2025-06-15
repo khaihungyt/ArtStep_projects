@@ -1,7 +1,16 @@
-document.addEventListener('DOMContentLoaded', function() {
+﻿document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const sidebarToggle = document.getElementById('sidebar-toggle');
-    
+    document.getElementById('logout-btn').addEventListener("click", function (e) {
+        e.preventDefault();
+        // Xử lý khi người dùng click vào nút Sign Out
+        console.log("Sign Out button clicked");
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        window.location.href = "/Login.html";
+    });
     // Check if sidebar state is stored in localStorage
     const sidebarState = localStorage.getItem('sidebarState');
     if (sidebarState === 'collapsed') {
@@ -47,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
+   
     // Initial check and add resize listener
     handleMobileSidebar();
     window.addEventListener('resize', handleMobileSidebar);

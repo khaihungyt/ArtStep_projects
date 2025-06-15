@@ -1,9 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
+﻿document.addEventListener('DOMContentLoaded', function() {
     // This file is for any dashboard-specific functionality
     // For now, it's mostly placeholder for future features
-    
+    //console.log('Element:123123v ', document.getElementById('logout-btn'));
+
+
+
     // Example: Chart data visualization could be added here
-    console.log('Dashboard loaded');
+    console.log('Dashboard loaded1232132v ');
     
     // Example: Fetch latest stats from an API
     function fetchDashboardStats() {

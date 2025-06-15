@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace ArtStep.Controllers
 {
@@ -23,11 +24,12 @@ namespace ArtStep.Controllers
             _cloudinary = cloudinary;
         }
 
-        [HttpGet("GetProfile")]
+
         [Authorize]
+        [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
@@ -45,13 +47,15 @@ namespace ArtStep.Controllers
                     u.PhoneNo,
                     u.Role,
                     u.ImageProfile,
-                    isActive = u.isActive == 1 ? true : false
+                    isActive = u.isActive == 1
                 })
                 .FirstOrDefaultAsync();
+
             if (user == null)
             {
                 return NotFound(new { message = "Người dùng không tồn tại." });
             }
+
             return Ok(user);
         }
 
@@ -59,42 +63,42 @@ namespace ArtStep.Controllers
         [HttpPost("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDTO request)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
             var userId = userIdClaim.Value;
 
-            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId.ToString() == userId);
+            var user = await _context.User.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user == null)
             {
                 return NotFound(new { message = "Không tìm thấy người dùng." });
             }
 
-            if (request.Avatar != null && request.Avatar.Length > 0)
-            {
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(request.Avatar.FileName, request.Avatar.OpenReadStream()),
-                    PublicId = $"profile_images/{user.UserId}_{System.Guid.NewGuid()}"
-                };
+            //if (request.Avatar != null && request.Avatar.Length > 0)
+            //{
+            //    var uploadParams = new ImageUploadParams
+            //    {
+            //        File = new FileDescription(request.Avatar.FileName, request.Avatar.OpenReadStream()),
+            //        PublicId = $"profile_images/{user.UserId}_{System.Guid.NewGuid()}"
+            //    };
 
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    user.ImageProfile = uploadResult.SecureUrl.ToString();
-                }
-                else
-                {
-                    return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Không thể upload ảnh lên Cloudinary." });
-                }
-            }
+            //    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+            //    if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
+            //    {
+            //        user.ImageProfile = uploadResult.SecureUrl.ToString();
+            //    }
+            //    else
+            //    {
+            //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Không thể upload ảnh lên Cloudinary." });
+            //    }
+            //}
 
             user.Name = request.Name?.Trim() ?? user.Name;
             user.Email = request.Email?.Trim() ?? user.Email;
             user.PhoneNo = request.PhoneNo?.Trim() ?? user.PhoneNo;
-
+            user.ImageProfile = request.Avatar?.Trim() ?? user.ImageProfile;
             try
             {
                 _context.User.Update(user);
@@ -110,13 +114,13 @@ namespace ArtStep.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromForm] string oldPassword, [FromForm] string newPassword)
         {
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub);
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
             var userId = userIdClaim.Value;
-            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.User.UserId.ToString() == userId);
+            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.User.UserId == userId);
 
             if (account == null)
             {

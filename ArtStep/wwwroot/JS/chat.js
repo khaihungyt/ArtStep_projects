@@ -154,7 +154,7 @@ class ChatSystem {
                                  data-placeholder="Type a message..." 
                                  role="textbox">
                             </div>
-                            <button class="image-btn" id="image-btn-popup" title="Upload Images">
+                             <button class="image-btn" id="image-btn-popup" title="Upload Images">
                                 <i class="bi bi-image"></i>
                             </button>
                         </div>

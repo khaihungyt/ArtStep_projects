@@ -14,5 +14,7 @@
         public string? UserSendFeedbackId { get; set; }
         public virtual User? UserSend {  get; set; }
 
+        public string? OrderId { get; set; }
+        public virtual Order? Order { get; set; }
     }
 }

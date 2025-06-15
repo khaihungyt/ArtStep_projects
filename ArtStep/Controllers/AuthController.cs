@@ -64,49 +64,57 @@ namespace ArtStep.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> RegisterFromUser([FromForm] RegisterRequestCustom request)
         {
-            if (_context.Accounts.Any(a => a.UserName == request.UserName))
+            try
             {
-                return BadRequest(new { message = "Tên đăng nhập đã tồn tại" });
-            }
 
-            string? imageUrl = null;
-            if (request.ImageProfile != null)
-            {
-                var uploadParams = new ImageUploadParams
+                if (_context.Accounts.Any(a => a.UserName == request.UserName))
                 {
-                    File = new FileDescription(request.ImageProfile.FileName, request.ImageProfile.OpenReadStream()),
-                    PublicId = $"profile_images/{Guid.NewGuid()}"
+                    return BadRequest(new { message = "Tên đăng nhập đã tồn tại" });
+                }
+
+                string? imageUrl = null;
+                if (request.ImageProfile != null)
+                {
+                    var uploadParams = new ImageUploadParams
+                    {
+                        File = new FileDescription(request.ImageProfile.FileName, request.ImageProfile.OpenReadStream()),
+                        PublicId = $"profile_images/{Guid.NewGuid()}"
+                    };
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                    imageUrl = uploadResult.SecureUrl?.ToString();
+                }
+
+                var user = new User
+                {
+                    UserId = Guid.NewGuid().ToString(),
+                    Name = request.Name,
+                    Email = request.Email,
+                    PhoneNo = request.PhoneNo,
+                    Role = request.Role.ToLower(),
+                    isActive = 1,
+                    ImageProfile = imageUrl
                 };
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                imageUrl = uploadResult.SecureUrl?.ToString();
+
+                var account = new Data.Account
+                {
+                    AccountId = Guid.NewGuid().ToString(),
+                    UserName = request.UserName,
+                    Password = request.Password,
+                    UserId = user.UserId,
+                    isStatus = 1,
+                    User = user
+                };
+
+                _context.User.Add(user);
+                _context.Accounts.Add(account);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Đăng ký thành công!" });
             }
-
-            var user = new User
+            catch (Exception e)
             {
-                UserId = Guid.NewGuid().ToString(),
-                Name = request.Name,
-                Email = request.Email,
-                PhoneNo = request.PhoneNo,
-                Role = "user",
-                isActive = 1,
-                ImageProfile = imageUrl
-            };
-
-            var account = new Data.Account
-            {
-                AccountId = Guid.NewGuid().ToString(),
-                UserName = request.UserName,
-                Password = request.Password,
-                UserId = user.UserId,
-                isStatus = 1,
-                User = user
-            };
-
-            _context.User.Add(user);
-            _context.Accounts.Add(account);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Đăng ký thành công!" });
+                return BadRequest(e.Message);
+            }
         }
 
         private string GenerateJwtToken(User user)

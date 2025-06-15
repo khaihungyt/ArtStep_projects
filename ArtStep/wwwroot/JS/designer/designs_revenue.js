@@ -1,7 +1,4 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    // Initialize sidebar
-    initializeSidebar();
-
     // Set default dates (last 30 days)
     const endDate = new Date();
     const startDate = new Date();
@@ -187,24 +184,6 @@ function renderChart(data) {
                     }
                 }
             }
-        }
-    });
-}
-
-// Initialize sidebar functionality (same as your original)
-function initializeSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('sidebar-toggle');
-
-    toggleBtn.addEventListener('click', function () {
-        sidebar.classList.toggle('collapsed');
-        const icon = this.querySelector('i');
-        if (sidebar.classList.contains('collapsed')) {
-            icon.classList.remove('fa-chevron-left');
-            icon.classList.add('fa-chevron-right');
-        } else {
-            icon.classList.remove('fa-chevron-right');
-            icon.classList.add('fa-chevron-left');
         }
     });
 }
