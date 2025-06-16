@@ -11,17 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneInput = profileTab.querySelector('#phoneNo');
     const roleInput = profileTab.querySelector('#role');
     const isActiveChk = profileTab.querySelector('#isActive');
-    
-    // Hàm load profile
+
+    //Load profile
     async function loadProfile() {
         try {
-            const token = localStorage.getItem('accessToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
                 return;
             }
 
-            const res = await fetch('/api/Profile/GetProfile', {
+            const res = await fetch('/api/Profile/profile', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

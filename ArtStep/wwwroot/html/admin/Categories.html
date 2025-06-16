@@ -9,15 +9,18 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title> Admin Dashboard</title>
+    <title>Categories List - Admin</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="../../vendor/admin/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <!-- Custom fonts for this template -->
+    <link href="../../vendor/admin/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="../../CSS/admin/sb-admin-2.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../../CSS/admin/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="../../vendor/admin/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -62,7 +65,6 @@
                 </a>
             </li>
 
-            <!-- Tiến độ & File thiết kế -->
             <li class="nav-item">
                 <a class="nav-link" href="Categories.html">
                     <i class="fas fa-drafting-compass"></i>
@@ -147,13 +149,9 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
+
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
@@ -252,150 +250,106 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Content Row -->
-                    <div class="row">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Phân loại giày</h1>
+                    <p class="mb-4">
+                        Quản lý các danh mục phân loại sản phẩm giày trong hệ thống.
+                    </p>
 
-                        <!-- Tổng Doanh Thu Tháng -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">4,000,000 VNĐ</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                    <!-- Logout Modal-->
+                    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Bạn có chắc chắn muốn đăng xuất?</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Đóng">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Số Đơn Hàng Tuần -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Đơn Hàng Tuần
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">125 đơn</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tỷ Lệ Hoàn Thành Custom đúng hạn-->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Hoàn Thành Custom Đúng Hạn
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">70%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                             style="width: 70%" aria-valuenow="70" aria-valuemin="0"
-                                                             aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-paint-brush fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Yêu Cầu Đang Chờ
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">36</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                                <div class="modal-body">Chọn "Logout" để kết thúc phiên làm việc của bạn.</div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                                    <button class="btn btn-primary" id="confirmLogout">Logout</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
+                    <!-- Data -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                            <h6 class="m-0 font-weight-bold text-primary">Danh sách Phân loại</h6>
+                            <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#addCategoryModal">
+                                <i class="fas fa-plus"></i> Thêm Phân loại
+                            </button>
+                        </div>
 
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo tháng</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </a>
-                                    </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="categoryTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên loại</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Add category Modal-->
+                    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addCategoryModalLabel">Thêm Phân loại mới</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
+                                <div class="modal-body">
+                                    <form id="addCategoryForm">
+                                        <div class="form-group">
+                                            <label for="categoryName">Tên Phân loại:</label>
+                                            <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                    <button type="submit" form="addCategoryForm" class="btn btn-primary">Lưu</button>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </a>
+                    <!-- Edit category Modal -->
+                    <div class="modal fade" id="editCategoryModal" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form id="editCategoryForm">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editCategoryModalLabel">Sửa Phân loại</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
+                                    <div class="modal-body">
+                                        <input type="hidden" id="editCategoryId">
+                                        <div class="form-group">
+                                            <label for="editCategoryName">Tên Phân loại:</label>
+                                            <input type="text" class="form-control" id="editCategoryName" required>
+                                        </div>
                                     </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -425,7 +379,6 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-
     <!-- Bootstrap core JavaScript-->
     <script src="../../vendor/admin/jquery/jquery.min.js"></script>
     <script src="../../vendor/admin/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -437,13 +390,15 @@
     <script src="../../JS/admin/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="../../vendor/admin/chart.js/Chart.min.js"></script>
+    <script src="../../vendor/admin/datatables/jquery.dataTables.min.js"></script>
+
+    <script src="../../vendor/admin/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="../../JS/admin/demo/chart-area-demo.js"></script>
-    <script src="../../JS/admin/demo/chart-pie-demo.js"></script>
-    <!-- SweetAlert2 -->
+    <script src="../../JS/admin/demo/datatables-demo.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function () {
             const token = localStorage.getItem('token');
@@ -458,29 +413,155 @@
                 });
                 return;
             }
+            
+            const table = $('#categoryTable').DataTable();
 
-            const role = localStorage.getItem('role');
-            if (role !== 'admin') {
-                Swal.fire({
-                    title: 'Truy cập bị từ chối',
-                    text: 'Bạn không có quyền truy cập trang này.',
-                    icon: 'error',
-                    confirmButtonText: 'Quay lại'
-                }).then(() => {
-                    window.location.href = '/home.html';
+            fetch('/api/Category/get_all_categories', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    table.clear();
+                    data.forEach((categories, index) => {
+
+                        table.row.add([
+                            index + 1,
+                            categories.CategoryName,
+                            actions = `<button class="btn btn-primary btn-sm edit-category-btn" data-id="${categories.CategoryId}" data-name="${categories.CategoryName}">Sửa</button> 
+                            <button class="btn btn-danger btn-sm delete-category-btn" data-id="${categories.CategoryId}">Xóa</button>`
+                            
+                        ]).draw(false);
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải dữ liệu khách hàng:', error);
                 });
-                return false;
-            }
-            return true;
 
+            $('#addCategoryForm').on('submit', function (e) {
+                e.preventDefault();
 
+                const categoryName = $('#categoryName').val();
+                if (!categoryName) {
+                    Swal.fire('Lỗi', 'Vui lòng nhập tên phân loại.', 'warning');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('categoryName', categoryName);
+
+                fetch('/api/Category/add_category', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: formData
+                })
+                    .then(async response => {
+                        if (!response.ok) {
+                            const errorText = await response.text();
+                            throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        Swal.fire('Thành công', 'Đã thêm phân loại mới!', 'success');
+                        $('#addCategoryModal').modal('hide');
+                        $('#addCategoryForm')[0].reset();
+                        location.reload();
+                    })
+                    .catch(error => {
+                        Swal.fire('Lỗi khi thêm phân loại', error.message, 'error');
+                        console.error('Chi tiết lỗi:', error);
+                    });
+            });
+
+            $('#categoryTable').on('click', '.edit-category-btn', function () {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+
+                $('#editCategoryId').val(id);
+                $('#editCategoryName').val(name);
+                $('#editCategoryModal').modal('show');
+            });
+
+            $('#editCategoryForm').on('submit', function (e) {
+                e.preventDefault();
+                const id = $('#editCategoryId').val();
+                const name = $('#editCategoryName').val().trim();
+
+                fetch(`/api/Category/update_category/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({ name: name })
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Lỗi cập nhật');
+                        $('#editCategoryModal').modal('hide');
+                        return response.json();
+                    })
+                    .catch(error => console.error('Lỗi khi cập nhật:', error));
+            });
+
+            $('#categoryTable').on('click', '.delete-category-btn', function () {
+                const id = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Xác nhận xoá?',
+                    text: "Hành động này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xoá',
+                    cancelButtonText: 'Huỷ'
+                }).then(result => {
+                    if (!result.isConfirmed) return;
+
+                    fetch(`/api/Category/delete_category/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    })
+                        .then(async response => {
+                            if (response.status === 404) {
+                                Swal.fire('Lỗi', 'Không tìm thấy phân loại.', 'error');
+                                throw new Error('Không tìm thấy phân loại');
+                            }
+                            if (response.status === 400) {
+                                const msg = await response.text();
+                                Swal.fire('Không thể xoá', msg, 'warning');
+                                throw new Error(msg);
+                            }
+                            if (!response.ok) throw new Error('Lỗi xoá');
+                            return response.json();
+                        })
+                        .then(() => {
+                            Swal.fire('Đã xoá!', 'Phân loại đã được xoá.', 'success');
+                            location.reload();
+                        })
+                        .catch(error => console.error('Lỗi xoá:', error));
+                });
+            });
         });
+
         $('#confirmLogout').on('click', function () {
             localStorage.removeItem('token');
             window.location.href = '/login.html';
         });
-    </script>
 
+    </script>
 </body>
 
 </html>
