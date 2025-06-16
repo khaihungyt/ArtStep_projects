@@ -1,71 +1,72 @@
-import { API_BASE_URL } from './config.js';
+﻿import { API_BASE_URL } from './config.js';
 import { WalletManager } from './wallet.js';
 
+// Quản lý phần Header (Thanh điều hướng)
 export class HeaderManager {
     constructor() {
         this.walletManager = new WalletManager();
     }
 
+    // Khởi tạo header tùy theo trạng thái đăng nhập
     async initializeHeader() {
         const navbarAuth = document.getElementById('navbarAuth');
         if (!navbarAuth) {
-            console.warn('navbarAuth element not found');
+            console.warn('Không tìm thấy phần tử navbarAuth');
             return;
         }
 
         const token = localStorage.getItem('token');
 
         if (token) {
-            await this.renderAuthenticatedHeader(navbarAuth);
+            await this.renderAuthenticatedHeader(navbarAuth); // Nếu đã đăng nhập
         } else {
-            this.renderUnauthenticatedHeader(navbarAuth);
+            this.renderUnauthenticatedHeader(navbarAuth); // Nếu chưa đăng nhập
         }
     }
 
+    // Header cho người dùng đã đăng nhập
     async renderAuthenticatedHeader(navbarAuth) {
         try {
             const walletBalance = await this.walletManager.fetchWalletBalance();
-            
+
             navbarAuth.innerHTML = `
                 ${walletBalance !== null ? this.walletManager.createWalletDisplay(walletBalance) : ''}
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="goToCart()">
-                        <i class="bi bi-cart"></i> Cart
+                        <i class="bi bi-cart"></i> Giỏ hàng
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="profile.html">
-                        <i class="bi bi-person-circle"></i> Profile
+                        <i class="bi bi-person-circle"></i> Hồ sơ
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="logoutBtn">
-                        <i class="bi bi-box-arrow-right"></i> Log out
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
                     </a>
                 </li>
             `;
 
             this.walletManager.init();
-
-            // Add logout functionality
-            this.setupLogoutHandler();
+            this.setupLogoutHandler(); // Gán chức năng đăng xuất
 
         } catch (error) {
-            console.error('Error rendering authenticated header:', error);
+            console.error('Lỗi khi hiển thị header người dùng:', error);
             navbarAuth.innerHTML = `
                 <li class="nav-item">
                     <a class="nav-link" href="#" onclick="goToCart()">
-                        <i class="bi bi-cart"></i> Cart
+                        <i class="bi bi-cart"></i> Giỏ hàng
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="profile.html">
-                        <i class="bi bi-person-circle"></i> Profile
+                        <i class="bi bi-person-circle"></i> Hồ sơ
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="logoutBtn">
-                        <i class="bi bi-box-arrow-right"></i> Log out
+                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
                     </a>
                 </li>
             `;
@@ -73,21 +74,23 @@ export class HeaderManager {
         }
     }
 
+    // Header cho người dùng chưa đăng nhập
     renderUnauthenticatedHeader(navbarAuth) {
         navbarAuth.innerHTML = `
             <li class="nav-item">
                 <a class="nav-link" href="Login.html">
-                    <i class="bi bi-person-circle"></i> Login
+                    <i class="bi bi-person-circle"></i> Đăng nhập
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="Register.html">
-                    <i class="bi bi-person-plus"></i> Register
+                    <i class="bi bi-person-plus"></i> Đăng ký
                 </a>
             </li>
         `;
     }
 
+    // Xử lý khi người dùng nhấn nút Đăng xuất
     setupLogoutHandler() {
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
@@ -102,28 +105,33 @@ export class HeaderManager {
         }
     }
 
-    // Update wallet balance in header (for use after transactions)
+    // Cập nhật số dư ví trong header sau khi thực hiện giao dịch
     async updateWalletBalance() {
         if (localStorage.getItem('token')) {
             await this.walletManager.updateWalletDisplay();
         }
     }
 
+    // Lấy số dư ví hiện tại
     async getCurrentWalletBalance() {
         return await this.walletManager.fetchWalletBalance();
     }
 }
 
+// Khởi tạo header manager
 window.headerManager = new HeaderManager();
 
-window.goToCart = function() {
+// Chuyển hướng tới trang giỏ hàng
+window.goToCart = function () {
     window.location.href = 'cart';
 };
 
-window.goToWallet = function() {
+// Chuyển hướng tới trang ví
+window.goToWallet = function () {
     window.location.href = 'wallet';
 };
 
-document.addEventListener('DOMContentLoaded', async function() {
+// Khi trang được tải, khởi tạo header
+document.addEventListener('DOMContentLoaded', async function () {
     await window.headerManager.initializeHeader();
-}); 
+});
