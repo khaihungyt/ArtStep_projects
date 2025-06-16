@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function fetchDesigners() {
         try {
             const response = await fetch(`${API_BASE_URL}/designers`);
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -38,9 +37,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     const styleFilter = document.getElementById('styleFilter');
 
     async function fetchCategories() {
+        try {
             const response = await fetch(`${API_BASE_URL}/categories`);
-            const response = await fetch(`${API_BASE_URL}/categories`);
-
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -170,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }).toString();
 
         try {
-            const response = await fetch(`/api/products?${queryParams}`);
+            const response = await fetch(`${API_BASE_URL}/products?${queryParams}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -363,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 quantity: 1
             };
 
-            const response = await fetch('https://localhost:5155/api/Cart', {
+            const response = await fetch(`${API_BASE_URL}/Cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

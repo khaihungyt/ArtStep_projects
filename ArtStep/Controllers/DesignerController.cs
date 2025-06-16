@@ -182,7 +182,7 @@ namespace ArtStep.Controllers
             // 2. Tìm kiếm thiết kế của người dùng
             var design = await _context.ShoeCustom
                 .Include(s => s.Designer)
-                .FirstOrDefaultAsync(s => s.ShoeId == designId && s.Designer.UserId == userId);
+                .FirstOrDefaultAsync(s => s.ShoeId == ShoeId && s.Designer.UserId == userId);
 
             if (design == null)
             {
@@ -356,7 +356,7 @@ namespace ArtStep.Controllers
                                     UserId = u.UserId,
                                     Name = u.Name,
                                     isActive = u.isActive,
-                                    AverageFeedbackStars = _context.Feedback
+                                    AverageFeedbackStars = _context.Feedbacks
                                         .Where(f => f.DesignerReceiveFeedbackId == u.UserId)
                                         .Average(f => (double?)f.FeedbackStars) ?? 0
                                 })
