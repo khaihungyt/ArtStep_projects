@@ -10,13 +10,8 @@ namespace ArtStep.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Feedback_User_DesignerReceiveFeedbackId",
-                table: "Feedback");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_User_Feedback_UserId",
-                table: "User");
+
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Feedback",
@@ -80,13 +75,8 @@ namespace ArtStep.Migrations
                 name: "FK_feedback_Order_OrderId",
                 table: "feedback");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_feedback_User_DesignerReceiveFeedbackId",
-                table: "feedback");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_User_feedback_UserId",
-                table: "User");
+
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_feedback",

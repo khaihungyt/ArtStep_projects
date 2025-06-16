@@ -3,67 +3,65 @@ import './header.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     await new Promise(resolve => setTimeout(resolve, 100));
-    const designerFilter = document.getElementById('designerFilter');
+    const boLocNhaThietKe = document.getElementById('designerFilter');
 
-    async function fetchDesigners() {
+    async function taiDanhSachNhaThietKe() {
         try {
             const response = await fetch(`${API_BASE_URL}/designers`);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
             }
             const data = await response.json();
+            const danhSach = data || [];
 
-            const designers = data || [];
-
-            if (!Array.isArray(designers)) {
-                console.error('Designers data is not an array:', data);
+            if (!Array.isArray(danhSach)) {
+                console.error('Dữ liệu nhà thiết kế không phải là một mảng:', data);
                 return;
             }
-            if (designerFilter) {
-                designerFilter.innerHTML = '<option value="">All Designers</option>';
-                designers.forEach(designer => {
+            if (boLocNhaThietKe) {
+                boLocNhaThietKe.innerHTML = '<option value="">Tất cả nhà thiết kế</option>';
+                danhSach.forEach(nhaThietKe => {
                     const option = document.createElement('option');
-                    option.value = designer.userId || designer.designerId;
-                    option.textContent = designer.name || designer.designerName;
-                    designerFilter.appendChild(option);
+                    option.value = nhaThietKe.userId || nhaThietKe.designerId;
+                    option.textContent = nhaThietKe.name || nhaThietKe.designerName;
+                    boLocNhaThietKe.appendChild(option);
                 });
             }
         } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
+            console.error('Lỗi khi tải danh sách nhà thiết kế:', error);
         }
     }
-    fetchDesigners();
 
-    const styleFilter = document.getElementById('styleFilter');
+    await taiDanhSachNhaThietKe();
 
-    async function fetchCategories() {
+    const boLocPhongCach = document.getElementById('styleFilter');
+
+    async function taiDanhSachDanhMuc() {
         try {
             const response = await fetch(`${API_BASE_URL}/categories`);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
             }
             const data = await response.json();
+            const danhSach = data || [];
 
-            const categories = data || [];
-
-            if (!Array.isArray(categories)) {
-                console.error('Categories data is not an array:', data);
+            if (!Array.isArray(danhSach)) {
+                console.error('Dữ liệu danh mục không phải là một mảng:', data);
                 return;
             }
-            if (styleFilter) {
-                styleFilter.innerHTML = '<option value="">All Categories</option>';
-                categories.forEach(category => {
+            if (boLocPhongCach) {
+                boLocPhongCach.innerHTML = '<option value="">Tất cả danh mục</option>';
+                danhSach.forEach(danhMuc => {
                     const option = document.createElement('option');
-                    option.value = category.categoryId;
-                    option.textContent = category.name || category.categoryName;
-                    styleFilter.appendChild(option);
+                    option.value = danhMuc.categoryId;
+                    option.textContent = danhMuc.name || danhMuc.categoryName;
+                    boLocPhongCach.appendChild(option);
                 });
             }
         } catch (error) {
-            console.error('There was a problem with the fetch operation for categories:', error);
+            console.error('Lỗi khi tải danh mục:', error);
         }
     }
-    fetchCategories();
 
     // Define best sellers functions first
     async function loadBestSellers() {
@@ -148,306 +146,175 @@ document.addEventListener('DOMContentLoaded', async function () {
     const productList = document.getElementById('productList');
     const paginationElement = document.getElementById('pagination');
 
-    let currentPage = 1;
-    const productsPerPage = 6;
+    const danhSachSanPham = document.getElementById('productList');
+    const thanhPhanTrang = document.getElementById('pagination');
 
-    let currentFilters = {
+    let trangHienTai = 1;
+    const sanPhamMoiTrang = 6;
+
+    let boLocHienTai = {
         style: '',
         designer: '',
         search: ''
     };
 
-    async function fetchProducts() {
+    async function taiSanPham() {
         const queryParams = new URLSearchParams({
-            page: currentPage,
-            limit: productsPerPage,
-            style: currentFilters.style,
-            price: currentFilters.price,
-            designer: currentFilters.designer,
-            search: currentFilters.search
+            page: trangHienTai,
+            limit: sanPhamMoiTrang,
+            style: boLocHienTai.style,
+            price: boLocHienTai.price,
+            designer: boLocHienTai.designer,
+            search: boLocHienTai.search
         }).toString();
 
         try {
             const response = await fetch(`${API_BASE_URL}/products?${queryParams}`);
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
             }
 
             const data = await response.json();
-            const products = data.products || [];
-            const totalProducts = data.total || 0;
+            const sanPham = data.products || [];
+            const tongSanPham = data.total || 0;
 
-            if (!Array.isArray(products)) {
-                console.error('Products data is not an array:', data);
+            if (!Array.isArray(sanPham)) {
+                console.error('Dữ liệu sản phẩm không hợp lệ:', data);
                 return;
             }
 
-
-            const productList = document.getElementById('productList');
-            if (!productList) {
-                console.error('Product list container not found');
+            if (!danhSachSanPham) {
+                console.error('Không tìm thấy phần hiển thị sản phẩm');
                 return;
             }
 
-            productList.innerHTML = '';
-            products.forEach(product => {
-
-                const designerId = product.designerUserId || product.DesignerUserId;
-                const designerName = product.designer || product.Designer;
-                const shoeId = product.shoeId || product.ShoeId;
-                const productCard = `
+            danhSachSanPham.innerHTML = '';
+            sanPham.forEach(sp => {
+                const maThietKe = sp.designerUserId || sp.DesignerUserId;
+                const tenThietKe = sp.designer || sp.Designer;
+                const maGiay = sp.shoeId || sp.ShoeId;
+                const theSanPham = `
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
-                            <img src="${product.imageUrl || product.ImageUrl || 'placeholder.jpg'}" 
-                                 class="card-img-top" alt="${product.name || product.Name}" 
+                        <img src="${sp.imageUrl || sp.ImageUrl || 'placeholder.jpg'}" 
+                             class="card-img-top" alt="${sp.name || sp.Name}" 
                              style="height: 200px; object-fit: cover;">
                         <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">${product.name || product.Name}</h5>
+                            <h5 class="card-title">${sp.name || sp.Name}</h5>
                             <p class="card-text text-muted">
-                                    Style: ${product.style || product.Style || 'N/A'}<br>
-                                    Designer: ${designerName || 'N/A'}
+                                Phong cách: ${sp.style || sp.Style || 'Không rõ'}<br>
+                                Nhà thiết kế: ${tenThietKe || 'Không rõ'}
                             </p>
-                                <h4 class="card-subtitle mb-2 text-primary mt-auto">$${product.price || product.Price || 0}</h4>
-                                <div class="d-flex gap-2 mt-2">
-                                    <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">View Details</button>
-                                    <button onclick="addToCart('${shoeId}')" class="btn btn-outline-primary">
-                                        <i class="lnr lnr-cart"></i>
-                                    </button>
-                        </div>
-                                <div class="mt-2">
-                                    ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
-                        `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
-                                                class="btn btn-outline-success btn-sm w-100">
-                                            <i class="bi bi-chat-dots"></i> Chat with Designer
-                                        </button>` :
-                        localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'designer' ?
+                            <h4 class="card-subtitle mb-2 text-primary mt-auto">${sp.price || sp.Price || 0} đ</h4>
+                            <div class="d-flex gap-2 mt-2">
+                                <button onclick="viewProductDetails('${maGiay}')" class="btn btn-dark flex-grow-1">Xem chi tiết</button>
+                                <button onclick="addToCart('${maGiay}')" class="btn btn-outline-primary">
+                                    <i class="lnr lnr-cart"></i>
+                                </button>
+                            </div>
+                            <div class="mt-2">
+                                ${maThietKe && localStorage.getItem('role')?.toLowerCase() === 'user' ?
+                        `<button onclick="chatWithDesigner('${maThietKe}', '${tenThietKe}')" 
+                             class="btn btn-outline-success btn-sm w-100">
+                             <i class="bi bi-chat-dots"></i> Chat với Nhà Thiết Kế
+                         </button>` :
+                        localStorage.getItem('role')?.toLowerCase() === 'designer' ?
                             `<button class="btn btn-outline-secondary btn-sm w-100" disabled>
-                                            <i class="bi bi-info-circle"></i> Designer Account
-                                        </button>` :
+                             <i class="bi bi-info-circle"></i> Tài khoản Nhà thiết kế
+                         </button>` :
                             !localStorage.getItem('token') ?
-                                `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
-                                                class="btn btn-outline-success btn-sm w-100">
-                                            <i class="bi bi-chat-dots"></i> Chat with Designer
-                                        </button>` :
+                                `<button onclick="chatWithDesigner('${maThietKe}', '${tenThietKe}')" 
+                                     class="btn btn-outline-success btn-sm w-100">
+                                     <i class="bi bi-chat-dots"></i> Chat với Nhà Thiết Kế
+                                 </button>` :
                                 `<button class="btn btn-outline-secondary btn-sm w-100" disabled>
-                                            <i class="bi bi-chat-dots"></i> Designer Not Available
-                                        </button>`
+                                 <i class="bi bi-chat-dots"></i> Không thể Chat
+                             </button>`
                     }
+                            </div>
+                        </div>
                     </div>
                 </div>
-                        </div>
-                    </div>
-            `;
-                productList.innerHTML += productCard;
+                `;
+                danhSachSanPham.innerHTML += theSanPham;
             });
-            renderPagination(totalProducts);
+            renderPagination(tongSanPham);
         } catch (error) {
-            console.error('There was a problem with the fetch operation for products:', error);
-            const productList = document.getElementById('productList');
-            if (productList) {
-                productList.innerHTML = '<p class="text-danger">An error occurred while loading the product.</p>';
+            console.error('Lỗi khi tải sản phẩm:', error);
+            if (danhSachSanPham) {
+                danhSachSanPham.innerHTML = '<p class="text-danger">Lỗi khi tải sản phẩm.</p>';
             }
         }
     }
-    function renderPagination(totalProducts) {
-        paginationElement.innerHTML = '';
 
-        const totalPages = Math.ceil(totalProducts / productsPerPage);
+    function renderPagination(tongSanPham) {
+        thanhPhanTrang.innerHTML = '';
+        const tongTrang = Math.ceil(tongSanPham / sanPhamMoiTrang);
 
-        if (totalPages <= 1) {
-            return;
-        }
-        const prevLi = document.createElement('li');
-        prevLi.classList.add('page-item', currentPage === 1 ? 'disabled' : '');
-        prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
-        prevLi.addEventListener('click', function (e) {
+        if (tongTrang <= 1) return;
+
+        // Nút trước
+        const prev = document.createElement('li');
+        prev.classList.add('page-item', trangHienTai === 1 ? 'disabled' : '');
+        prev.innerHTML = `<a class="page-link" href="#">&laquo;</a>`;
+        prev.addEventListener('click', e => {
             e.preventDefault();
-            if (currentPage > 1) {
-                currentPage--;
-                fetchProducts();
+            if (trangHienTai > 1) {
+                trangHienTai--;
+                taiSanPham();
             }
         });
-        paginationElement.appendChild(prevLi);
+        thanhPhanTrang.appendChild(prev);
 
-        // Page numbers
-        for (let i = 1; i <= totalPages; i++) {
-            const pageLi = document.createElement('li');
-            pageLi.classList.add('page-item', currentPage === i ? 'active' : '');
-            pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-            pageLi.addEventListener('click', function (e) {
+        // Các nút số
+        for (let i = 1; i <= tongTrang; i++) {
+            const li = document.createElement('li');
+            li.classList.add('page-item', trangHienTai === i ? 'active' : '');
+            li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            li.addEventListener('click', e => {
                 e.preventDefault();
-                currentPage = i;
-                fetchProducts();
+                trangHienTai = i;
+                taiSanPham();
             });
-            paginationElement.appendChild(pageLi);
+            thanhPhanTrang.appendChild(li);
         }
-        const nextLi = document.createElement('li');
-        nextLi.classList.add('page-item', currentPage === totalPages ? 'disabled' : '');
-        nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
-        nextLi.addEventListener('click', function (e) {
+
+        // Nút sau
+        const next = document.createElement('li');
+        next.classList.add('page-item', trangHienTai === tongTrang ? 'disabled' : '');
+        next.innerHTML = `<a class="page-link" href="#">&raquo;</a>`;
+        next.addEventListener('click', e => {
             e.preventDefault();
-            if (currentPage < totalPages) {
-                currentPage++;
-                fetchProducts();
+            if (trangHienTai < tongTrang) {
+                trangHienTai++;
+                taiSanPham();
             }
         });
-        paginationElement.appendChild(nextLi);
+        thanhPhanTrang.appendChild(next);
     }
-    const priceFilter = document.getElementById('priceFilter');
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
 
-    designerFilter.addEventListener('change', function () {
-        currentFilters.designer = this.value;
-        currentPage = 1;
-        fetchProducts();
+    // Các bộ lọc
+    const boLocGia = document.getElementById('priceFilter');
+    const oTimKiem = document.getElementById('searchInput');
+    const nutTimKiem = document.getElementById('searchButton');
+
+    boLocNhaThietKe.addEventListener('change', function () {
+        boLocHienTai.designer = this.value;
+        trangHienTai = 1;
+        taiSanPham();
     });
 
-    styleFilter.addEventListener('change', function () {
-        currentFilters.style = this.value;
-        currentPage = 1;
-        fetchProducts();
+    boLocPhongCach.addEventListener('change', function () {
+        boLocHienTai.style = this.value;
+        trangHienTai = 1;
+        taiSanPham();
     });
 
-    priceFilter.addEventListener('change', function () {
-        currentFilters.price = this.value;
-        currentPage = 1;
-        fetchProducts();
+    boLocGia.addEventListener('change', function () {
+        boLocHienTai.price = this.value;
+        trangHienTai = 1;
+        taiSanPham();
     });
-
-    if (searchInput) {
-        searchInput.addEventListener('keyup', function (event) {
-            if (event.key === 'Enter') {
-                currentFilters.search = this.value;
-                currentPage = 1;
-                fetchProducts();
-            }
-        });
-    }
-
-    if (searchButton) {
-        searchButton.addEventListener('click', function () {
-            currentFilters.search = searchInput.value;
-            currentPage = 1;
-            fetchProducts();
-        });
-    }
-    fetchProducts();
-
-    window.addToCart = async function (shoeId) {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            const result = await Swal.fire({
-                title: 'Login Required',
-                text: 'Please login to add products to cart!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Đăng nhập',
-                cancelButtonText: 'Hủy',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33'
-            });
-
-            if (result.isConfirmed) {
-                window.location.href = 'Login';
-            }
-            return;
-        }
-
-        try {
-            const requestBody = {
-                shoeId: shoeId,
-                quantity: 1
-            };
-
-            const response = await fetch(`${API_BASE_URL}/Cart`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token.trim()}`
-                },
-                body: JSON.stringify(requestBody)
-            });
-
-            let responseData;
-            const contentType = response.headers.get('content-type');
-
-            if (contentType && contentType.includes('application/json')) {
-                const responseText = await response.text();
-
-                try {
-                    responseData = JSON.parse(responseText);
-                } catch (parseError) {
-                    console.error('JSON parse error:', parseError);
-                    throw new Error('Invalid JSON response from server');
-                }
-            } else {
-                const responseText = await response.text();
-                console.error('Non-JSON response:', responseText);
-                throw new Error('Server returned non-JSON response');
-            }
-
-            if (!response.ok) {
-                if (response.status === 401) {
-                    // Token expired or invalid
-                    localStorage.removeItem('token');
-                    const result = await Swal.fire({
-                        title: 'Session Expired',
-                        text: 'Your session has expired.Please log in again.!',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Đăng nhập',
-                        cancelButtonText: 'Hủy',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33'
-                    });
-
-                    if (result.isConfirmed) {
-                        window.location.href = 'Login';
-                    }
-                    return;
-                }
-                throw new Error(responseData.message || 'Failed to add to cart');
-            }
-
-            const result = await Swal.fire({
-                title: 'Success!',
-                text: responseData.message || 'Successfully add to cart!',
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonText: 'View cart',
-                cancelButtonText: 'Contiunue shopping!',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#28a745'
-            });
-
-            if (result.isConfirmed) {
-                window.location.href = 'cart';
-            }
-        } catch (error) {
-            console.error('Error adding to cart:', error);
-            await Swal.fire({
-                title: 'Error!',
-                text: error.message || 'Error when add item to cart!',
-                icon: 'error',
-                timer: 3000,
-                showConfirmButton: false,
-                position: 'top-end',
-                toast: true
-            });
-        }
-    }
-
-    window.viewProductDetails = function (shoeId) {
-        window.location.href = `product-detail.html?id=${shoeId}`;
-    }
-
-    window.chatWithDesigner = function (designerUserId, designerName) {
-        console.log('chatWithDesigner called with:', designerUserId, designerName);
-
-        const token = localStorage.getItem('token');
-        const userRole = localStorage.getItem('role');
 
         if (!token) {
             console.log('No token found, showing login prompt');
@@ -483,26 +350,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = `designers.html?chatWith=${designerUserId}&designerName=${encodeURIComponent(designerName)}`;
     }
 
-    window.goToCart = function () {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            Swal.fire({
-                title: 'Login Required',
-                text: 'Please login to view cart!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Login',
-                cancelButtonText: 'Cancel',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = 'login';
-                }
-            });
-            return;
-        }
+    if (nutTimKiem) {
+        nutTimKiem.addEventListener('click', function () {
+            boLocHienTai.search = oTimKiem.value;
+            trangHienTai = 1;
+            taiSanPham();
+        });
+    }
 
         window.location.href = 'cart';
     }
