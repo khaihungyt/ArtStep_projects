@@ -297,16 +297,18 @@ namespace ArtStep.Controllers
             try
             {
                 var designers = await _context.User
-                    .Where(u => u.Role == "Designer")
-                    .Select(u => new DesignerDTO
-                    {
-                        UserId = u.UserId,
-                        Name = u.Name,
-                        isActive = u.isActive,
-                    })
-                    .ToListAsync();
-
+                                .Where(u => u.Role == "Designer")
+                                .Select(u => new {
+                                    UserId = u.UserId,
+                                    Name = u.Name,
+                                    isActive = u.isActive,
+                                    AverageFeedbackStars = _context.Feedback
+                                        .Where(f => f.DesignerReceiveFeedbackId == u.UserId)
+                                        .Average(f => (double?)f.FeedbackStars) ?? 0
+                                })
+                                .ToListAsync();
                 return Ok(designers);
+
             }
             catch (Exception)
             {

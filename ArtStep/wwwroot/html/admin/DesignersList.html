@@ -342,6 +342,7 @@
                                             <th>STT</th>
                                             <th>Tên Designer</th>
                                             <th>Trạng thái</th>
+                                            <th>Đánh giá trung bình</th>
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
@@ -470,11 +471,14 @@
                                     ${designer.isActive === 1 ? 'Khóa' : 'Mở khóa'}
                                 </button>
                             `;
+                        const avgStars = designer.AverageFeedbackStars?.toFixed(1) ?? '0.0';
 
+                        console.log(`Designer: ${designer.Name}, Status: ${status}, AvgStars: ${designer.AvgStars}`);
                         table.row.add([
                             index + 1,
                             designer.Name,
                             status,
+                            avgStars,
                             actions
                         ]).draw(false);
                     });
