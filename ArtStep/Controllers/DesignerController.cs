@@ -20,6 +20,7 @@ namespace ArtStep.Controllers
         {
             _context = context;
         }
+
         // GET: api/<DesignerController>
         [HttpGet]
         [Authorize]
@@ -64,7 +65,6 @@ namespace ArtStep.Controllers
             }
             return Ok(listShoe);
         }
-
 
         [HttpGet("view_revenue")]
         [Authorize]
@@ -169,7 +169,7 @@ namespace ArtStep.Controllers
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-        {
+            {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
 
@@ -285,6 +285,55 @@ namespace ArtStep.Controllers
                     ImageLink = imgDto.ImageLink, // Lưu base64
                     ShoeCustomId = design.ShoeId,
                 });
+            }
+        }
+
+
+        //GET api/DesignerController
+        [HttpGet("get_all_designs")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<DesignerDTO>>> GetAllDesigners()
+        {
+            try
+            {
+                var designers = await _context.User
+                    .Where(u => u.Role == "Designer")
+                    .Select(u => new DesignerDTO
+                    {
+                        UserId = u.UserId,
+                        Name = u.Name,
+                        isActive = u.isActive,
+                    })
+                    .ToListAsync();
+
+                return Ok(designers);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving designers" });
+            }
+        }
+
+        // Put api/DesignerController/update_designer_status
+        [HttpPut("update_designer_status")]
+        [Authorize]
+        public async Task<IActionResult> UpdateDesignerStatus([FromBody] DesignerDTO request)
+        {
+            try
+            {
+                var designer = await _context.User.FindAsync(request.UserId);
+                if (designer == null)
+                {
+                    return NotFound(new { Message = "Designer not found" });
+                }
+                designer.isActive = request.isActive;
+                _context.User.Update(designer);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Designer status updated successfully" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while updating designer status" });
             }
         }
 

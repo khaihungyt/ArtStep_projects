@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="profile.html">
+                <a class="nav-link" href="UserPRofile.html">
                     <i class="bi bi-person-circle"></i> Profile
                 </a>
             </li>

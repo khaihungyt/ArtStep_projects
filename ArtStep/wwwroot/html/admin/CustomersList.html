@@ -9,15 +9,18 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title> Admin Dashboard</title>
+    <title>Customers List - Admin</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="../../vendor/admin/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <!-- Custom fonts for this template -->
+    <link href="../../vendor/admin/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="../../CSS/admin/sb-admin-2.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../../CSS/admin/sb-admin-2.css" rel="stylesheet">
+
+    <!-- Custom styles for this page -->
+    <link href="../../vendor/admin/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -147,13 +150,10 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
+
                         <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
@@ -252,150 +252,51 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Content Row -->
-                    <div class="row">
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800">Danh sách khách hàng</h1>
+                    <p class="mb-4">
+                        Quản lý thông tin và trạng thái của khách hàng trên hệ thống.
+                    </p>
 
-                        <!-- Tổng Doanh Thu Tháng -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">4,000,000 VNĐ</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                    <!-- Logout Modal-->
+                    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Bạn có chắc chắn muốn đăng xuất?</h5>
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Đóng">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Số Đơn Hàng Tuần -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-success shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Đơn Hàng Tuần
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">125 đơn</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tỷ Lệ Hoàn Thành Custom đúng hạn-->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Hoàn Thành Custom Đúng Hạn
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">70%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                             style="width: 70%" aria-valuenow="70" aria-valuemin="0"
-                                                             aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-paint-brush fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Yêu Cầu Đang Chờ
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">36</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
+                                <div class="modal-body">Chọn "Logout" để kết thúc phiên làm việc của bạn.</div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                                    <button class="btn btn-primary" id="confirmLogout">Logout</button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo tháng</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Data Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Danh sách Khách hàng</h6>
                         </div>
-
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="customerTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>STT</th>
+                                            <th>Tên Khách Hàng</th>
+                                            <th>Trạng thái</th>
+                                            <th>Hành động</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dữ liệu sẽ được thêm vào đây bằng JS -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -425,7 +326,6 @@
         <i class="fas fa-angle-up"></i>
     </a>
 
-
     <!-- Bootstrap core JavaScript-->
     <script src="../../vendor/admin/jquery/jquery.min.js"></script>
     <script src="../../vendor/admin/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -437,13 +337,15 @@
     <script src="../../JS/admin/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="../../vendor/admin/chart.js/Chart.min.js"></script>
+    <script src="../../vendor/admin/datatables/jquery.dataTables.min.js"></script>
+
+    <script src="../../vendor/admin/datatables/dataTables.bootstrap4.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="../../JS/admin/demo/chart-area-demo.js"></script>
-    <script src="../../JS/admin/demo/chart-pie-demo.js"></script>
-    <!-- SweetAlert2 -->
+    <script src="../../JS/admin/demo/datatables-demo.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         $(document).ready(function () {
             const token = localStorage.getItem('token');
@@ -459,28 +361,78 @@
                 return;
             }
 
-            const role = localStorage.getItem('role');
-            if (role !== 'admin') {
-                Swal.fire({
-                    title: 'Truy cập bị từ chối',
-                    text: 'Bạn không có quyền truy cập trang này.',
-                    icon: 'error',
-                    confirmButtonText: 'Quay lại'
-                }).then(() => {
-                    window.location.href = '/home.html';
+            const table = $('#customerTable').DataTable();
+
+            fetch('/api/Customer/get_all_customers', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    table.clear();
+                    data.forEach((customer, index) => {
+                        let status = customer.isActive === 1 ? "Hoạt động" : "Đã khóa";
+
+                        const actions = `
+                                <button class="btn btn-sm ${customer.isActive === 1 ? 'btn-danger' : 'btn-success'} toggle-status-btn"
+                                        data-userid="${customer.UserId}" data-status="${customer.isActive}">
+                                    ${customer.isActive === 1 ? 'Khóa' : 'Mở khóa'}
+                                </button>
+                            `;
+
+                        table.row.add([
+                            index + 1,
+                            customer.Name,
+                            status,
+                            actions
+                        ]).draw(false);
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải dữ liệu khách hàng:', error);
                 });
-                return false;
-            }
-            return true;
-
-
         });
+
+        $('#customerTable tbody').on('click', '.toggle-status-btn', function () {
+            const userId = $(this).data('userid');
+            const currentStatus = $(this).data('status');
+            const newStatus = currentStatus === 1 ? 0 : 1;
+
+            fetch('/api/Customer/update_customer_status', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    UserId: userId,
+                    isActive: newStatus
+                })
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Cập nhật thất bại");
+                    return res.json();
+                })
+                .then(() => {
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("Lỗi khi cập nhật trạng thái:", err);
+                });
+        });
+
         $('#confirmLogout').on('click', function () {
             localStorage.removeItem('token');
             window.location.href = '/login.html';
         });
     </script>
-
 </body>
 
 </html>

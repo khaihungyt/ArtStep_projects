@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hàm load profile
     async function loadProfile() {
         try {
-            const token = localStorage.getItem('accessToken');
+            const token = localStorage.getItem('token');
             if (!token) {
                 console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
                 return;
