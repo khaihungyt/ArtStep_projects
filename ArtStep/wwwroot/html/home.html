@@ -165,6 +165,22 @@
     <script type="module" src="../JS/chat.js"></script>
     <!-- Custom JS -->
     <script type="module" src="../JS/home.js"></script>
+    <script>
+        $(document).ready(function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                Swal.fire({
+                    title: 'Phiên đăng nhập đã hết hạn',
+                    text: 'Vui lòng đăng nhập lại để tiếp tục sử dụng hệ thống.',
+                    icon: 'warning',
+                    confirmButtonText: 'Đăng nhập lại'
+                }).then(() => {
+                    window.location.href = '/login.html';
+                });
+                return;
+            }
+        });
+    </script>
 </body>
 
 </html>

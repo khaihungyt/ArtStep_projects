@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
+using System.Text.RegularExpressions;
 
 namespace ArtStep.Controllers
 {
@@ -66,27 +67,40 @@ namespace ArtStep.Controllers
         {
             try
             {
-
                 if (_context.Accounts.Any(a => a.UserName == request.UserName))
-                {
                     return BadRequest(new { message = "Tên đăng nhập đã tồn tại" });
-                }
 
                 string? imageUrl = null;
-                if (request.ImageProfile != null)
+
+                if (!string.IsNullOrWhiteSpace(request.Avatar))
                 {
-                    var uploadParams = new ImageUploadParams
+                    try
                     {
-                        File = new FileDescription(request.ImageProfile.FileName, request.ImageProfile.OpenReadStream()),
-                        PublicId = $"profile_images/{Guid.NewGuid()}"
-                    };
-                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                    imageUrl = uploadResult.SecureUrl?.ToString();
+                        var base64Data = Regex.Match(request.Avatar, @"data:image/(?<type>.+?);base64,(?<data>.+)").Groups;
+                        var imageType = base64Data["type"].Value;
+                        var base64String = base64Data["data"].Value;
+
+                        var allowedTypes = new[] { "jpeg", "jpg", "png", "gif" };
+                        if (!allowedTypes.Contains(imageType.ToLower()))
+                            return BadRequest(new { message = "Định dạng ảnh không hợp lệ. Chỉ JPG, PNG, GIF." });
+
+                        byte[] imageBytes = Convert.FromBase64String(base64String);
+                        if (imageBytes.Length > 800 * 1024)
+                            return BadRequest(new { message = "Kích thước ảnh quá lớn. Tối đa 800KB." });
+
+                        imageUrl = request.Avatar;
+                    }
+                    catch
+                    {
+                        return BadRequest(new { message = "Ảnh không hợp lệ hoặc bị lỗi khi xử lý." });
+                    }
                 }
+
+                var newUserId = Guid.NewGuid().ToString();
 
                 var user = new User
                 {
-                    UserId = Guid.NewGuid().ToString(),
+                    UserId = newUserId,
                     Name = request.Name,
                     Email = request.Email,
                     PhoneNo = request.PhoneNo,
@@ -94,26 +108,26 @@ namespace ArtStep.Controllers
                     isActive = 1,
                     ImageProfile = imageUrl
                 };
+                _context.User.Add(user);
 
+                // Tạo Account
                 var account = new Data.Account
                 {
                     AccountId = Guid.NewGuid().ToString(),
                     UserName = request.UserName,
                     Password = request.Password,
-                    UserId = user.UserId,
-                    isStatus = 1,
-                    User = user
+                    UserId = newUserId,
+                    isStatus = 1
                 };
-
-                _context.User.Add(user);
                 _context.Accounts.Add(account);
+
                 await _context.SaveChangesAsync();
 
                 return Ok(new { message = "Đăng ký thành công!" });
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(new { message = "Lỗi: " + e.Message });
             }
         }
 

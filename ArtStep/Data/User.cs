@@ -1,4 +1,6 @@
-﻿namespace ArtStep.Data
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ArtStep.Data
 {
     public class User
     {
@@ -13,7 +15,6 @@
         
         public short? isActive { get; set; }
         public virtual Account? Account { get; set; }
-
         public virtual Cart? Cart { get; set; }
         public virtual ICollection<ShoeCustom>? ShoeCustoms { get; set; }
 
@@ -21,6 +22,7 @@
 
         public virtual Feedback? SentFeedbacks { get; set; }
         public virtual ICollection<Feedback>? ReceivedFeedbacks { get; set; }
+
 
     }
 

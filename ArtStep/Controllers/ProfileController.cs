@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace ArtStep.Controllers
 {
@@ -76,29 +77,39 @@ namespace ArtStep.Controllers
                 return NotFound(new { message = "Không tìm thấy người dùng." });
             }
 
-            //if (request.Avatar != null && request.Avatar.Length > 0)
-            //{
-            //    var uploadParams = new ImageUploadParams
-            //    {
-            //        File = new FileDescription(request.Avatar.FileName, request.Avatar.OpenReadStream()),
-            //        PublicId = $"profile_images/{user.UserId}_{System.Guid.NewGuid()}"
-            //    };
+            if (!string.IsNullOrWhiteSpace(request.Avatar))
+            {
+                try
+                {
+                    var base64Data = Regex.Match(request.Avatar, @"data:image/(?<type>.+?);base64,(?<data>.+)").Groups;
+                    var imageType = base64Data["type"].Value;
+                    var base64String = base64Data["data"].Value;
 
-            //    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-            //    if (uploadResult.StatusCode == System.Net.HttpStatusCode.OK)
-            //    {
-            //        user.ImageProfile = uploadResult.SecureUrl.ToString();
-            //    }
-            //    else
-            //    {
-            //        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Không thể upload ảnh lên Cloudinary." });
-            //    }
-            //}
+                    var allowedTypes = new[] { "jpeg", "jpg", "png", "gif" };
+                    if (!allowedTypes.Contains(imageType.ToLower()))
+                    {
+                        return BadRequest(new { message = "Định dạng ảnh không hợp lệ. Chỉ chấp nhận JPG, GIF, PNG." });
+                    }
+
+                    byte[] imageBytes = Convert.FromBase64String(base64String);
+                    if (imageBytes.Length > 800 * 1024)
+                    {
+                        return BadRequest(new { message = "Kích thước ảnh quá lớn. Tối đa 800KB." });
+                    }
+
+                    user.ImageProfile = request.Avatar;
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"Error decoding base64 image: {ex.Message}");
+                    return BadRequest(new { message = "Ảnh không hợp lệ hoặc bị lỗi khi xử lý." });
+                }
+            }
 
             user.Name = request.Name?.Trim() ?? user.Name;
             user.Email = request.Email?.Trim() ?? user.Email;
             user.PhoneNo = request.PhoneNo?.Trim() ?? user.PhoneNo;
-            user.ImageProfile = request.Avatar?.Trim() ?? user.ImageProfile;
+
             try
             {
                 _context.User.Update(user);
@@ -111,26 +122,32 @@ namespace ArtStep.Controllers
             }
         }
 
+
         [HttpPost("ChangePassword")]
-        public async Task<IActionResult> ChangePassword([FromForm] string oldPassword, [FromForm] string newPassword)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
+
             var userId = userIdClaim.Value;
-            var account = await _context.Accounts.FirstOrDefaultAsync(a => a.User.UserId == userId);
+            var account = await _context.Accounts
+                .FirstOrDefaultAsync(a => a.User.UserId == userId);
 
             if (account == null)
             {
                 return NotFound(new { message = "Không tìm thấy tài khoản." });
             }
-            if (account.Password != oldPassword)
+
+            if (account.Password != request.CurrentPassword)
             {
                 return BadRequest(new { message = "Mật khẩu cũ không đúng." });
             }
-            account.Password = newPassword;
+
+            account.Password = request.NewPassword;
+
             try
             {
                 _context.Accounts.Update(account);
@@ -139,8 +156,10 @@ namespace ArtStep.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Lỗi khi cập nhật database." });
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Lỗi khi cập nhật database." });
             }
         }
+
     }
 }
