@@ -259,7 +259,7 @@ namespace ArtStep.Controllers
                 CategoryId = newDesign.CategoryId,
                 PriceAShoe = newDesign.PriceAShoe,
                 Quantity = newDesign.Quantity,
-            };  
+            };
             // 5. Trả về kết quả
             return Ok(response);
         }
@@ -351,7 +351,8 @@ namespace ArtStep.Controllers
             {
                 var designers = await _context.User
                                 .Where(u => u.Role == "Designer")
-                                .Select(u => new {
+                                .Select(u => new
+                                {
                                     UserId = u.UserId,
                                     Name = u.Name,
                                     isActive = u.isActive,
@@ -389,6 +390,83 @@ namespace ArtStep.Controllers
             catch (Exception)
             {
                 return StatusCode(500, new { Message = "An error occurred while updating designer status" });
+            }
+        }
+
+
+
+        [HttpGet("designer_detail/{designerId}")]
+        public async Task<ActionResult<DesignerResponseDTO>> GetDesignerAndFeedbackById(string designerId)
+        {
+            try
+            {
+                var designer = await _context.User
+                    .AsNoTracking()
+                    .Include(u => u.ShoeCustoms)
+                        .ThenInclude(sc => sc.Images)
+                    .Include(u => u.ReceivedFeedbacks)
+                        .ThenInclude(fb => fb.UserSend)
+                    .FirstOrDefaultAsync(u => u.UserId == designerId);
+
+                if (designer == null)
+                {
+                    return NotFound(new { Message = "Designer not found" });
+                }
+
+                // Calculate average rating
+                double averageRating = (double)(designer.ReceivedFeedbacks.Any()
+                        ? designer.ReceivedFeedbacks.Average(f => f.FeedbackStars)
+                            : 0);
+
+                var feedbackList = designer.ReceivedFeedbacks?
+                   .Select(fb => new FeedbackDTO
+                   {
+                       FeedbackId = fb.FeedbackId,
+                       FeedbackDescription = fb.FeedbackDescription ?? string.Empty,
+                       FeedbackStars = (int) fb.FeedbackStars,
+                       User = fb.UserSend != null ? new UserDTO
+                       {
+                           UserId = fb.UserSend.UserId ?? string.Empty,
+                           UserName = fb.UserSend.Name ?? "Không xác định",
+                           Avatar = fb.UserSend.ImageProfile ?? string.Empty
+                       } : new UserDTO()
+                   }).ToList();
+
+                var shoeCustomList = designer.ShoeCustoms?
+                    .Select(shoe => new ShoeCustomDTO
+                    {
+                        ShoeId = shoe.ShoeId,
+                        ShoeName = shoe.ShoeName,
+                        PriceAShoe = shoe.PriceAShoe,
+                        ShoeImages = shoe.Images?
+                            .Select(img => new ShoeImageDTO
+                            {
+                                ImageId = img.ImageId,
+                                ImageLink = img.ImageLink
+                            }).ToList() ?? new List<ShoeImageDTO>()
+                    }).ToList() ?? new List<ShoeCustomDTO>();
+
+                var response = new DesignerResponseDTO
+                {
+                    DesignerId = designer.UserId,
+                    DesignerName = designer.Name,
+                    Email = designer.Email,
+                    Phone = designer.PhoneNo,
+                    AvatarImage = designer.ImageProfile,
+                    AverageRating = Math.Round(averageRating, 1),
+                    FeedBackList = feedbackList,
+                    ShoeCustomList = shoeCustomList
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Error = ex.Message
+                });
             }
         }
 

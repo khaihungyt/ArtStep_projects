@@ -139,8 +139,8 @@ namespace ArtStep.Data
 
                 // User sent feedback (user)
                 entity.HasOne(fb => fb.UserSend)
-                      .WithOne(u => u.SentFeedbacks)
-                      .HasForeignKey<User>(fb => fb.UserId);
+                     .WithMany()
+                     .HasForeignKey(f => f.UserSendFeedbackId);
 
                 // User recieve feedback (designer)
                 entity.HasOne(fb => fb.DesignersReceived)
