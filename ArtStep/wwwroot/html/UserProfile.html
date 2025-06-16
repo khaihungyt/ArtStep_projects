@@ -4,10 +4,12 @@
     <meta charset="utf-8">
     <title>Personal Account Settings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         body {
-            background: #f5f5f5;
+            background: url('https://png.pngtree.com/background/20220723/original/pngtree-background-biru-keren-dan-kosong-abstract-untuk-template-desain-powerpoint-ppt-picture-image_1738466.jpg') no-repeat center center fixed;
+            background-size: cover;
             margin-top: 20px;
         }
 
@@ -135,7 +137,6 @@
                     <div class="list-group list-group-flush account-settings-links">
                         <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
                         <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
                         <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a>
                     </div>
                 </div>
@@ -216,32 +217,6 @@
                             </form>
                         </div>
 
-                        <!-- Social links -->
-                        <div class="tab-pane fade" id="account-social-links">
-                            <div class="card-body pb-2">
-                                <div class="form-group">
-                                    <label class="form-label" for="twitter">Twitter</label>
-                                    <input type="text" id="twitter" class="form-control" value="https://twitter.com/user">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="facebook">Facebook</label>
-                                    <input type="text" id="facebook" class="form-control" value="https://www.facebook.com/user">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="googleplus">Google+</label>
-                                    <input type="text" id="googleplus" class="form-control" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="linkedin">LinkedIn</label>
-                                    <input type="text" id="linkedin" class="form-control" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="instagram">Instagram</label>
-                                    <input type="text" id="instagram" class="form-control" value="https://www.instagram.com/user">
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Notifications -->
                         <div class="tab-pane fade" id="account-notifications">
                             <div class="card-body pb-2">
@@ -314,14 +289,46 @@
                         </div>
 
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
 
-    </div> 
+    </div>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript" src="../JS/userProfile.js"></script>
+    <script>
+        $(document).ready(function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                Swal.fire({
+                    title: 'Phiên đăng nhập đã hết hạn',
+                    text: 'Vui lòng đăng nhập lại để tiếp tục sử dụng hệ thống.',
+                    icon: 'warning',
+                    confirmButtonText: 'Đăng nhập lại'
+                }).then(() => {
+                    window.location.href = '/login.html';
+                });
+                return;
+            }
+
+            const role = localStorage.getItem('role');
+            if (role !== 'user') {
+                Swal.fire({
+                    title: 'Truy cập bị từ chối',
+                    text: 'Bạn không có quyền truy cập trang này.',
+                    icon: 'error',
+                    confirmButtonText: 'Quay lại'
+                }).then(() => {
+                    window.location.href = '/home.html';
+                });
+                return false;
+            }
+            return true;
+
+        });
+    </script>
 </body>
 
 </html>

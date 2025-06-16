@@ -4,7 +4,7 @@ namespace ArtStep.DTO
 {
     public class UpdateProfileDTO
     {
-        public IFormFile? Avatar { get; set; }
+        public string? Avatar { get; set; }
 
         [FromForm(Name = "name")]
         public string Name { get; set; }
