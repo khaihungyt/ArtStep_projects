@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ArtStep.Data;
@@ -260,5 +260,41 @@ namespace ArtStep.Controllers
             }
             return Redirect($"/cart?payment_info=payment_fail");
         }
+
+        [HttpGet("top-selling-shoes")]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetTopSellingShoes()
+        {
+            try
+            {
+                // Query to get the top 5 best-selling shoes based on total quantity sold
+                var topSellingShoes = await _context.OrderDetail
+                    .Include(od => od.ShoeCustom)
+                    .Where(od => od.ShoeCustom != null)
+                    .GroupBy(od => od.ShoeCustom)
+                    .Select(g => new
+                    {
+                        ShoeId = g.Key.ShoeId,
+                        ShoeName = g.Key.ShoeName,
+                        TotalQuantitySold = g.Sum(od => od.QuantityBuy)
+                    })
+                    .OrderByDescending(s => s.TotalQuantitySold)
+                    .Take(5)
+                    .ToListAsync();
+
+                if (topSellingShoes == null || topSellingShoes.Count == 0)
+                {
+                    return NotFound(new { message = "No shoes found" });
+                }
+
+                return Ok(new { topSellingShoes });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving top-selling shoes", error = ex.Message });
+            }
+        }
+
+
     }
 }

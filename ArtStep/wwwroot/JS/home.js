@@ -1,71 +1,25 @@
 ﻿import { API_BASE_URL } from './config.js';
+import './header.js';
 
-document.addEventListener('DOMContentLoaded', function () {
-    const navbarAuth = document.getElementById('navbarAuth');
-    const token = localStorage.getItem('token');
-
-    if (token) {
-        navbarAuth.innerHTML = `
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="goToCart()">
-                    <i class="bi bi-cart"></i> Cart
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="UserPRofile.html">
-                    <i class="bi bi-person-circle"></i> Profile
-                </a>
-            </li>
-             <li class="nav-item">
-                <a class="nav-link" href="#" id="logoutBtn">
-                    <i class="bi bi-box-arrow-right"></i> Log out
-                </a>
-            </li>
-        `;
-        const logoutBtn = document.getElementById('logoutBtn');
-        logoutBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.removeItem('username');
-            localStorage.removeItem('userId');
-            window.location.reload();
-        });
-    } else {
-        navbarAuth.innerHTML = `
-            <li class="nav-item">
-                <a class="nav-link" href="Login.html">
-                    <i class="bi bi-person-circle"></i> Login
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="Register.html">
-                    <i class="bi bi-person-plus"></i> Register
-                </a>
-            </li>
-        `;
-    }
-
-    //tải danh sách Designers
+document.addEventListener('DOMContentLoaded', async function () {
+    await new Promise(resolve => setTimeout(resolve, 100));
     const designerFilter = document.getElementById('designerFilter');
 
     async function fetchDesigners() {
         try {
-            const response = await fetch('/api/designers');
+            const response = await fetch(`${API_BASE_URL}/designers`);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
 
-            // Handle clean JSON response format
             const designers = data || [];
 
             if (!Array.isArray(designers)) {
                 console.error('Designers data is not an array:', data);
                 return;
             }
-
-            // Update the designer filter dropdown instead of a container
             if (designerFilter) {
                 designerFilter.innerHTML = '<option value="">All Designers</option>';
                 designers.forEach(designer => {
@@ -81,12 +35,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     fetchDesigners();
 
-    //tải danh sách Categorys
     const styleFilter = document.getElementById('styleFilter');
 
     async function fetchCategories() {
-        try {
-            const response = await fetch('/api/categories');
+            const response = await fetch(`${API_BASE_URL}/categories`);
+            const response = await fetch(`${API_BASE_URL}/categories`);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -112,6 +66,86 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     fetchCategories();
+
+    // Define best sellers functions first
+    async function loadBestSellers() {
+        try {
+            console.log('Loading best sellers from:', `${API_BASE_URL}/bestsellers`);
+            const response = await fetch(`${API_BASE_URL}/bestsellers`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const bestSellers = await response.json();
+            console.log('Best sellers data:', bestSellers);
+            renderBestSellers(bestSellers);
+        } catch (error) {
+            console.error('Error loading best sellers:', error);
+            // Hide the best sellers section if there's an error
+            const bestSellersContainer = document.querySelector('.container.my-5');
+            if (bestSellersContainer) {
+                bestSellersContainer.style.display = 'none';
+            }
+        }
+    }
+
+    function renderBestSellers(products) {
+        const bestSellersContainer = document.getElementById('bestSellersList');
+        if (!bestSellersContainer) {
+            console.error('Best sellers container not found');
+            return;
+        }
+
+        if (!Array.isArray(products) || products.length === 0) {
+            console.log('No best sellers data or empty array');
+            bestSellersContainer.innerHTML = '<div class="col-12 text-center"><p class="text-muted">Không có dữ liệu sản phẩm bán chạy</p></div>';
+            return;
+        }
+
+        console.log('Rendering best sellers:', products);
+
+        const bestSellersHTML = products.map((product, index) => {
+            const designerId = product.DesignerUserId;
+            const designerName = product.Designer;
+            const shoeId = product.ShoeId;
+            const productName = product.Name;
+            const productPrice = product.Price || 0;
+            const productStyle = product.Style || 'N/A';
+            const productImage = product.ImageUrl || 'placeholder.jpg';
+            const totalSold = product.TotalSold || 0;
+
+            return `
+                <div class="col-lg-3 col-md-3 col-sm-4 col-6 mb-4">
+                    <div class="card bestseller-card h-100">
+                        <div class="bestseller-badge">
+                            #${index + 1} HOT
+                        </div>
+                        <img src="${productImage}" 
+                             class="card-img-top bestseller-image" 
+                             alt="${productName}">
+                        <div class="card-body d-flex flex-column text-center">
+                            <h6 class="card-title bestseller-title fw-bold mb-2">${productName}</h6>
+                            <p class="text-muted small mb-2">${designerName || 'N/A'}</p>
+                            <p class="text-muted small mb-2">${productStyle}</p>
+                            <div class="sold-count mb-2">
+                                <i class="bi bi-fire"></i> ${totalSold} đã bán
+                            </div>
+                            <h5 class="bestseller-price mb-3">$${productPrice}</h5>
+                            <button onclick="orderNow('${shoeId}')" 
+                                    class="btn order-now-btn mt-auto">
+                                Đặt ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        bestSellersContainer.innerHTML = bestSellersHTML;
+    }
+
+    // Load best sellers after functions are defined
+    await loadBestSellers();
 
     const productList = document.getElementById('productList');
     const paginationElement = document.getElementById('pagination');
@@ -446,10 +480,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             return;
         }
-        if (!window.chatSystem) {
-            window.chatSystem = new ChatSystem();
-        }
-        window.chatSystem.startChatWithDesigner(designerUserId, designerName);
+
+        // Redirect to designers page with chat parameters
+        window.location.href = `designers.html?chatWith=${designerUserId}&designerName=${encodeURIComponent(designerName)}`;
     }
 
     window.goToCart = function () {
@@ -474,5 +507,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         window.location.href = 'cart';
+    }
+
+    window.orderNow = function (shoeId) {
+        // Redirect to product detail page for immediate ordering
+        window.location.href = `product-detail.html?id=${shoeId}`;
     }
 });

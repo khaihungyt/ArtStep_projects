@@ -110,6 +110,9 @@ namespace ArtStep.Migrations
                     b.Property<int?>("FeedbackStars")
                         .HasColumnType("int");
 
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("UserSendFeedbackId")
                         .HasColumnType("longtext");
 
@@ -117,7 +120,9 @@ namespace ArtStep.Migrations
 
                     b.HasIndex("DesignerReceiveFeedbackId");
 
-                    b.ToTable("Feedback");
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("feedback", (string)null);
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -290,6 +295,92 @@ namespace ArtStep.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("ArtStep.Data.Wallet", b =>
+                {
+                    b.Property<string>("WalletId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<double>("Balance")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<short>("IsActive")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("WalletId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Wallets");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.WalletTransaction", b =>
+                {
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
+
+                    b.Property<double>("BalanceAfter")
+                        .HasColumnType("double");
+
+                    b.Property<double>("BalanceBefore")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ExternalTransactionId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("TransactionType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("WalletId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("TransactionId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletTransactions");
+                });
+
             modelBuilder.Entity("ArtStep.Data.Account", b =>
                 {
                     b.HasOne("ArtStep.Data.User", "User")
@@ -321,7 +412,14 @@ namespace ArtStep.Migrations
                         .HasForeignKey("DesignerReceiveFeedbackId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("ArtStep.Data.Order", "Order")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("DesignersReceived");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -408,6 +506,33 @@ namespace ArtStep.Migrations
                     b.Navigation("SentFeedbacks");
                 });
 
+            modelBuilder.Entity("ArtStep.Data.Wallet", b =>
+                {
+                    b.HasOne("ArtStep.Data.User", "User")
+                        .WithOne("Wallet")
+                        .HasForeignKey("ArtStep.Data.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.WalletTransaction", b =>
+                {
+                    b.HasOne("ArtStep.Data.Order", "Order")
+                        .WithMany("WalletTransactions")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("ArtStep.Data.Wallet", "Wallet")
+                        .WithMany("WalletTransactions")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
                 {
                     b.Navigation("CartDetails");
@@ -427,7 +552,11 @@ namespace ArtStep.Migrations
 
             modelBuilder.Entity("ArtStep.Data.Order", b =>
                 {
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("WalletTransactions");
                 });
 
             modelBuilder.Entity("ArtStep.Data.ShoeCustom", b =>
@@ -448,6 +577,13 @@ namespace ArtStep.Migrations
                     b.Navigation("ReceivedFeedbacks");
 
                     b.Navigation("ShoeCustoms");
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.Wallet", b =>
+                {
+                    b.Navigation("WalletTransactions");
                 });
 #pragma warning restore 612, 618
         }

@@ -182,7 +182,7 @@ namespace ArtStep.Controllers
             // 2. Tìm kiếm thiết kế của người dùng
             var design = await _context.ShoeCustom
                 .Include(s => s.Designer)
-                .FirstOrDefaultAsync(s => s.ShoeId == ShoeId && s.Designer.UserId == userId);
+                .FirstOrDefaultAsync(s => s.ShoeId == designId && s.Designer.UserId == userId);
 
             if (design == null)
             {
@@ -470,5 +470,30 @@ namespace ArtStep.Controllers
             }
         }
 
+        // GET: api/Designer/public
+        [HttpGet("public")]
+        public async Task<ActionResult<List<DesignerPublicDTO>>> GetAllDesignersPublic()
+        {
+            try
+            {
+                var designers = await _context.User
+                    .AsNoTracking()
+                    .Where(u => u.Role == "designer" && u.isActive != 0)
+                    .Select(d => new DesignerPublicDTO
+                    {
+                        UserId = d.UserId,
+                        Name = d.Name,
+                        ImageProfile = d.ImageProfile,
+                        TotalDesigns = d.ShoeCustoms != null ? d.ShoeCustoms.Count(sc => sc.IsHidden == 0) : 0
+                    })
+                    .ToListAsync();
+
+                return Ok(designers);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving designers" });
+            }
+        }
     }
 }

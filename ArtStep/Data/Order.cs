@@ -11,6 +11,8 @@
         public virtual User? User { get; set; }        
         public long? VNPayPaymentId { get; set; }
         public virtual ICollection<OrderDetail>? OrderDetails { get; set; }
+        public virtual ICollection<WalletTransaction>? WalletTransactions { get; set; }
+        public virtual ICollection<Feedback>? Feedbacks { get; set; }
 
     }
 }

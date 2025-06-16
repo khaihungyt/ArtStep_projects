@@ -12,13 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStep.Migrations
 {
     [DbContext(typeof(ArtStepDbContext))]
-<<<<<<<< HEAD:ArtStep/Migrations/20250607023341_init.Designer.cs
-    [Migration("20250607023341_init")]
-    partial class init
-========
-    [Migration("20250615093450_InitialCreate")]
-    partial class InitialCreate
->>>>>>>> origin/nhat:ArtStep/Migrations/20250615093450_InitialCreate.Designer.cs
+    [Migration("20250615115626_AddOrderIdToFeedback")]
+    partial class AddOrderIdToFeedback
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,6 +113,9 @@ namespace ArtStep.Migrations
                     b.Property<int?>("FeedbackStars")
                         .HasColumnType("int");
 
+                    b.Property<string>("OrderId")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("UserSendFeedbackId")
                         .HasColumnType("longtext");
 
@@ -125,7 +123,9 @@ namespace ArtStep.Migrations
 
                     b.HasIndex("DesignerReceiveFeedbackId");
 
-                    b.ToTable("Feedback");
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("feedback", (string)null);
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -415,7 +415,14 @@ namespace ArtStep.Migrations
                         .HasForeignKey("DesignerReceiveFeedbackId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("ArtStep.Data.Order", "Order")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("DesignersReceived");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -548,6 +555,8 @@ namespace ArtStep.Migrations
 
             modelBuilder.Entity("ArtStep.Data.Order", b =>
                 {
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("OrderDetails");
 
                     b.Navigation("WalletTransactions");
