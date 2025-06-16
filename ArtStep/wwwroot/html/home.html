@@ -15,6 +15,89 @@
     <link rel="stylesheet" href="../CSS/chat.css" />
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    
+    <!-- Best Sellers Styling -->
+    <style>
+        .bestseller-card {
+            position: relative;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            overflow: hidden;
+            background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        }
+        
+        .bestseller-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .bestseller-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+            box-shadow: 0 2px 10px rgba(255,107,107,0.3);
+        }
+        
+        .bestseller-image {
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .bestseller-card:hover .bestseller-image {
+            transform: scale(1.05);
+        }
+        
+        .bestseller-price {
+            color: #e74c3c !important;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .order-now-btn {
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .order-now-btn:hover {
+            background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+        
+        .bestseller-title {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .sold-count {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
@@ -34,7 +117,7 @@
                         <a class="nav-link active">Trang Chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Đơn Hàng Của Tôi</a>
+                        <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav" id="navbarAuth">
@@ -57,7 +140,23 @@
             </div>
         </div>
     </header>
+    <!-- Top Sản phẩm bán chạy -->
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="display-6 fw-bold text-primary">
+                <i class="bi bi-fire text-danger"></i> Top Sản Phẩm Bán Chạy
+            </h2>
+            <p class="text-muted">Những thiết kế được yêu thích nhất bởi khách hàng</p>
+        </div>
 
+        <div class="row justify-content-center" id="bestSellersList">
+            <!-- Best sellers will be loaded here -->
+        </div>
+
+        <div class="text-center mt-4">
+            <hr class="w-50 mx-auto">
+        </div>
+    </div>
     <!-- Tìm kiếm + Lọc -->
     <div class="container my-4">
         <form class="row g-2 align-items-center" id="filterForm" onsubmit="return false;">
@@ -87,8 +186,11 @@
         </form>
     </div>
 
+
+
     <!-- Sản phẩm -->
     <div class="container">
+        <h3 class="mb-4">Tất Cả Sản Phẩm</h3>
         <div class="row" id="productList">
         </div>
 
@@ -162,7 +264,7 @@
     <!-- SignalR Client -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <!-- Chat System -->
-    <script type="module" src="../JS/chat.js"></script>
+    
     <!-- Custom JS -->
     <script type="module" src="../JS/home.js"></script>
 </body>

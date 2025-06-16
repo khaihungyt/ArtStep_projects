@@ -119,5 +119,73 @@ namespace ArtStep.Controllers
             var priceRanges = new List<int> { 200000, 500000, 1500000, 5000000 };
             return Ok(priceRanges);
         }
+
+        [HttpGet("bestsellers")]
+        public async Task<IActionResult> GetBestSellers()
+        {
+            try
+            {
+                var topSellingShoeIds = await _context.OrderDetail
+                    .Where(od => od.ShoeCustomId != null)
+                    .GroupBy(od => od.ShoeCustomId)
+                    .Select(g => new
+                    {
+                        ShoeCustomId = g.Key,
+                        TotalSold = g.Sum(od => od.QuantityBuy ?? 0)
+                    })
+                    .OrderByDescending(x => x.TotalSold)
+                    .Take(5)
+                    .ToListAsync();
+
+                var shoeIds = topSellingShoeIds.Select(x => x.ShoeCustomId).ToList();
+                
+                var shoes = await _context.ShoeCustom
+                    .Include(sc => sc.Images)
+                    .Include(sc => sc.Category)
+                    .Include(sc => sc.Designer)
+                    .Where(sc => shoeIds.Contains(sc.ShoeId))
+                    .ToListAsync();
+
+                var bestSellers = topSellingShoeIds.Select(top => 
+                {
+                    var shoe = shoes.FirstOrDefault(s => s.ShoeId == top.ShoeCustomId);
+                    return new
+                    {
+                        ShoeId = shoe?.ShoeId,
+                        Name = shoe?.ShoeName,
+                        Price = shoe?.PriceAShoe,
+                        Style = shoe?.Category?.CategoryName,
+                        Designer = shoe?.Designer?.Name,
+                        DesignerUserId = shoe?.Designer?.UserId,
+                        ImageUrl = shoe?.Images?.Select(i => i.ImageLink).FirstOrDefault(),
+                        TotalSold = top.TotalSold
+                    };
+                }).Where(x => x.ShoeId != null).ToList();
+
+                return Ok(bestSellers);
+            }
+            catch (Exception)
+            {
+                var fallbackShoes = await _context.ShoeCustom
+                    .Include(sc => sc.Images)
+                    .Include(sc => sc.Category)
+                    .Include(sc => sc.Designer)
+                    .Take(5)
+                    .Select(sc => new
+                    {
+                        sc.ShoeId,
+                        Name = sc.ShoeName,
+                        Price = sc.PriceAShoe,
+                        Style = sc.Category != null ? sc.Category.CategoryName : null,
+                        Designer = sc.Designer != null ? sc.Designer.Name : null,
+                        DesignerUserId = sc.Designer != null ? sc.Designer.UserId : null,
+                        ImageUrl = sc.Images.Select(i => i.ImageLink).FirstOrDefault(),
+                        TotalSold = 0 // Placeholder since no order data
+                    })
+                    .ToListAsync();
+
+                return Ok(fallbackShoes);
+            }
+        }
     }
 }

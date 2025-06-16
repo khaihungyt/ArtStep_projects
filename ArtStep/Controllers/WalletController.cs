@@ -96,7 +96,7 @@ namespace ArtStep.Controllers
                     BalanceAfter = wallet.Balance,
                     Description = request.Description ?? "Wallet recharge",
                     Status = "PENDING",
-                    PaymentMethod = "VNPAY",
+                    PaymentMethod = "BANKING",
                     ExternalTransactionId = vnpayPaymentId.ToString(),
                     CreatedAt = DateTime.Now
                 };
@@ -104,45 +104,21 @@ namespace ArtStep.Controllers
                 _context.WalletTransactions.Add(walletTransaction);
                 await _context.SaveChangesAsync();
 
-                // VNPay is under maintenance - Auto success for testing
-                // TODO: Uncomment below VNPay code when maintenance is complete
-                /*
-                var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
-                var paymentRequest = new PaymentRequest
-                {
-                    PaymentId = vnpayPaymentId,
-                    Money = (double)request.Amount,
-                    Description = $"Wallet recharge - {request.Amount:N0} VND",
-                    IpAddress = ipAddress,
-                    BankCode = BankCode.ANY,
-                    CreatedDate = DateTime.Now,
-                    Currency = Currency.VND,
-                    Language = DisplayLanguage.Vietnamese
-                };
-
-                var paymentUrl = _vnpay.GetPaymentUrl(paymentRequest);
+                //walletTransaction.Status = "COMPLETED";
+                //walletTransaction.CompletedAt = DateTime.Now;
                 
-                return Ok(paymentUrl);
-                */
+                //// Update wallet balance
+                //wallet.Balance += request.Amount;
+                //wallet.UpdatedAt = DateTime.Now;
+                //walletTransaction.BalanceAfter = wallet.Balance;
 
-                // Temporary auto-success during VNPay maintenance
-                // Update transaction status to completed
-                walletTransaction.Status = "COMPLETED";
-                walletTransaction.CompletedAt = DateTime.Now;
-                
-                // Update wallet balance
-                wallet.Balance += request.Amount;
-                wallet.UpdatedAt = DateTime.Now;
-                walletTransaction.BalanceAfter = wallet.Balance;
+                //_context.WalletTransactions.Update(walletTransaction);
+                //_context.Wallets.Update(wallet);
+                //await _context.SaveChangesAsync();
 
-                _context.WalletTransactions.Update(walletTransaction);
-                _context.Wallets.Update(wallet);
-                await _context.SaveChangesAsync();
-
-                // Return success result (simulating successful VNPay callback)
                 return Ok(new { 
                     success = true,
-                    message = "Recharge completed successfully (VNPay maintenance mode)",
+                    message = "Recharge completed successfully",
                     transactionId = transactionId,
                     amount = request.Amount,
                     newBalance = wallet.Balance,
@@ -371,6 +347,21 @@ namespace ArtStep.Controllers
             return wallet;
         }
 
+        [HttpGet("payment-info")]
+        public IActionResult GetPaymentInfo()
+        {
+            try
+            {
+                var bankAccount = _configuration.GetSection("AdminBankAccount").Get<AdminBankAccount>();
+
+                return Ok(bankAccount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during wallet payment", error = ex.Message });
+            }
+        }
+
     }
 
     // Request models
@@ -383,5 +374,13 @@ namespace ArtStep.Controllers
     public class PayOrderRequest
     {
         public string OrderId { get; set; } = string.Empty;
+    }
+    public class AdminBankAccount
+    {
+        public string BankName { get; set; }
+        public string AccountNumber { get; set; }
+        public string AccountHolderName { get; set; }
+        public string? VietQrClientId { get; set; }
+        public string? VietQrApiKey { get; set; }
     }
 } 

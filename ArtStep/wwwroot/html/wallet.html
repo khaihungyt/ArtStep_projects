@@ -121,7 +121,7 @@
         <!-- Transaction History -->
         <div class="row">
             <div class="col-12">
-                <div class="card shadow-sm border-0" style="background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);">
+                <div class="card shadow-sm border-0" style="">
                     <div class="card-header text-white" style="background: linear-gradient(135deg, #404040 0%, #2c2c2c 100%); border-bottom: 1px solid #555;">
                         <h5 class="mb-0"><i class="bi bi-clock-history"></i> Lịch Sử Giao Dịch</h5>
                     </div>
@@ -204,6 +204,69 @@
         </div>
     </div>
 
+    <!-- QR Code Modal -->
+    <div class="modal fade" id="qr-code-modal" tabindex="-1" aria-labelledby="qrCodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background: #2c2c2c; color: white;">
+                <div class="modal-header" style="border-bottom: 1px solid #555;">
+                    <h5 class="modal-title" id="qrCodeModalLabel">
+                        <i class="bi bi-qr-code"></i> Quét Mã QR Để Chuyển Khoản
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="qr-code-container mb-3">
+                                <img id="qr-code-image" src="" alt="QR Code" class="img-fluid" style="max-width: 300px; border: 2px solid #fff; border-radius: 10px;">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="payment-info text-start">
+                                <h6 class="text-primary mb-3">
+                                    <i class="bi bi-info-circle"></i> Thông Tin Chuyển Khoản
+                                </h6>
+                                <div class="info-item mb-2">
+                                    <strong>Ngân hàng:</strong>
+                                    <span id="bank-name">-</span>
+                                </div>
+                                <div class="info-item mb-2">
+                                    <strong>Số tài khoản:</strong>
+                                    <span id="account-number">-</span>
+                                </div>
+                                <div class="info-item mb-2">
+                                    <strong>Chủ tài khoản:</strong>
+                                    <span id="account-name">-</span>
+                                </div>
+                                <div class="info-item mb-2">
+                                    <strong>Số tiền:</strong>
+                                    <span id="transfer-amount" class="text-success fw-bold">-</span>
+                                </div>
+                                <div class="info-item mb-3">
+                                    <strong>Nội dung:</strong>
+                                    <span id="transfer-content">-</span>
+                                </div>
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    <strong>Lưu ý:</strong><br>
+                                    - Vui lòng chuyển đúng số tiền và nội dung<br>
+                                    - Sau khi chuyển thành công, nhấn nút bên dưới<br>
+                                    - Tiền sẽ được cộng vào ví sau khi được phê duyệt
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #555;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" id="confirm-transfer-btn">
+                        <i class="bi bi-check-circle"></i> Tôi đã chuyển khoản
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Container -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -275,7 +338,7 @@
     <!-- SignalR Client -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <!-- Chat System -->
-    <script type="module" src="../JS/chat.js"></script>
+    
     <!-- Custom JS -->
     <script type="module" src="../JS/walletPage.js" defer></script>
 </body>
