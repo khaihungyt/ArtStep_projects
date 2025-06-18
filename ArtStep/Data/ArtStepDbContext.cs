@@ -50,6 +50,12 @@ namespace ArtStep.Data
                  .OnDelete(DeleteBehavior.Restrict);
             });
 
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Cart)
+                .WithOne(c => c.Users) // đổi tên property trong Cart cho rõ
+                .HasForeignKey<Cart>(c => c.CartId) // CartId là FK tới UserId
+                .OnDelete(DeleteBehavior.Cascade); // hoặc Restrict, tùy yêu cầu
+
             // CartDetail
             modelBuilder.Entity<CartDetail>(entity =>
             {

@@ -17,12 +17,25 @@
     <!-- Navbar Đơn Giản -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="../home.html">
+            <a class="navbar-brand" href="#">
                 <i class="bi bi-boot"></i> ArtStep
             </a>
-            <span class="navbar-text ms-auto">
-                <a href="../login.html" class="text-white"><i class="bi bi-person"></i> Đăng nhập</a>
-            </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../designers.html">Các nhà thiết kế</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav" id="navbarAuth">
+                </ul>
+            </div>
         </div>
     </nav>
 

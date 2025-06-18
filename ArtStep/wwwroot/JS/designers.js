@@ -713,5 +713,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.viewDesignerProducts = function(designerId, designerName) {
     // Redirect to home page with designer filter
-    window.location.href = `home.html?designer=${designerId}&designerName=${encodeURIComponent(designerName)}`;
+    window.location.href = `user/designerdetail.html?designerId=${designerId}`;
 }; 

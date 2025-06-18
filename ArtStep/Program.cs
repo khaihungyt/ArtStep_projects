@@ -48,7 +48,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 builder.Services.AddMemoryCache();
-
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<ArtStepDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
@@ -107,7 +106,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "https://localhost:7216",
                 "http://localhost:5155",
-                "https://localhost:5155"  
+                "https://localhost:5155",
+                "http://www.artstep.somee.com"
               )
               .AllowAnyMethod()
               .AllowAnyHeader()
