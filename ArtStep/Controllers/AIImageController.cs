@@ -52,6 +52,4 @@ public class AIImangeController : ControllerBase
         var responseBody = await response.Content.ReadAsStringAsync();
         return Content(responseBody, "application/json");
     }
-
-
 }
