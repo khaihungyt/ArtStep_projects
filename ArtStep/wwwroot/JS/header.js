@@ -37,7 +37,7 @@ export class HeaderManager {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile.html">
+                    <a class="nav-link" href="UserProfile.html">
                         <i class="bi bi-person-circle"></i> Hồ sơ
                     </a>
                 </li>
@@ -60,7 +60,7 @@ export class HeaderManager {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="profile.html">
+                    <a class="nav-link" href="UserProfile.html">
                         <i class="bi bi-person-circle"></i> Hồ sơ
                     </a>
                 </li>

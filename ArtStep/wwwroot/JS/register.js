@@ -35,7 +35,10 @@
                 Swal.fire({
                     icon: 'success',
                     title: 'Thành công',
-                    text: result.message || 'Đăng ký thành công!'
+                    text: result.message || 'Đăng ký thành công!',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    window.location.href = '/Login.html'; // Redirect to login page
                 });
                 form.reset();
             } else {

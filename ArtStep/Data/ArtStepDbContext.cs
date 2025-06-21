@@ -52,8 +52,8 @@ namespace ArtStep.Data
 
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Cart)
-                .WithOne(c => c.Users) // đổi tên property trong Cart cho rõ
-                .HasForeignKey<Cart>(c => c.CartId) // CartId là FK tới UserId
+                .WithOne(c => c.Users)
+                .HasForeignKey<Cart>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade); // hoặc Restrict, tùy yêu cầu
 
             // CartDetail
@@ -146,7 +146,7 @@ namespace ArtStep.Data
                 
                 entity.ToTable("feedback");
                 entity.HasOne(fb => fb.UserSend)
-                     .WithMany()
+                     .WithMany(fb => fb.SentFeedbacks)
                      .HasForeignKey(f => f.UserSendFeedbackId);
 
                 entity.HasOne(fb => fb.DesignersReceived)

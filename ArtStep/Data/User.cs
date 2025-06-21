@@ -20,8 +20,7 @@ namespace ArtStep.Data
         public virtual ICollection<ShoeCustom>? ShoeCustoms { get; set; }
 
         public virtual ICollection<Order>? Orders { get; set; }
-
-        public virtual Feedback? SentFeedbacks { get; set; }
+        public ICollection<Feedback> SentFeedbacks { get; set; }
         public virtual ICollection<Feedback>? ReceivedFeedbacks { get; set; }
 
 
