@@ -19,7 +19,9 @@ namespace ArtStep.Data
         public DbSet<ShoeCustom> ShoeCustom { get; set; }
         public DbSet<User> User { get; set; }
 
-        public DbSet<Feedback> Feedback { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<WalletTransaction> WalletTransactions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Account
@@ -47,6 +49,12 @@ namespace ArtStep.Data
                       .HasForeignKey<User>(c => c.UserId)
                  .OnDelete(DeleteBehavior.Restrict);
             });
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Cart)
+                .WithOne(c => c.Users) // đổi tên property trong Cart cho rõ
+                .HasForeignKey<Cart>(c => c.CartId) // CartId là FK tới UserId
+                .OnDelete(DeleteBehavior.Cascade); // hoặc Restrict, tùy yêu cầu
 
             // CartDetail
             modelBuilder.Entity<CartDetail>(entity =>
@@ -131,22 +139,78 @@ namespace ArtStep.Data
                       .HasForeignKey(sc => sc.CategoryId);
             });
 
-            //Feedback for Designer
 
             modelBuilder.Entity<Feedback>(entity =>
             {
                 entity.HasKey(fb => fb.FeedbackId);
-
-                // User sent feedback (user)
+                
+                entity.ToTable("feedback");
                 entity.HasOne(fb => fb.UserSend)
-                      .WithOne(u => u.SentFeedbacks)
-                      .HasForeignKey<User>(fb => fb.UserId);
+                     .WithMany()
+                     .HasForeignKey(f => f.UserSendFeedbackId);
 
-                // User recieve feedback (designer)
                 entity.HasOne(fb => fb.DesignersReceived)
                       .WithMany(u => u.ReceivedFeedbacks)
                       .HasForeignKey(fb => fb.DesignerReceiveFeedbackId)
                       .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(fb => fb.Order)
+                      .WithMany(o => o.Feedbacks)
+                      .HasForeignKey(fb => fb.OrderId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Wallet
+            modelBuilder.Entity<Wallet>(entity =>
+            {
+                entity.HasKey(w => w.WalletId);
+                entity.HasOne(w => w.User)
+                      .WithOne(u => u.Wallet)
+                      .HasForeignKey<Wallet>(w => w.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.Property(w => w.Balance)
+                      .HasColumnType("double")
+                      .HasDefaultValue(0);
+                
+                entity.Property(w => w.CreatedAt)
+                      .HasColumnType("timestamp")
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                
+                entity.Property(w => w.UpdatedAt)
+                      .HasColumnType("timestamp")
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+            });
+
+            // WalletTransaction
+            modelBuilder.Entity<WalletTransaction>(entity =>
+            {
+                entity.HasKey(wt => wt.TransactionId);
+                entity.HasOne(wt => wt.Wallet)
+                      .WithMany(w => w.WalletTransactions)
+                      .HasForeignKey(wt => wt.WalletId)
+                      .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne(wt => wt.Order)
+                      .WithMany(o => o.WalletTransactions)
+                      .HasForeignKey(wt => wt.OrderId)
+                      .OnDelete(DeleteBehavior.SetNull);
+                
+                entity.Property(wt => wt.Amount)
+                      .HasColumnType("double");
+                
+                entity.Property(wt => wt.BalanceBefore)
+                      .HasColumnType("double");
+                
+                entity.Property(wt => wt.BalanceAfter)
+                      .HasColumnType("double");
+                
+                entity.Property(wt => wt.CreatedAt)
+                      .HasColumnType("timestamp")
+                      .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                
+                entity.Property(wt => wt.CompletedAt)
+                      .HasColumnType("timestamp");
             });
         }
     }

@@ -16,6 +16,7 @@ namespace ArtStep.Data
         public short? isActive { get; set; }
         public virtual Account? Account { get; set; }
         public virtual Cart? Cart { get; set; }
+        public virtual Wallet? Wallet { get; set; }
         public virtual ICollection<ShoeCustom>? ShoeCustoms { get; set; }
 
         public virtual ICollection<Order>? Orders { get; set; }

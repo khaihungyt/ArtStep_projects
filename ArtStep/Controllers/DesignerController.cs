@@ -252,9 +252,16 @@ namespace ArtStep.Controllers
             // 4. Thêm vào db context và lưu
             _context.ShoeCustom.Add(newDesign);
             await _context.SaveChangesAsync();
-
+            var response = new ShoeCustomDTO
+            {
+                ShoeName = newDesign.ShoeName,
+                ShoeDescription = newDesign.ShoeDescription,
+                CategoryId = newDesign.CategoryId,
+                PriceAShoe = newDesign.PriceAShoe,
+                Quantity = newDesign.Quantity,
+            };
             // 5. Trả về kết quả
-            return Ok(newDesign);
+            return Ok(response);
         }
 
         private async Task ProcessShoeImages(ShoeCustom design, List<ShoeImageDTO> updateImages)
@@ -287,6 +294,52 @@ namespace ArtStep.Controllers
                 });
             }
         }
+        // GET api/<DesignerController>/5
+        [HttpGet("{DesignerId}")]
+        [Authorize]
+        public async Task<ActionResult<ShoeCustomDTO>> GetDesignById(string DesignerId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+            var userId = userIdClaim.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { Message = "Invalid token" });
+            }
+            var design = await _context.ShoeCustom
+                .AsNoTracking()
+                .Include(sc => sc.Designer)
+                .Include(sc => sc.Category)
+                .Include(sc => sc.Images)
+                .FirstOrDefaultAsync(s => s.ShoeId == DesignerId && s.Designer.UserId == userId);
+            if (design == null)
+            {
+                return NotFound();
+            }
+            var designDto = new ShoeCustomDTO
+            {
+                ShoeId = design.ShoeId,
+                ShoeName = design.ShoeName,
+                ShoeDescription = design.ShoeDescription,
+                Quantity = design.Quantity,
+                PriceAShoe = design.PriceAShoe,
+                IsHidden = design.IsHidden,
+                Category = new CategoryDTO
+                {
+                    CategoryId = design.Category.CategoryId,
+                    CategoryName = design.Category.CategoryName
+                },
+                ShoeImages = design.Images.Select(i => new ShoeImageDTO
+                {
+                    ImageId = i.ImageId,
+                    ImageLink = i.ImageLink
+                }).ToList()
+            };
+            return Ok(designDto);
+        }
 
 
         //GET api/DesignerController
@@ -298,11 +351,12 @@ namespace ArtStep.Controllers
             {
                 var designers = await _context.User
                                 .Where(u => u.Role == "Designer")
-                                .Select(u => new {
+                                .Select(u => new
+                                {
                                     UserId = u.UserId,
                                     Name = u.Name,
                                     isActive = u.isActive,
-                                    AverageFeedbackStars = _context.Feedback
+                                    AverageFeedbackStars = _context.Feedbacks
                                         .Where(f => f.DesignerReceiveFeedbackId == u.UserId)
                                         .Average(f => (double?)f.FeedbackStars) ?? 0
                                 })
@@ -339,5 +393,107 @@ namespace ArtStep.Controllers
             }
         }
 
+
+
+        //[HttpGet("designer_detail/{designerId}")]
+        //public async Task<ActionResult<DesignerResponseDTO>> GetDesignerAndFeedbackById(string designerId)
+        //{
+        //    try
+        //    {
+        //        var designer = await _context.User
+        //            .AsNoTracking()
+        //            .Include(u => u.ShoeCustoms)
+        //                .ThenInclude(sc => sc.Images)
+        //            .Include(u => u.ReceivedFeedbacks)
+        //                .ThenInclude(fb => fb.UserSend)
+        //            .FirstOrDefaultAsync(u => u.UserId == designerId);
+
+        //        if (designer == null)
+        //        {
+        //            return NotFound(new { Message = "Designer not found" });
+        //        }
+
+        //        // Calculate average rating
+        //        double averageRating = (double)(designer.ReceivedFeedbacks.Any()
+        //                ? designer.ReceivedFeedbacks.Average(f => f.FeedbackStars)
+        //                    : 0);
+
+        //        var feedbackList = designer.ReceivedFeedbacks?
+        //           .Select(fb => new FeedbackDTO
+        //           {
+        //               FeedbackId = fb.FeedbackId,
+        //               FeedbackDescription = fb.FeedbackDescription ?? string.Empty,
+        //               FeedbackStars = (int) fb.FeedbackStars,
+        //               User = fb.UserSend != null ? new UserDTO
+        //               {
+        //                   UserId = fb.UserSend.UserId ?? string.Empty,
+        //                   UserName = fb.UserSend.Name ?? "Không xác định",
+        //                   Avatar = fb.UserSend.ImageProfile ?? string.Empty
+        //               } : new UserDTO()
+        //           }).ToList();
+
+        //        var shoeCustomList = designer.ShoeCustoms?
+        //            .Select(shoe => new ShoeCustomDTO
+        //            {
+        //                ShoeId = shoe.ShoeId,
+        //                ShoeName = shoe.ShoeName,
+        //                PriceAShoe = shoe.PriceAShoe,
+        //                ShoeImages = shoe.Images?
+        //                    .Select(img => new ShoeImageDTO
+        //                    {
+        //                        ImageId = img.ImageId,
+        //                        ImageLink = img.ImageLink
+        //                    }).ToList() ?? new List<ShoeImageDTO>()
+        //            }).ToList() ?? new List<ShoeCustomDTO>();
+
+        //        var response = new DesignerResponseDTO
+        //        {
+        //            DesignerId = designer.UserId,
+        //            DesignerName = designer.Name,
+        //            Email = designer.Email,
+        //            Phone = designer.PhoneNo,
+        //            AvatarImage = designer.ImageProfile,
+        //            AverageRating = Math.Round(averageRating, 1),
+        //            FeedBackList = feedbackList,
+        //            ShoeCustomList = shoeCustomList
+        //        };
+
+        //        return Ok(response);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new
+        //        {
+        //            Message = "An error occurred while processing your request.",
+        //            Error = ex.Message
+        //        });
+        //    }
+        //}
+
+        // GET: api/Designer/public
+        [HttpGet("public")]
+        public async Task<ActionResult<List<DesignerPublicDTO>>> GetAllDesignersPublic()
+        {
+            try
+            {
+                var designers = await _context.User
+                    .AsNoTracking()
+                    .Where(u => u.Role == "designer" && u.isActive != 0)
+                    .Select(d => new DesignerPublicDTO
+                    {
+                        UserId = d.UserId,
+                        Name = d.Name,
+                        ImageProfile = d.ImageProfile,
+                        TotalDesigns = d.ShoeCustoms != null ? d.ShoeCustoms.Count(sc => sc.IsHidden == 0) : 0
+                    })
+                    .ToListAsync();
+
+                return Ok(designers);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving designers" });
+            }
+        }
     }
 }

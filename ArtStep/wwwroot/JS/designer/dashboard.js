@@ -1,18 +1,9 @@
 ﻿document.addEventListener('DOMContentLoaded', function() {
     // This file is for any dashboard-specific functionality
     // For now, it's mostly placeholder for future features
-    console.log('Element:123123v ', document.getElementById('logout-btn'));
+    //console.log('Element:123123v ', document.getElementById('logout-btn'));
 
-    document.getElementById('logout-btn').addEventListener("click", function (e) {
-            e.preventDefault();
-            // Xử lý khi người dùng click vào nút Sign Out
-            console.log("Sign Out button clicked");
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.removeItem('username');
-            localStorage.removeItem('userId');
-            window.location.reload();
-        });
+
 
     // Example: Chart data visualization could be added here
     console.log('Dashboard loaded1232132v ');

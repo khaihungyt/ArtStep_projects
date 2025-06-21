@@ -1,4 +1,5 @@
 import { API_BASE_URL } from './config.js';
+import { HeaderManager } from './header.js';
 
 // Helper to get query params
 function getQueryParam(name) {
@@ -7,6 +8,13 @@ function getQueryParam(name) {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
+    // Initialize header
+    const headerManager = new HeaderManager();
+    await headerManager.initializeHeader();
+    
+    // Store headerManager globally for access from other functions
+    window.headerManager = headerManager;
+
     // Handle VNPay callback result
     const paymentInfo = getQueryParam('payment_info');
     if (paymentInfo) {
@@ -72,51 +80,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
     }
 
-    const navbarAuth = document.getElementById('navbarAuth');
     const token = localStorage.getItem('token');
-
-    // Setup navbar authentication
-    if (token) {
-        navbarAuth.innerHTML = `
-            <li class="nav-item">
-                <a class="nav-link" href="#" onclick="goToCart()">
-                    <i class="bi bi-cart"></i> Cart
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="profile.html">
-                    <i class="bi bi-person-circle"></i> Profile
-                </a>
-            </li>
-             <li class="nav-item">
-                <a class="nav-link" href="#" id="logoutBtn">
-                    <i class="bi bi-box-arrow-right"></i> Log out
-                </a>
-            </li>
-        `;
-        const logoutBtn = document.getElementById('logoutBtn');
-        logoutBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.removeItem('username');
-            localStorage.removeItem('userId');
-            window.location.href = 'home.html';
-        });
-    } else {
-        navbarAuth.innerHTML = `
-            <li class="nav-item">
-                <a class="nav-link" href="Login.html">
-                    <i class="bi bi-person-circle"></i> Login
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="Register.html">
-                    <i class="bi bi-person-plus"></i> Register
-                </a>
-            </li>
-        `;
-    }
 
     // Check if user is logged in
     if (!token) {
@@ -126,6 +90,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Load cart data
     loadCartData();
+    
+    // Load wallet balance for payment option
+    loadWalletBalance();
 
     // Global functions
     window.goToCart = function() {
@@ -172,97 +139,104 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     window.checkout = async function() {
         try {
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
             const checkoutBtn = document.getElementById('checkout-btn');
             const originalText = checkoutBtn.innerHTML;
             checkoutBtn.disabled = true;
-            checkoutBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+            checkoutBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang xử lý...';
 
-            if (paymentMethod === 'cod') {
-                // Existing logic for Cash on Delivery
-                const response = await fetch(`${API_BASE_URL}/Order/checkout`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token.trim()}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+            // Check wallet balance first
+            const cartTotalElement = document.getElementById('cart-total');
+            const cartTotalText = cartTotalElement.textContent.replace(/[^0-9]/g, '');
+            const cartTotal = parseFloat(cartTotalText) || 0;
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to process checkout');
-                }
-
-                const result = await response.json();
-
-                // Show success message with SweetAlert
-                await Swal.fire({
-                    title: 'Order Placed Successfully!',
-                    html: `
-                        <div class="text-center">
-                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                            <p class="mt-3 mb-2"><strong>Order ID:</strong> ${result.orderId}</p>
-                            <p class="mb-2"><strong>Total Amount:</strong> ${formatVND(result.totalAmount)}</p>
-                            <p class="mb-2"><strong>Items:</strong> ${result.itemCount} items</p>
-                            <p class="mb-0"><strong>Status:</strong> ${result.status}</p>
-                        </div>
-                    `,
-                    icon: 'success',
-                    showCancelButton: true,
-                    confirmButtonText: '<i class="bi bi-house"></i> Go to Home',
-                    cancelButtonText: '<i class="bi bi-receipt"></i> View Orders',
-                    confirmButtonColor: '#28a745',
-                    cancelButtonColor: '#6c757d',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Go to home page
-                        window.location.href = 'home';
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // Go to orders page (you can create this later)
-                        showToast('Info', 'Orders page coming soon!', 'info');
-                        window.location.href = 'home';
-                    }
-                });
-            } else if (paymentMethod === 'bank') {
-                // Get the total amount from the DOM (remove " VND" and commas, parse as float)
-                let totalText = document.getElementById('cart-total').textContent;
-                let totalAmount = parseInt(totalText.replace(/[^\d]/g, ''), 10);
-
-                const response = await fetch(`${API_BASE_URL}/Order/create-vnpay`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token.trim()}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(totalAmount)
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to create VNPay order');
-                }
-
-                const paymentUrl = await response.text();
-                if (paymentUrl) {
-                    window.location.href = paymentUrl;
-                } else {
-                    throw new Error('VNPay payment URL not received');
-                }
+            if (window.walletBalance < cartTotal) {
+                throw new Error(`Số dư ví không đủ. Cần: ${formatVND(cartTotal)}, Có: ${formatVND(window.walletBalance)}`);
             }
+
+            // Create order first
+            const response = await fetch(`${API_BASE_URL}/Order/checkout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token.trim()}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create order');
+            }
+
+            const result = await response.json();
+
+            // Pay with wallet
+            const paymentResponse = await fetch(`${API_BASE_URL}/wallet/pay-order`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token.trim()}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderId: result.orderId
+                })
+            });
+
+            if (!paymentResponse.ok) {
+                const errorData = await paymentResponse.json();
+                throw new Error(errorData.message || 'Wallet payment failed');
+            }
+
+            const paymentResult = await paymentResponse.json();
+
+            // Show success message with feedback option
+            const result2 = await Swal.fire({
+                title: 'Thanh Toán Thành Công!',
+                html: `
+                    <div class="text-center">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                        <p class="mt-3 mb-2"><strong>Mã Đơn Hàng:</strong> ${result.orderId}</p>
+                        <p class="mb-2"><strong>Số Tiền Thanh Toán:</strong> ${formatVND(paymentResult.amountPaid)}</p>
+                        <p class="mb-2"><strong>Số Dư Còn Lại:</strong> ${formatVND(paymentResult.remainingBalance)}</p>
+                        <p class="mb-0"><strong>Trạng Thái:</strong> Đã Thanh Toán</p>
+                    </div>
+                `,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: '<i class="bi bi-star-fill"></i> Đánh Giá Nhà Thiết Kế',
+                cancelButtonText: '<i class="bi bi-house"></i> Về Trang Chủ',
+                confirmButtonColor: '#ffc107',
+                cancelButtonColor: '#28a745',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+
+            if (result2.isConfirmed) {
+                // Show feedback modal
+                await showFeedbackModal(result.orderId);
+                // Don't redirect to home immediately, let user finish feedback
+                return;
+            }
+
+            // Update wallet balance display in header and cart
+            if (window.headerManager) {
+                await window.headerManager.updateWalletBalance();
+            }
+            loadWalletBalance();
+            
+            window.location.href = 'home.html';
+
         } catch (error) {
             console.error('Error during checkout:', error);
             
             // Reset button state
             const checkoutBtn = document.getElementById('checkout-btn');
             checkoutBtn.disabled = false;
-            checkoutBtn.innerHTML = '<i class="bi bi-credit-card"></i> Proceed to Checkout';
+            checkoutBtn.innerHTML = '<i class="bi bi-credit-card"></i> Tiến Hành Thanh Toán';
 
             // Show error message
             await Swal.fire({
-                title: 'Checkout Failed',
-                text: error.message || 'An error occurred while processing your order. Please try again.',
+                title: 'Thanh Toán Thất Bại',
+                text: error.message || 'Đã xảy ra lỗi trong quá trình thanh toán. Vui lòng thử lại.',
                 icon: 'error',
                 confirmButtonText: 'OK',
                 confirmButtonColor: '#dc3545'
@@ -657,5 +631,346 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     function formatVND(value) {
         return value.toLocaleString('vi-VN') + ' VND';
+    }
+
+    // Load wallet balance for payment option
+    async function loadWalletBalance() {
+        if (!token) return;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/wallet/balance`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token.trim()}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const balanceDisplay = document.getElementById('wallet-balance-display');
+                
+                if (balanceDisplay) {
+                    balanceDisplay.textContent = formatVND(data.balance);
+                    balanceDisplay.className = 'text-success fw-bold';
+                }
+
+                // Store wallet balance for later use
+                window.walletBalance = data.balance;
+
+                // Enable/disable checkout button based on balance and cart total
+                updateWalletPaymentOption(data.balance);
+            } else {
+                // Wallet not found or error
+                const balanceDisplay = document.getElementById('wallet-balance-display');
+                
+                if (balanceDisplay) {
+                    balanceDisplay.textContent = formatVND(0);
+                    balanceDisplay.className = 'text-warning fw-bold';
+                }
+                window.walletBalance = 0;
+                updateWalletPaymentOption(0);
+            }
+        } catch (error) {
+            console.error('Error loading wallet balance:', error);
+            const balanceDisplay = document.getElementById('wallet-balance-display');
+            if (balanceDisplay) {
+                balanceDisplay.textContent = 'Lỗi tải số dư';
+                balanceDisplay.className = 'text-danger fw-bold';
+            }
+            window.walletBalance = 0;
+            updateWalletPaymentOption(0);
+        }
+    }
+
+    // Update wallet payment option based on balance and cart total
+    function updateWalletPaymentOption(walletBalance) {
+        const cartTotalElement = document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const walletStatus = document.getElementById('wallet-status');
+        
+        if (!cartTotalElement || !checkoutBtn) return;
+
+        // Extract numeric value from cart total (remove 'VND' and commas)
+        const cartTotalText = cartTotalElement.textContent.replace(/[^0-9]/g, '');
+        const cartTotal = parseFloat(cartTotalText) || 0;
+
+        if (walletBalance >= cartTotal && cartTotal > 0) {
+            checkoutBtn.disabled = false;
+            if (walletStatus) {
+                walletStatus.className = 'alert alert-success';
+                walletStatus.innerHTML = '<small><i class="bi bi-check-circle"></i> Số dư đủ để thanh toán</small>';
+            }
+        } else if (cartTotal > 0) {
+            checkoutBtn.disabled = true;
+            if (walletStatus) {
+                walletStatus.className = 'alert alert-warning';
+                walletStatus.innerHTML = `<small><i class="bi bi-exclamation-triangle"></i> Số dư không đủ. Cần thêm: ${formatVND(cartTotal - walletBalance)}</small>`;
+            }
+        } else {
+            checkoutBtn.disabled = true;
+            if (walletStatus) {
+                walletStatus.className = 'alert alert-info';
+                walletStatus.innerHTML = '<small><i class="bi bi-info-circle"></i> Thanh toán sẽ được thực hiện qua ví điện tử</small>';
+            }
+        }
+    }
+
+    // Add event listener to update wallet option when cart changes
+    const originalUpdateCartSummaryFromDOM = updateCartSummaryFromDOM;
+    updateCartSummaryFromDOM = function() {
+        originalUpdateCartSummaryFromDOM();
+        // After updating cart summary, check wallet balance again
+        setTimeout(() => {
+            if (window.walletBalance !== undefined) {
+                updateWalletPaymentOption(window.walletBalance);
+            }
+        }, 100);
+    };
+
+    // Add wallet link functionality
+    window.goToWallet = function() {
+        window.location.href = 'wallet.html';
+    };
+
+    // Feedback functionality
+    window.showFeedbackModal = async function(orderId) {
+        try {
+            const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+            const loadingDiv = document.getElementById('feedback-loading');
+            const contentDiv = document.getElementById('feedback-content');
+            
+            // Store orderId for later use in feedback submission
+            window.currentOrderId = orderId;
+            
+            // Show loading
+            loadingDiv.style.display = 'block';
+            contentDiv.style.display = 'none';
+            modal.show();
+
+            // Load designers from order
+            const response = await fetch(`${API_BASE_URL}/Feedback/order/${orderId}/designers`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token.trim()}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load designers');
+            }
+
+            const data = await response.json();
+            const designers = data.designers || [];
+
+            // Populate designer select
+            const designerSelect = document.getElementById('designerSelect');
+            designerSelect.innerHTML = '<option value="">-- Chọn nhà thiết kế để đánh giá --</option>';
+            
+            designers.forEach(designer => {
+                const option = document.createElement('option');
+                option.value = designer.designerId;
+                option.textContent = `${designer.designerName} (${designer.shoeName})`;
+                designerSelect.appendChild(option);
+            });
+
+            // Auto-select if only one designer
+            if (designers.length === 1) {
+                designerSelect.value = designers[0].designerId;
+                designerSelect.disabled = true;
+                
+                // Update the label to show it's auto-selected
+                const designerLabel = document.querySelector('label[for="designerSelect"]');
+                if (designerLabel) {
+                    designerLabel.innerHTML = `Nhà Thiết Kế <small class="text-success">(đã chọn tự động)</small>`;
+                }
+                
+                // Change select appearance to show it's selected
+                designerSelect.style.backgroundColor = '#e8f5e8';
+                designerSelect.style.border = '2px solid #28a745';
+            } else {
+                // Reset in case of multiple designers
+                designerSelect.disabled = false;
+                designerSelect.style.backgroundColor = '';
+                designerSelect.style.border = '';
+                
+                const designerLabel = document.querySelector('label[for="designerSelect"]');
+                if (designerLabel) {
+                    designerLabel.innerHTML = 'Chọn Nhà Thiết Kế';
+                }
+            }
+
+            // Hide loading, show content
+            loadingDiv.style.display = 'none';
+            contentDiv.style.display = 'block';
+
+            // Setup star rating
+            setupStarRating();
+
+            // Setup form submission
+            setupFeedbackSubmission();
+
+            // Remove automatic redirect on modal close
+            // Users should only redirect when they explicitly choose to
+
+        } catch (error) {
+            console.error('Error showing feedback modal:', error);
+            
+            // Hide loading and show error in modal
+            loadingDiv.style.display = 'none';
+            contentDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Lỗi:</strong> Không thể tải danh sách nhà thiết kế. ${error.message}
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            `;
+            contentDiv.style.display = 'block';
+            
+            showToast('Error', 'Không thể tải form đánh giá', 'error');
+        }
+    };
+
+    function setupStarRating() {
+        const stars = document.querySelectorAll('.star');
+        const selectedRating = document.getElementById('selectedRating');
+
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                const rating = index + 1;
+                selectedRating.value = rating;
+
+                // Update star display
+                stars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill', 'active');
+                    } else {
+                        s.classList.remove('bi-star-fill', 'active');
+                        s.classList.add('bi-star');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseenter', () => {
+                const rating = index + 1;
+                stars.forEach((s, i) => {
+                    if (i < rating) {
+                        s.classList.remove('bi-star');
+                        s.classList.add('bi-star-fill');
+                    } else {
+                        s.classList.remove('bi-star-fill');
+                        s.classList.add('bi-star');
+                    }
+                });
+            });
+        });
+
+        // Reset stars on mouse leave
+        document.getElementById('starRating').addEventListener('mouseleave', () => {
+            const currentRating = parseInt(selectedRating.value) || 0;
+            stars.forEach((s, i) => {
+                if (i < currentRating) {
+                    s.classList.remove('bi-star');
+                    s.classList.add('bi-star-fill', 'active');
+                } else {
+                    s.classList.remove('bi-star-fill', 'active');
+                    s.classList.add('bi-star');
+                }
+            });
+        });
+    }
+
+    function setupFeedbackSubmission() {
+        const submitBtn = document.getElementById('submitFeedbackBtn');
+        const form = document.getElementById('feedbackForm');
+
+        submitBtn.addEventListener('click', async () => {
+            const designerSelect = document.getElementById('designerSelect');
+            const selectedRating = document.getElementById('selectedRating');
+            const feedbackDescription = document.getElementById('feedbackDescription');
+
+            // Validate form
+            if (!designerSelect.value) {
+                showToast('Error', 'Vui lòng chọn nhà thiết kế', 'error');
+                return;
+            }
+
+            if (!selectedRating.value) {
+                showToast('Error', 'Vui lòng chọn số sao đánh giá', 'error');
+                return;
+            }
+
+            if (!feedbackDescription.value.trim()) {
+                showToast('Error', 'Vui lòng nhập nhận xét', 'error');
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang gửi...';
+
+                const response = await fetch(`${API_BASE_URL}/Feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token.trim()}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        designerReceiveFeedbackId: designerSelect.value,
+                        feedbackStars: parseInt(selectedRating.value),
+                        feedbackDescription: feedbackDescription.value.trim(),
+                        orderId: window.currentOrderId
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to submit feedback');
+                }
+
+                // Success - show options without closing modal first
+                const feedbackResult = await Swal.fire({
+                    title: 'Cảm ơn!',
+                    text: 'Đánh giá của bạn đã được gửi thành công!',
+                    icon: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="bi bi-house"></i> Về Trang Chủ',
+                    cancelButtonText: '<i class="bi bi-star"></i> Đánh Giá Thêm',
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#ffc107'
+                });
+
+                if (feedbackResult.isConfirmed) {
+                    // User wants to go home - close modal and redirect
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
+                    modal.hide();
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 300);
+                } else if (feedbackResult.isDismissed) {
+                    // User wants to give more feedback - keep modal open and reset form
+                    // Modal stays open for more feedback
+                }
+
+                // Reset form
+                form.reset();
+                selectedRating.value = '';
+                document.querySelectorAll('.star').forEach(star => {
+                    star.classList.remove('bi-star-fill', 'active');
+                    star.classList.add('bi-star');
+                });
+
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                showToast('Error', error.message || 'Không thể gửi đánh giá', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-send"></i> Gửi Đánh Giá';
+            }
+        });
     }
 }); 

@@ -6,13 +6,17 @@
     <title>Designer Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/CSS/designer/styles.css">
+    <link rel="stylesheet" href="/CSS/page/pageload.css" />
 </head>
 <body>
+    <div class="loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+    </div>
     <div class="layout">
         <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <span class="sidebar-title">Designer Portal</span>
+                <span class="sidebar-title">Cổng Thông Tin Thiết Kế</span>
                 <button class="sidebar-toggle" id="sidebar-toggle">
                     <i class="fas fa-chevron-left"></i>
                 </button>
@@ -20,33 +24,33 @@
             <nav class="sidebar-nav">
                 <a href="designs_dash.html" class="sidebar-link active">
                     <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                    <span>Bảng điều khiển</span>
                 </a>
                 <a href="designs_list.html" class="sidebar-link">
                     <i class="fas fa-shopping-bag"></i>
-                    <span>My Designs</span>
+                    <span>Thiết kế của tôi</span>
                 </a>
                 <a href="designs_revenue.html" class="sidebar-link ">
                     <i class="fas fa-chart-line"></i>
-                    <span>Sales Revenue</span>
+                    <span>Doanh thu </span>
                 </a>
                 <a href="designs_new.html" class="sidebar-link">
                     <i class="fas fa-pen-fancy"></i>
-                    <span>Create Design</span>
+                    <span>Tạo Thiết kế</span>
                 </a>
                 <a href="designs_profile.html" class="sidebar-link">
                     <i class="fas fa-user"></i>
-                    <span>Profile</span>
+                    <span>Hồ sơ</span>
                 </a>
                 <a href="designs_chat.html" class="sidebar-link">
                     <i class="fas fa-message"></i>
-                    <span>Message</span>
+                    <span>Tin nhắn</span>
                 </a>
             </nav>
             <div class="sidebar-footer">
                 <button class="sidebar-logout" id="logout-btn">
                     <i class="fas fa-sign-out-alt"></i>
-                    <span>Sign Out</span>
+                    <span>Đăng xuất</span>
                 </button>
             </div>
         </div>
@@ -186,7 +190,8 @@
             </div>
         </main>
     </div>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/JS/page/pageload.js"></script>
     <script src="/js/designer/sidebar.js"></script>
     <script src="/js/designer/dashboard.js"></script>
 </body>
