@@ -90,9 +90,9 @@
     function updateSummaryStats(data) {
         if (!data || data.length === 0) {
             // Reset stats if no data
-            document.getElementById('total-revenue').textContent = '$0.00';
+            document.getElementById('total-revenue').textContent = '0.00đ';
             document.getElementById('total-sales').textContent = '0';
-            document.getElementById('avg-price').textContent = '$0.00';
+            document.getElementById('avg-price').textContent = '0.00đ';
             document.getElementById('top-product').textContent = '-';
             return;
         }
@@ -109,9 +109,9 @@
         );
 
         // Update DOM
-        document.getElementById('total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
+        document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}đ`;
         document.getElementById('total-sales').textContent = totalSales;
-        document.getElementById('avg-price').textContent = `$${avgPrice.toFixed(2)}`;
+        document.getElementById('avg-price').textContent = `${avgPrice.toFixed(2)}đ`;
         document.getElementById('top-product').textContent = topProduct.name || '-';
     }
 
@@ -135,8 +135,8 @@
             row.innerHTML = `
                 <td>${item.ShoeName || 'N/A'}</td>
                 <td>${item.Quantity}</td>
-                <td>$${item.PriceAShoe.toFixed(2)}</td>
-                <td>$${totalRevenue.toFixed(2)}</td>
+                <td>${item.PriceAShoe.toFixed(2)} đ</td>
+                <td>${totalRevenue.toFixed(2)} đ</td>
                 <td>${profitMargin}%</td>
             `;
             salesTableBody.appendChild(row);
