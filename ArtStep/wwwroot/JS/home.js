@@ -214,7 +214,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                                         <i class="lnr lnr-cart"></i>
                                     </button>
                         </div>
-                                <div class="mt-2">
+                                <!-- Chat with Designer functionality commented out -->
+                                <!-- <div class="mt-2">
                                     ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
                         `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                             <i class="bi bi-chat-dots"></i> Designer Not Available
                                         </button>`
                     }
-                    </div>
+                    </div> -->
                 </div>
                         </div>
                     </div>
@@ -258,7 +259,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
         const prevLi = document.createElement('li');
-        prevLi.classList.add('page-item', currentPage === 1 ? 'disabled' : '');
+        prevLi.classList.add('page-item');
+        if (currentPage === 1) {
+            prevLi.classList.add('disabled');
+        }
         prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
         prevLi.addEventListener('click', function (e) {
             e.preventDefault();
@@ -272,7 +276,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Page numbers
         for (let i = 1; i <= totalPages; i++) {
             const pageLi = document.createElement('li');
-            pageLi.classList.add('page-item', currentPage === i ? 'active' : '');
+            pageLi.classList.add('page-item');
+            if (currentPage === i) {
+                pageLi.classList.add('active');
+            }
             pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
             pageLi.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -282,7 +289,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             paginationElement.appendChild(pageLi);
         }
         const nextLi = document.createElement('li');
-        nextLi.classList.add('page-item', currentPage === totalPages ? 'disabled' : '');
+        nextLi.classList.add('page-item');
+        if (currentPage === totalPages) {
+            nextLi.classList.add('disabled');
+        }
         nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
         nextLi.addEventListener('click', function (e) {
             e.preventDefault();
@@ -443,6 +453,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
 
+    // Chat with Designer functionality commented out
+    /*
     window.chatWithDesigner = function (designerUserId, designerName) {
         console.log('chatWithDesigner called with:', designerUserId, designerName);
 
@@ -482,6 +494,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to designers page with chat parameters
         window.location.href = `designers.html?chatWith=${designerUserId}&designerName=${encodeURIComponent(designerName)}`;
     }
+    */
 
     window.goToCart = function () {
         const token = localStorage.getItem('token');

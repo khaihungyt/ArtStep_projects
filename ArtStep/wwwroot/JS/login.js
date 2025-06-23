@@ -10,7 +10,7 @@
             // If token exists, redirect based on role
             const role = localStorage.getItem('role') || 'user';
             const redirectMap = {
-                admin: '/admin/dashboard',
+                admin: '/admin/admindashboard',
                 user: '',
                 designer: '/designer/workspace'
             };
