@@ -15,13 +15,28 @@
     <link rel="stylesheet" href="../CSS/chat.css" />
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+        }
+    </style>
+
 </head>
+
 
 <body>
     <!-- Navbar Đơn Giản -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="home.html">
+            <a class="navbar-brand" href="/home.html">
                 <i class="bi bi-boot"></i> ArtStep
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -31,10 +46,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="home.html">Trang Chủ</a>
+                        <a class="nav-link" href="/home.html">Trang Chủ</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../designers.html">Các nhà thiết kế</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/user/AIgeneration.html">Tạo AI</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav" id="navbarAuth">
@@ -44,7 +62,7 @@
     </nav>
 
     <!-- Thông Tin Nhà Thiết Kế -->
-    <div class="container py-4">
+    <main class="container py-4">
         <div class="row align-items-center mb-4">
             <div class="col-auto">
                 <img src="data:image/jpeg;base64,/...." alt="Avatar" class="designer-avatar">
@@ -86,7 +104,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- Footer Đơn Giản -->
     <footer class="bg-dark text-white py-4">
@@ -132,9 +150,55 @@
     </footer>
 
     <!-- Bootstrap Bundle JS -->
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <!-- SignalR Client -->
+    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <script src="/js/user/designerdetail.js"></script>
+    <script>
+        const navbarAuth = document.getElementById("navbarAuth");
 
+        navbarAuth.innerHTML = `
+          <li class="nav-item">
+              <a href="/wallet.html" class="nav-link">
+                  <i class="bi bi-wallet2"></i> Ví tiền
+              </a>
+          </li>
+          <li class="nav-item">
+              <a href="/cart.html" class="nav-link">
+                  <i class="bi bi-cart4"></i> Giỏ hàng
+              </a>
+          </li>
+          <li class="nav-item">
+              <a href="/profile.html" class="nav-link">
+                  <i class="bi bi-person-circle"></i> Hồ sơ
+              </a>
+          </li>
+          <li class="nav-item">
+              <a href="#" class="nav-link text-danger" id="logoutLink">
+                  <i class="bi bi-box-arrow-right"></i> Đăng xuất
+              </a>
+          </li>
+      `;
+
+        document.getElementById("logoutLink").addEventListener("click", function (e) {
+            e.preventDefault();
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("userId");
+
+            Swal.fire({
+                icon: "success",
+                title: "Đăng xuất thành công",
+                showConfirmButton: false,
+                timer: 1000
+            }).then(() => {
+                window.location.href = "/login.html";
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -11,7 +11,7 @@
         body {
             background: url('https://png.pngtree.com/background/20220723/original/pngtree-background-biru-keren-dan-kosong-abstract-untuk-template-desain-powerpoint-ppt-picture-image_1738466.jpg') no-repeat center center fixed;
             background-size: cover;
-            margin-top: 20px;
+           
         }
 
         .ui-w-80 {
@@ -119,6 +119,26 @@
             padding: 0.85rem 1.5rem;
             border-color: rgba(24,28,33,0.03) !important;
         }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -139,15 +159,185 @@
                     <li class="nav-item">
                         <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/AIgeneration.html">Tạo AI</a>
+                    </li>
                 </ul>
-                <ul class="navbar-nav" id="navbarAuth"></ul>
+               <ul class="navbar-nav ml-auto" id="navbarAuth"></ul>
+
             </div>
         </div>
     </nav>
 
-    <div class="container light-style flex-grow-1 container-p-y">
-        <!-- (phần nội dung form giữ nguyên) -->
-    </div>
+    
+        <main class="container light-style flex-grow-1 container-p-y">
+
+            
+
+            <div class="card overflow-hidden">
+                <div class="row no-gutters row-bordered row-border-light">
+                    <div class="col-md-3 pt-0">
+                        <div class="list-group list-group-flush account-settings-links">
+                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+
+                            <!-- General -->
+                            <div class="tab-pane fade active show" id="account-general">
+                                <form id="generalForm" action="/api/Profile/UpdateProfile" method="post" enctype="multipart/form-data">
+                                    <div class="card-body media align-items-center">
+                                        <img id="avatarPreview" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Avatar" class="d-block ui-w-80">
+                                        <div class="media-body ml-4">
+                                            <label class="btn btn-outline-primary">
+                                                Upload new photo
+                                                <input type="file" name="avatar" id="avatarInput" class="account-settings-fileinput">
+                                            </label>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default md-btn-flat" onclick="document.querySelector('#avatarInput').value = ''">Reset</button>
+                                            <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                                        </div>
+                                    </div>
+                                    <hr class="border-light m-0">
+
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label" for="fullName">Name</label>
+                                            <input type="text" id="fullName" name="name" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="email">E-mail</label>
+                                            <input type="email" id="email" name="email" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="phoneNo">Phone Number</label>
+                                            <input type="text" id="phoneNo" name="phoneNo" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="role">Role</label>
+                                            <input type="text" id="role" class="form-control" readonly>
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="isActive" class="form-check-input" disabled>
+                                            <label class="form-check-label" for="isActive">Active</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right p-3 border-top">
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <button type="reset" class="btn btn-default">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Change password -->
+                            <div class="tab-pane fade" id="account-change-password">
+                                <form id="changePasswordForm" action="#" method="post">
+                                    <div class="card-body pb-2">
+                                        <div class="form-group">
+                                            <label class="form-label" for="currentPassword">Current password</label>
+                                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="newPassword">New password</label>
+                                            <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="confirmPassword">Repeat new password</label>
+                                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right p-3 border-top">
+                                        <button type="submit" class="btn btn-primary">Change password</button>
+                                        <button type="reset" class="btn btn-default">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Notifications -->
+                            <div class="tab-pane fade" id="account-notifications">
+                                <div class="card-body pb-2">
+                                    <h6 class="mb-4">Activity</h6>
+                                    <div class="form-group">
+                                        <label class="switcher">
+                                            <input type="checkbox" class="switcher-input" checked>
+                                            <span class="switcher-indicator">
+                                                <span class="switcher-yes"></span>
+                                                <span class="switcher-no"></span>
+                                            </span>
+                                            <span class="switcher-label">Email me when someone comments on my article</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="switcher">
+                                            <input type="checkbox" class="switcher-input" checked>
+                                            <span class="switcher-indicator">
+                                                <span class="switcher-yes"></span>
+                                                <span class="switcher-no"></span>
+                                            </span>
+                                            <span class="switcher-label">Email me when someone answers on my forum thread</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="switcher">
+                                            <input type="checkbox" class="switcher-input">
+                                            <span class="switcher-indicator">
+                                                <span class="switcher-yes"></span>
+                                                <span class="switcher-no"></span>
+                                            </span>
+                                            <span class="switcher-label">Email me when someone follows me</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <hr class="border-light m-0">
+                                <div class="card-body pb-2">
+                                    <h6 class="mb-4">Application</h6>
+                                    <div class="form-group">
+                                        <label class="switcher">
+                                            <input type="checkbox" class="switcher-input" checked>
+                                            <span class="switcher-indicator">
+                                                <span class="switcher-yes"></span>
+                                                <span class="switcher-no"></span>
+                                            </span>
+                                            <span class="switcher-label">News and announcements</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="switcher">
+                                            <input type="checkbox" class="switcher-input">
+                                            <span class="switcher-indicator">
+                                                <span class="switcher-yes"></span>
+                                                <span class="switcher-no"></span>
+                                            </span>
+                                            <span class="switcher-label">Weekly product updates</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="switcher">
+                                            <input type="checkbox" class="switcher-input" checked>
+                                            <span class="switcher-indicator">
+                                                <span class="switcher-yes"></span>
+                                                <span class="switcher-no"></span>
+                                            </span>
+                                            <span class="switcher-label">Weekly blog digest</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    
 
     <!-- Footer -->
     <footer class="bg-dark text-white py-4">

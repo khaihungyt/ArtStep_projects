@@ -11,6 +11,10 @@
     <div class="container">
         <div class="title">Đăng Ký</div>
         <div class="content">
+            <div class="button" style="margin-top: 10px;">
+                <input type="button" value="Quay về đăng nhập" onclick="window.location.href='login.html'">
+            </div>
+
             <form id="registerForm" enctype="multipart/form-data">
                 <div class="user-details">
                     <div class="input-box">
@@ -44,12 +48,13 @@
                         <input type="password" id="confirmPassword" required>
                     </div>
                 </div>
-                <div class="input-box">
-                    <label>
-                        <input type="checkbox" id="termsCheckbox">
+                <div class="input-box" style="display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="termsCheckbox">
+                    <label for="termsCheckbox" style="margin: 0;">
                         Tôi đồng ý với <a href="privacy.html" target="_blank">Điều khoản và dịch vụ của chúng tôi</a>
                     </label>
                 </div>
+
                 <div class="button">
                     <input type="submit" value="Đăng Ký">
                 </div>
