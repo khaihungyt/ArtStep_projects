@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             const data = await response.json();
 
             const designers = data || [];
+            console.log('Designers data:', designers);
 
             if (!Array.isArray(designers)) {
                 console.error('Designers data is not an array:', data);
@@ -31,8 +32,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 designerFilter.innerHTML = '<option value="">All Designers</option>';
                 designers.forEach(designer => {
                     const option = document.createElement('option');
-                    option.value = designer.userId || designer.designerId;
-                    option.textContent = designer.name || designer.designerName;
+                    option.value = designer.UserId;
+                    option.textContent = designer.Name;
                     designerFilter.appendChild(option);
                 });
             }
@@ -47,28 +48,24 @@ document.addEventListener('DOMContentLoaded', async function () {
     async function fetchCategories() {
         try {
             const response = await fetch(`${API_BASE_URL}/categories`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
             const data = await response.json();
 
-            const categories = data || [];
+            const categories = Array.isArray(data) ? data : [];
 
-            if (!Array.isArray(categories)) {
-                console.error('Categories data is not an array:', data);
-                return;
-            }
-            if (styleFilter) {
-                styleFilter.innerHTML = '<option value="">All Categories</option>';
-                categories.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category.categoryId;
-                    option.textContent = category.name || category.categoryName;
-                    styleFilter.appendChild(option);
-                });
-            }
+            styleFilter.innerHTML = '<option value="">All Categories</option>';
+
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.CategoryId;
+                option.textContent = category.CategoryName;
+                styleFilter.appendChild(option);
+            });
+
+
         } catch (error) {
-            console.error('There was a problem with the fetch operation for categories:', error);
+            console.error('Fetch categories error:', error);
         }
     }
     fetchCategories();
@@ -263,9 +260,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const totalPages = Math.ceil(totalProducts / productsPerPage);
 
-        if (totalPages <= 1) {
-            return;
-        }
+        if (totalPages <= 1) return;
+
+        // Previous button
         const prevLi = document.createElement('li');
         prevLi.classList.add('page-item');
         if (currentPage === 1) {
@@ -296,6 +293,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             });
             paginationElement.appendChild(pageLi);
         }
+
+        // Next button
         const nextLi = document.createElement('li');
         nextLi.classList.add('page-item');
         if (currentPage === totalPages) {
@@ -311,6 +310,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
         paginationElement.appendChild(nextLi);
     }
+
     const priceFilter = document.getElementById('priceFilter');
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');

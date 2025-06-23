@@ -4,10 +4,8 @@
     "use strict";
 
     $(document).ready(function () {
-        // Remove the localStorage.clear() call as it's clearing the token
         const token = localStorage.getItem('token');
         if (token) {
-            // If token exists, redirect based on role
             const role = localStorage.getItem('role') || 'user';
             const redirectMap = {
                 admin: '/admin/admindashboard',
@@ -19,8 +17,6 @@
         }
     });
 
-    /*==================================================================
-    [ Validate + Submit ]*/
     var input = $('.validate-input .input100');
 
     $('.validate-form').on('submit', async function (e) {
@@ -89,6 +85,7 @@
         }
     });
 
+
     $('.validate-form .input100').each(function () {
         $(this).focus(function () {
             hideValidate(this);
@@ -113,3 +110,4 @@
     }
 
 })(jQuery);
+
