@@ -214,7 +214,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                                         <i class="lnr lnr-cart"></i>
                                     </button>
                         </div>
-                                <div class="mt-2">
+                                <!-- Chat with Designer functionality commented out -->
+                                <!-- <div class="mt-2">
                                     ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
                         `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
@@ -233,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                             <i class="bi bi-chat-dots"></i> Designer Not Available
                                         </button>`
                     }
-                    </div>
+                    </div> -->
                 </div>
                         </div>
                     </div>
@@ -452,6 +453,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
 
+    // Chat with Designer functionality commented out
+    /*
     window.chatWithDesigner = function (designerUserId, designerName) {
         console.log('chatWithDesigner called with:', designerUserId, designerName);
 
@@ -491,6 +494,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to designers page with chat parameters
         window.location.href = `designers.html?chatWith=${designerUserId}&designerName=${encodeURIComponent(designerName)}`;
     }
+    */
 
     window.goToCart = function () {
         const token = localStorage.getItem('token');
