@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArtStep.Migrations
 {
     [DbContext(typeof(ArtStepDbContext))]
-    [Migration("20250615115626_AddOrderIdToFeedback")]
-    partial class AddOrderIdToFeedback
+    [Migration("20250623015007_AddPriceToProduct")]
+    partial class AddPriceToProduct
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
