@@ -546,23 +546,23 @@
                     {
                         "data": null,
                         "render": function (data, type, row) {
-                            //if (row.status === 'PENDING') {
-                            //    return `
-                            //                <button class="btn btn-success btn-sm" onclick="approveCharge('${row.transactionId}')">
-                            //                    <i class="fas fa-check"></i> Duyệt
-                            //                </button>
-                            //                <button class="btn btn-danger btn-sm ml-1" onclick="rejectCharge('${row.transactionId}')">
-                            //                    <i class="fas fa-times"></i> Từ chối
-                            //                </button>
-                            //            `;
-                            //} else {
-                            //    return `
-                            //                <button class="btn btn-secondary btn-sm" disabled>
-                            //                    <i class="fas fa-check"></i> Đã xử lý
-                            //                </button>
-                            //            `;
-                            //}
-                            return '';
+                            if (row.status === 'PENDING') {
+                                return `
+                                            <button class="btn btn-success btn-sm" onclick="approveCharge('${row.transactionId}')">
+                                                <i class="fas fa-check"></i> Duyệt
+                                            </button>
+                                            <button class="btn btn-danger btn-sm ml-1" onclick="rejectCharge('${row.transactionId}')">
+                                                <i class="fas fa-times"></i> Từ chối
+                                            </button>
+                                        `;
+                            } else {
+                                return `
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-check"></i> Đã xử lý
+                                            </button>
+                                        `;
+                            }
+                           // return '';
                         }
                     }
                 ]
