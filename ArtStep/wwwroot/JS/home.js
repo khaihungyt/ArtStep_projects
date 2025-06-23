@@ -524,5 +524,5 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to product detail page for immediate ordering
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
-
+    // Load products initially
 });
