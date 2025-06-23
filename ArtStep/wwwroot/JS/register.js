@@ -1,4 +1,6 @@
-﻿form.addEventListener('submit', async function (e) {
+﻿const form = document.getElementById('registerForm') || document.querySelector('form');
+
+form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
     const password = document.getElementById('password').value;
