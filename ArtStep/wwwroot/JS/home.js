@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         console.log('Rendering best sellers:', products);
 
-        const bestSellersHTML = products.map((product, index) => {
+        const bestSellersHTML = products.slice(0, 4).map((product, index) => {
             const designerId = product.DesignerUserId;
             const designerName = product.Designer;
             const shoeId = product.ShoeId;
