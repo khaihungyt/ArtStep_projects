@@ -1,3 +1,4 @@
+console.log('[wallet.js] Loaded');
 import { API_BASE_URL } from './config.js';
 
 // Wallet functionality module
@@ -20,7 +21,7 @@ export class WalletManager {
 
         try {
             this.isLoading = true;
-            const response = await fetch(`${API_BASE_URL}/wallet/balance`, {
+            const response = await fetch(`/${API_BASE_URL}/wallet/balance`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,

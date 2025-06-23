@@ -1,5 +1,5 @@
 ﻿import { API_BASE_URL } from './config.js';
-import { WalletManager } from './wallet.js';
+import { WalletManager } from '/JS/wallet.js';
 
 // Quản lý phần Header (Thanh điều hướng)
 export class HeaderManager {
@@ -37,7 +37,7 @@ export class HeaderManager {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="UserProfile.html">
+                    <a class="nav-link" href="/UserProfile.html">
                         <i class="bi bi-person-circle"></i> Hồ sơ
                     </a>
                 </li>
@@ -78,12 +78,12 @@ export class HeaderManager {
     renderUnauthenticatedHeader(navbarAuth) {
         navbarAuth.innerHTML = `
             <li class="nav-item">
-                <a class="nav-link" href="Login.html">
+                <a class="nav-link" href="/Login.html">
                     <i class="bi bi-person-circle"></i> Đăng nhập
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="Register.html">
+                <a class="nav-link" href="/Register.html">
                     <i class="bi bi-person-plus"></i> Đăng ký
                 </a>
             </li>
@@ -123,12 +123,12 @@ window.headerManager = new HeaderManager();
 
 // Chuyển hướng tới trang giỏ hàng
 window.goToCart = function () {
-    window.location.href = 'cart';
+    window.location.href = '/cart';
 };
 
 // Chuyển hướng tới trang ví
 window.goToWallet = function () {
-    window.location.href = 'wallet';
+    window.location.href = '/wallet';
 };
 
 // Khi trang được tải, khởi tạo header
