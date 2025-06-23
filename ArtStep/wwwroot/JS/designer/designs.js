@@ -468,10 +468,18 @@
         if (!confirm('Are you sure you want to delete this design? This action cannot be undone.')) {
             return;
         }
-
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.warn('Chưa có token. Vui lòng đăng nhập trước khi load profile.');
+            return;
+        }
         try {
             const response = await fetch(`/api/designer/${designId}`, {
                 method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${token}`, 
+                    'Content-Type': 'application/json'
+                }
             });
 
             if (!response.ok) throw new Error('Failed to delete design');
