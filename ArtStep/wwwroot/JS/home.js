@@ -1,6 +1,14 @@
 ﻿import { API_BASE_URL } from './config.js';
 import './header.js';
 
+function formatPriceVND(price) {
+    if (typeof price !== 'number') {
+        price = parseFloat(price);
+    }
+
+    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
     await new Promise(resolve => setTimeout(resolve, 100));
     const designerFilter = document.getElementById('designerFilter');
@@ -128,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <div class="sold-count mb-2">
                                 <i class="bi bi-fire"></i> ${totalSold} đã bán
                             </div>
-                            <h5 class="bestseller-price mb-3">$${productPrice}</h5>
+                                <h5 class="bestseller-price mb-3">${formatPriceVND(product.price || product.Price || 0)}</h5>
                             <button onclick="orderNow('${shoeId}')" 
                                     class="btn order-now-btn mt-auto">
                                 Đặt ngay
@@ -207,7 +215,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     Style: ${product.style || product.Style || 'N/A'}<br>
                                     Designer: ${designerName || 'N/A'}
                             </p>
-                                <h4 class="card-subtitle mb-2 text-primary mt-auto">$${product.price || product.Price || 0}</h4>
+                                <h4 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(product.price || product.Price || 0)}</h4>
                                 <div class="d-flex gap-2 mt-2">
                                     <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">View Details</button>
                                     <button onclick="addToCart('${shoeId}')" class="btn btn-outline-primary">
