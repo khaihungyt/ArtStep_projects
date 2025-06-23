@@ -1,6 +1,14 @@
 ﻿import { API_BASE_URL } from './config.js';
 import './header.js';
 
+function formatPriceVND(price) {
+    if (typeof price !== 'number') {
+        price = parseFloat(price);
+    }
+
+    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
     await new Promise(resolve => setTimeout(resolve, 100));
     const designerFilter = document.getElementById('designerFilter');
@@ -128,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <div class="sold-count mb-2">
                                 <i class="bi bi-fire"></i> ${totalSold} đã bán
                             </div>
-                            <h5 class="bestseller-price mb-3">$${productPrice}</h5>
+                                <h5 class="bestseller-price mb-3">${formatPriceVND(product.price || product.Price || 0)}</h5>
                             <button onclick="orderNow('${shoeId}')" 
                                     class="btn order-now-btn mt-auto">
                                 Đặt ngay
@@ -207,14 +215,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     Style: ${product.style || product.Style || 'N/A'}<br>
                                     Designer: ${designerName || 'N/A'}
                             </p>
-                                <h4 class="card-subtitle mb-2 text-primary mt-auto">$${product.price || product.Price || 0}</h4>
+                                <h4 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(product.price || product.Price || 0)}</h4>
                                 <div class="d-flex gap-2 mt-2">
                                     <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">View Details</button>
                                     <button onclick="addToCart('${shoeId}')" class="btn btn-outline-primary">
                                         <i class="lnr lnr-cart"></i>
                                     </button>
                         </div>
-                                <div class="mt-2">
+                                <!-- Chat with Designer functionality commented out -->
+                                <!-- <div class="mt-2">
                                     ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
                         `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
@@ -233,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                             <i class="bi bi-chat-dots"></i> Designer Not Available
                                         </button>`
                     }
-                    </div>
+                    </div> -->
                 </div>
                         </div>
                     </div>
@@ -258,7 +267,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
         const prevLi = document.createElement('li');
-        prevLi.classList.add('page-item', currentPage === 1 ? 'disabled' : '');
+        prevLi.classList.add('page-item');
+        if (currentPage === 1) {
+            prevLi.classList.add('disabled');
+        }
         prevLi.innerHTML = `<a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>`;
         prevLi.addEventListener('click', function (e) {
             e.preventDefault();
@@ -272,7 +284,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Page numbers
         for (let i = 1; i <= totalPages; i++) {
             const pageLi = document.createElement('li');
-            pageLi.classList.add('page-item', currentPage === i ? 'active' : '');
+            pageLi.classList.add('page-item');
+            if (currentPage === i) {
+                pageLi.classList.add('active');
+            }
             pageLi.innerHTML = `<a class="page-link" href="#">${i}</a>`;
             pageLi.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -282,7 +297,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             paginationElement.appendChild(pageLi);
         }
         const nextLi = document.createElement('li');
-        nextLi.classList.add('page-item', currentPage === totalPages ? 'disabled' : '');
+        nextLi.classList.add('page-item');
+        if (currentPage === totalPages) {
+            nextLi.classList.add('disabled');
+        }
         nextLi.innerHTML = `<a class="page-link" href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>`;
         nextLi.addEventListener('click', function (e) {
             e.preventDefault();
@@ -443,6 +461,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
 
+    // Chat with Designer functionality commented out
+    /*
     window.chatWithDesigner = function (designerUserId, designerName) {
         console.log('chatWithDesigner called with:', designerUserId, designerName);
 
@@ -482,6 +502,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to designers page with chat parameters
         window.location.href = `designers.html?chatWith=${designerUserId}&designerName=${encodeURIComponent(designerName)}`;
     }
+    */
 
     window.goToCart = function () {
         const token = localStorage.getItem('token');
@@ -511,4 +532,5 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to product detail page for immediate ordering
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
+
 });

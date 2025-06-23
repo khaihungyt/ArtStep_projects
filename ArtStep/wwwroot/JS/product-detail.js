@@ -1,6 +1,17 @@
 import { API_BASE_URL } from './config.js';
 import './header.js';
 
+function formatPriceVND(price) {
+    if (typeof price !== 'number') {
+        price = parseFloat(price);
+    }
+    const actualPrice = price * 1000;
+
+
+    return price.toLocaleString('vi-VN') + ' VNĐ';
+}
+
+
 document.addEventListener('DOMContentLoaded', async function () {
     // Get product ID from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -83,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <h1 class="h2 mb-3">${productName}</h1>
                     <p class="text-muted mb-2">Phong cách: ${productStyle}</p>
                     <p class="text-muted mb-2">Thiết kế bởi: ${designerName || 'N/A'}</p>
-                    <h3 class="text-primary mb-4">$${productPrice}</h3>
+                <h5 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(productPrice)}</h5>
                     
                     <!-- Product Description -->
                     <div class="mb-4">
@@ -205,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <p class="card-text text-muted small">
                                 ${designerName || 'N/A'}
                             </p>
-                            <h5 class="card-subtitle mb-2 text-primary mt-auto">$${productPrice}</h5>
+                        <h5 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(productPrice)}</h5>
                             <button onclick="viewProductDetails('${shoeId}')" class="btn btn-outline-dark btn-sm">
                                 Xem chi tiết
                             </button>
