@@ -44,17 +44,21 @@ namespace ArtStep.Data
             modelBuilder.Entity<Cart>(entity =>
             {
                 entity.HasKey(c => c.CartId);
+
+                entity.Property(c => c.UserId)
+                      .HasMaxLength(255);
+
                 entity.HasOne(c => c.Users)
                       .WithOne(u => u.Cart)
-                      .HasForeignKey<User>(c => c.UserId)
-                 .OnDelete(DeleteBehavior.Restrict);
+                      .HasForeignKey<Cart>(c => c.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Cart)
-                .WithOne(c => c.Users)
-                .HasForeignKey<Cart>(c => c.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // hoặc Restrict, tùy yêu cầu
+            //modelBuilder.Entity<User>()
+            //    .HasOne(u => u.Cart)
+            //    .WithOne(c => c.Users)
+            //    .HasForeignKey<Cart>(c => c.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             // CartDetail
             modelBuilder.Entity<CartDetail>(entity =>
@@ -146,7 +150,7 @@ namespace ArtStep.Data
                 
                 entity.ToTable("feedback");
                 entity.HasOne(fb => fb.UserSend)
-                     .WithMany(fb => fb.SentFeedbacks)
+                     .WithMany(u => u.SentFeedbacks)
                      .HasForeignKey(f => f.UserSendFeedbackId);
 
                 entity.HasOne(fb => fb.DesignersReceived)
