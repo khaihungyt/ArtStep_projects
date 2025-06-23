@@ -40,7 +40,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="home.html">
+            <a class="navbar-brand" href="#">
                 <i class="bi bi-boot"></i> ArtStep
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -50,10 +50,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="home.html">Trang Chủ</a>
+                        <a class="nav-link active">Trang Chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active">Giỏ Hàng</a>
+                        <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/AIgeneration.html">Tạo AI</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav" id="navbarAuth">
@@ -186,13 +189,13 @@
                         </div>
                         <p class="mt-2">Đang tải danh sách nhà thiết kế...</p>
                     </div>
-                    
+
                     <div id="feedback-content">
                         <div class="alert alert-info">
                             <i class="bi bi-info-circle"></i>
                             <strong>Cảm ơn bạn đã mua hàng!</strong> Hãy để lại đánh giá cho các nhà thiết kế để giúp họ cải thiện dịch vụ.
                         </div>
-                        
+
                         <form id="feedbackForm">
                             <div class="mb-3">
                                 <label for="designerSelect" class="form-label">Chọn Nhà Thiết Kế</label>
@@ -200,7 +203,7 @@
                                     <option value="">-- Chọn nhà thiết kế để đánh giá --</option>
                                 </select>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="starRating" class="form-label">Đánh Giá</label>
                                 <div id="starRating" class="star-rating">
@@ -213,10 +216,10 @@
                                 <input type="hidden" id="selectedRating" required>
                                 <small class="text-muted">Nhấp vào ngôi sao để đánh giá (1-5 sao)</small>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <label for="feedbackDescription" class="form-label">Nhận Xét</label>
-                                <textarea class="form-control" id="feedbackDescription" rows="4" 
+                                <textarea class="form-control" id="feedbackDescription" rows="4"
                                           placeholder="Chia sẻ trải nghiệm của bạn với nhà thiết kế này..." required></textarea>
                             </div>
                         </form>
@@ -295,7 +298,6 @@
     <!-- SignalR Client -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <!-- Chat System -->
-    
     <!-- Custom JS -->
     <script type="module" src="../JS/cart.js" defer></script>
 </body>
