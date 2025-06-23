@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <h1 class="h2 mb-3">${productName}</h1>
                     <p class="text-muted mb-2">Phong cách: ${productStyle}</p>
                     <p class="text-muted mb-2">Thiết kế bởi: ${designerName || 'N/A'}</p>
-<h5 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(productPrice)}</h5>
+                <h5 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(productPrice)}</h5>
                     
                     <!-- Product Description -->
                     <div class="mb-4">
