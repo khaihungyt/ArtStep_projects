@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Validations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ArtStep.Controllers
@@ -494,6 +495,48 @@ namespace ArtStep.Controllers
             {
                 return StatusCode(500, new { Message = "An error occurred while retrieving designers" });
             }
+        }
+
+
+        [HttpGet("designer_feedback")]
+        [Authorize]
+        public async Task<ActionResult<List<FeedbackDTO>>> GetAllFeedBackForADesigner([FromQuery] int? rating)
+        {
+            var designerIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (designerIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var designerId = designerIdClaim.Value;
+
+            var query = _context.Feedbacks
+             .Include(fb => fb.UserSend)
+             .Where(fb => fb.DesignerReceiveFeedbackId == designerId);
+
+
+            if (rating.HasValue)
+            {
+                query = query.Where(fb => fb.FeedbackStars == rating.Value);
+            }
+
+            var feedbackList = await query.ToListAsync();
+
+
+
+            var feedbackDTOs = feedbackList.Select(fb => new FeedbackDTO
+            {
+                FeedbackId = fb.FeedbackId,
+                FeedbackDescription = fb.FeedbackDescription,
+                FeedbackStars = (int)fb.FeedbackStars,
+                User = new UserDTO
+                {
+                    UserName = fb.UserSend.Name,
+                    Avatar = fb.UserSend.ImageProfile
+                }
+            }).ToList();
+
+            return Ok(feedbackDTOs);
         }
     }
 }
