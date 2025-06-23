@@ -60,7 +60,6 @@ namespace ArtStep.Controllers
             return Ok(user);
         }
 
-
         [HttpPost("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDTO request)
         {
@@ -126,6 +125,7 @@ namespace ArtStep.Controllers
         [HttpPost("ChangePassword")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
+
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {

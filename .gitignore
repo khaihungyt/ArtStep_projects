@@ -421,3 +421,5 @@ packages/
 temp/
 # JetBrains Rider
 *.sln.iml
+
+ArtStep/appsettings.json

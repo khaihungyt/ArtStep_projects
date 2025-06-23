@@ -13,6 +13,10 @@ using Microsoft.Extensions.Caching.Memory;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
 using System.Text.RegularExpressions;
+using Google.Apis.Auth;
+using Azure.Core;
+using System.Text.Json;
+using System.Net.Http;
 
 namespace ArtStep.Controllers
 {
@@ -61,6 +65,96 @@ namespace ArtStep.Controllers
                 user = userInfo
             });
         }
+
+        [HttpGet("login-google")]
+        public async Task<IActionResult> LoginGoogleCallback([FromQuery] string code)
+        {
+            if (string.IsNullOrEmpty(code))
+                return BadRequest(new { message = "Thiếu mã xác thực (code)" });
+
+            var clientId = _configuration["GoogleAuth:ClientId"];
+            var clientSecret = _configuration["GoogleAuth:ClientSecret"];
+            // Sửa cái này khi deploy
+            var redirectUri = "http://localhost:5155/login-callback.html";
+            var httpClient = new HttpClient();
+
+            var tokenRequest = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, "https://oauth2.googleapis.com/token");
+            tokenRequest.Content = new FormUrlEncodedContent(new Dictionary<string, string>
+            {
+                { "code", code },
+                { "client_id", clientId },
+                { "client_secret", clientSecret },
+                { "redirect_uri", redirectUri },
+                { "grant_type", "authorization_code" }
+            });
+
+            var tokenResponse = await httpClient.SendAsync(tokenRequest);
+            if (!tokenResponse.IsSuccessStatusCode)
+                return StatusCode((int)tokenResponse.StatusCode, "Không lấy được token từ Google");
+
+            var tokenContent = await tokenResponse.Content.ReadAsStringAsync();
+
+            JsonElement tokenData;
+            try
+            {
+                tokenData = JsonSerializer.Deserialize<JsonElement>(tokenContent);
+            }
+            catch
+            {
+                return BadRequest(new { message = "Lỗi khi phân tích token từ Google" });
+            }
+
+            if (!tokenData.TryGetProperty("id_token", out JsonElement idTokenElement))
+                return BadRequest(new { message = "Không có id_token trong phản hồi từ Google" });
+
+            var idToken = idTokenElement.GetString();
+
+            GoogleJsonWebSignature.Payload validPayload;
+            try
+            {
+                validPayload = await GoogleJsonWebSignature.ValidateAsync(idToken);
+            }
+            catch
+            {
+                return Unauthorized(new { message = "idToken không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var user = _context.User.FirstOrDefault(u => u.Email == validPayload.Email);
+            if (user == null)
+            {
+                user = new User
+                {
+                    UserId = Guid.NewGuid().ToString(),
+                    Name = validPayload.Name,
+                    Email = validPayload.Email,
+                    ImageProfile = validPayload.Picture,
+                    Role = "user",
+                    isActive = 1,
+                };
+
+                _context.User.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
+            var jwtToken = GenerateJwtToken(user);
+
+            var userInfo = new
+            {
+                user.UserId,
+                user.Name,
+                user.Email,
+                user.Role,
+                user.ImageProfile,
+                LoginProvider = "Google"
+            };
+
+            return Ok(new
+            {
+                token = jwtToken,
+                user = userInfo
+            });
+        }
+
 
         [HttpPost("register")]
         public async Task<IActionResult> RegisterFromUser([FromForm] RegisterRequestCustom request)

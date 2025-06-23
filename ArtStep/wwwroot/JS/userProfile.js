@@ -159,6 +159,19 @@ const showErrorAlert = (message) => {
 // Change password:
 const changePwdForm = document.querySelector('#account-change-password form');
 
+const user = JSON.parse(localStorage.getItem('userInfo'));
+if (user?.loginProvider === 'Google') {
+    Swal.fire({
+        icon: 'info',
+        title: 'Không thể đổi mật khẩu',
+        text: 'Tài khoản đăng nhập bằng Google không thể đổi mật khẩu.',
+        confirmButtonText: 'Quay lại'
+    }).then(() => {
+        window.location.href = '/home.html'; 
+    });
+    document.querySelector('#account-change-password').style.display = 'none';
+}
+
 changePwdForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 

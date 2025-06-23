@@ -313,7 +313,9 @@
                 return;
             }
 
-            const role = localStorage.getItem('role');
+            const user = JSON.parse(localStorage.getItem('user'));
+            const role = user?.Role || user?.role;
+            
             if (role !== 'user') {
                 Swal.fire({
                     title: 'Truy cập bị từ chối',
