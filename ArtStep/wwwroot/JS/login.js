@@ -72,7 +72,8 @@
 
             const role = getCaseInsensitiveProperty(data.user, 'role')?.toLowerCase() || 'user';
             const redirectMap = {
-                admin: '/admin/dashboard',
+                //admin: '/admin/dashboard',
+                admin: '/admin/admindashboard',
                 user: '',
                 designer: '/designer/designs_dash'
             };

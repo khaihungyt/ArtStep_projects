@@ -434,30 +434,55 @@
                             </div>
                         </div>
                     </div>
-                    <div class="chat-input" id="chat-input" style="display: none;">
+                    <!--<div class="chat-input" id="chat-input" style="display: none;">
+        <div class="input-group">
+            <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
+            <button class="image-btn" id="image-btn" title="Tải hình ảnh lên">
+                <i class="fas fa-image"></i>
+            </button>
+            <div class="message-editor"
+                 id="message-input"
+                 contenteditable="true"
+                 data-placeholder="Nhập tin nhắn..."
+                 role="textbox">
+            </div>
+            <button class="image-btn" id="image-btn" title="Tải hình ảnh lên">
+                <i class="fas fa-image"></i>
+            </button>
+            <button class="send-btn" id="send-btn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+            <button class="btn btn-outline upload-btn">
+                <i class="fas fa-image"></i>
+                <input type="file" id="file-upload" accept="image/*" style="display: none;">
+            </button>
+        </div>
+    </div>-->
+                    <div class="chat-input" id="chat-input" style="display: block;">
                         <div class="input-group">
-                            <input type="file" id="image-input" accept="image/*" multiple style="display: none;">
+                            <!-- Input file ảnh ẩn -->
+                            <input type="file" id="image-input" accept="image/*" multiple style="display: none;" />
+
+                            <!-- Nút gửi ảnh -->
                             <button class="image-btn" id="image-btn" title="Tải hình ảnh lên">
                                 <i class="fas fa-image"></i>
                             </button>
+
+                            <!-- Ô nhập tin nhắn -->
                             <div class="message-editor"
                                  id="message-input"
                                  contenteditable="true"
                                  data-placeholder="Nhập tin nhắn..."
                                  role="textbox">
                             </div>
-                            <button class="image-btn" id="image-btn" title="Tải hình ảnh lên">
-                                <i class="fas fa-image"></i>
-                            </button>
+
+                            <!-- Nút gửi -->
                             <button class="send-btn" id="send-btn">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
-                            <button class="btn btn-outline upload-btn">
-                                <i class="fas fa-image"></i>
-                                <input type="file" id="file-upload" accept="image/*" style="display: none;">
-                            </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </main>
