@@ -362,6 +362,193 @@ namespace ArtStep.Controllers
             }
         }
 
+        // Admin endpoints for managing wallet charges
+        [HttpGet("admin/charges")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetWalletCharges([FromQuery] string? status = null, [FromQuery] DateTime? dateFrom = null, [FromQuery] DateTime? dateTo = null)
+        {
+            try
+            {
+                var query = _context.WalletTransactions
+                    .Include(wt => wt.Wallet)
+                    .ThenInclude(w => w.User)
+                    .Where(wt => wt.TransactionType == "CHARGE")
+                    .AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(status))
+                {
+                    query = query.Where(wt => wt.Status.ToLower() == status.ToLower());
+                }
+
+                if (dateFrom.HasValue)
+                {
+                    query = query.Where(wt => wt.CreatedAt >= dateFrom.Value);
+                }
+
+                if (dateTo.HasValue)
+                {
+                    query = query.Where(wt => wt.CreatedAt <= dateTo.Value.AddDays(1));
+                }
+
+                var charges = await query
+                    .OrderByDescending(wt => wt.CreatedAt)
+                    .Select(wt => new
+                    {
+                        transactionId = wt.TransactionId,
+                        userName = wt.Wallet.User.Name ?? "Unknown User",
+                        userEmail = wt.Wallet.User.Email ?? "Unknown Email",
+                        amount = wt.Amount,
+                        paymentMethod = wt.PaymentMethod ?? "Banking",
+                        createdAt = wt.CreatedAt,
+                        status = wt.Status,
+                        description = wt.Description,
+                        externalTransactionId = wt.ExternalTransactionId,
+                        completedAt = wt.CompletedAt
+                    })
+                    .ToListAsync();
+
+                return Ok(new { charges = charges });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving wallet charges", error = ex.Message });
+            }
+        }
+
+        [HttpGet("admin/statistics")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetWalletStatistics()
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var tomorrow = today.AddDays(1);
+
+                var pendingCount = await _context.WalletTransactions
+                    .Where(wt => wt.TransactionType == "CHARGE" && wt.Status == "PENDING")
+                    .CountAsync();
+
+                var approvedTodayCount = await _context.WalletTransactions
+                    .Where(wt => wt.TransactionType == "CHARGE" && wt.Status == "COMPLETED" && 
+                                wt.CompletedAt >= today && wt.CompletedAt < tomorrow)
+                    .CountAsync();
+
+                var rejectedTodayCount = await _context.WalletTransactions
+                    .Where(wt => wt.TransactionType == "CHARGE" && wt.Status == "FAILED" && 
+                                wt.CompletedAt >= today && wt.CompletedAt < tomorrow)
+                    .CountAsync();
+
+                var totalAmountToday = await _context.WalletTransactions
+                    .Where(wt => wt.TransactionType == "CHARGE" && wt.Status == "COMPLETED" && 
+                                wt.CompletedAt >= today && wt.CompletedAt < tomorrow)
+                    .SumAsync(wt => wt.Amount);
+
+                return Ok(new
+                {
+                    pendingCount = pendingCount,
+                    approvedTodayCount = approvedTodayCount,
+                    rejectedTodayCount = rejectedTodayCount,
+                    totalAmountToday = totalAmountToday
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while retrieving statistics", error = ex.Message });
+            }
+        }
+
+        [HttpPost("admin/approve/{transactionId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> ApproveWalletCharge(string transactionId, [FromBody] ApproveChargeRequest request)
+        {
+            try
+            {
+                var transaction = await _context.WalletTransactions
+                    .Include(wt => wt.Wallet)
+                    .FirstOrDefaultAsync(wt => wt.TransactionId == transactionId && wt.TransactionType == "CHARGE");
+
+                if (transaction == null)
+                    return NotFound(new { message = "Transaction not found" });
+
+                if (transaction.Status != "PENDING")
+                    return BadRequest(new { message = "Transaction is not in pending status" });
+
+                // Update transaction status
+                transaction.Status = "COMPLETED";
+                transaction.CompletedAt = DateTime.Now;
+                if (!string.IsNullOrEmpty(request.Note))
+                {
+                    transaction.Description = $"{transaction.Description} | Admin Note: {request.Note}";
+                }
+
+                // Update wallet balance
+                if (transaction.Wallet != null)
+                {
+                    transaction.Wallet.Balance += transaction.Amount;
+                    transaction.Wallet.UpdatedAt = DateTime.Now;
+                    transaction.BalanceAfter = transaction.Wallet.Balance;
+                }
+
+                _context.WalletTransactions.Update(transaction);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Wallet charge approved successfully",
+                    transactionId = transactionId,
+                    newBalance = transaction.BalanceAfter
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while approving wallet charge", error = ex.Message });
+            }
+        }
+
+        [HttpPost("admin/reject/{transactionId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> RejectWalletCharge(string transactionId, [FromBody] RejectChargeRequest request)
+        {
+            try
+            {
+                var transaction = await _context.WalletTransactions
+                    .FirstOrDefaultAsync(wt => wt.TransactionId == transactionId && wt.TransactionType == "CHARGE");
+
+                if (transaction == null)
+                    return NotFound(new { message = "Transaction not found" });
+
+                if (transaction.Status != "PENDING")
+                    return BadRequest(new { message = "Transaction is not in pending status" });
+
+                if (string.IsNullOrEmpty(request.Reason))
+                    return BadRequest(new { message = "Rejection reason is required" });
+
+                // Update transaction status
+                transaction.Status = "FAILED";
+                transaction.CompletedAt = DateTime.Now;
+                transaction.Description = $"{transaction.Description} | Rejected: {request.Reason}";
+                if (!string.IsNullOrEmpty(request.Note))
+                {
+                    transaction.Description += $" | Note: {request.Note}";
+                }
+
+                _context.WalletTransactions.Update(transaction);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    message = "Wallet charge rejected successfully",
+                    transactionId = transactionId,
+                    reason = request.Reason
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while rejecting wallet charge", error = ex.Message });
+            }
+        }
+
     }
 
     // Request models
@@ -382,5 +569,16 @@ namespace ArtStep.Controllers
         public string AccountHolderName { get; set; }
         public string? VietQrClientId { get; set; }
         public string? VietQrApiKey { get; set; }
+    }
+
+    public class ApproveChargeRequest
+    {
+        public string? Note { get; set; }
+    }
+
+    public class RejectChargeRequest
+    {
+        public string Reason { get; set; } = string.Empty;
+        public string? Note { get; set; }
     }
 } 
