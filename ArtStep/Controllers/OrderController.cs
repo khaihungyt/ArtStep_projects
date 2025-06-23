@@ -295,6 +295,60 @@ namespace ArtStep.Controllers
             }
         }
 
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> GetAllOrders()
+        {
+            try
+            {
+                var orders = await _context.Order
+                    .Include(o => o.User)
+                    .Include(o => o.OrderDetails)
+                        .ThenInclude(od => od.ShoeCustom)
+                            .ThenInclude(sc => sc.Images)
+                    .OrderByDescending(o => o.CreateAt)
+                    .Select(o => new
+                    {
+                        orderId = o.OrderId,
+                        userId = o.UserId,
+                        userName = o.User.Name,
+                        status = o.Status,
+                        createAt = o.CreateAt,
+                        totalAmount = o.OrderDetails.Sum(od => od.CostaShoe ?? 0),
+                        itemCount = o.OrderDetails.Count(),
+                        orderDetails = o.OrderDetails.Select(od => new
+                        {
+                            orderDetailId = od.OrderDetailId,
+                            shoeCustomId = od.ShoeCustomId,
+                            quantityBuy = od.QuantityBuy,
+                            costaShoe = od.CostaShoe,
+                            shoeCustom = od.ShoeCustom != null ? new
+                            {
+                                shoeId = od.ShoeCustom.ShoeId,
+                                shoeName = od.ShoeCustom.ShoeName,
+                                shoeDescription = od.ShoeCustom.ShoeDescription,
+                                priceAShoe = od.ShoeCustom.PriceAShoe,
+                                images = od.ShoeCustom.Images.Select(img => new
+                                {
+                                    imageLink = img.ImageLink
+                                }).ToList()
+                            } : null
+                        }).ToList()
+                    })
+                    .ToListAsync();
+
+                var users = orders
+                    .Select(o => new { o.userId, o.userName })
+                    .Distinct()
+                    .ToList();
+
+                return Ok(new { orders, users });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi khi lấy đơn hàng", error = ex.Message });
+            }
+        }
 
     }
 }

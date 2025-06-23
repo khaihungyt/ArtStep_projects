@@ -39,6 +39,7 @@
                 return;
             }
 
+
             const res = await fetch('/api/Profile/profile', {
                 method: 'GET',
                 headers: {
@@ -47,6 +48,18 @@
                 }
             });
             const data = await res.json();
+            const role = data?.Role;
+            if (role?.toLowerCase() !== 'user') {
+                Swal.fire({
+                    title: 'Truy cập bị từ chối',
+                    text: 'Bạn không có quyền truy cập trang này.',
+                    icon: 'error',
+                    confirmButtonText: 'Quay lại'
+                }).then(() => {
+                    window.location.href = '/home.html';
+                });
+                return;
+            }
 
             if (res.ok) {
                 if (data.ImageProfile?.startsWith('data:image')) {
@@ -72,6 +85,90 @@
     }
 
     loadProfile();
+
+    async function loadUserOrders() {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            await Swal.fire({
+                title: 'Phiên đăng nhập đã hết hạn',
+                text: 'Vui lòng đăng nhập lại để tiếp tục sử dụng hệ thống.',
+                icon: 'warning',
+                confirmButtonText: 'Đăng nhập lại'
+            });
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/Order', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error('Không thể lấy danh sách đơn hàng');
+            }
+
+            const data = await res.json();
+            const orders = data.orders || [];
+
+            const tbody = document.getElementById('userOrderTableBody');
+            tbody.innerHTML = '';
+
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center">Không có đơn hàng nào.</td></tr>`;
+                return;
+            }
+
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${order.orderId}</td>
+                <td>${new Date(order.createAt).toLocaleString()}</td>
+                <td>${order.status}</td>
+                <td>${order.itemCount}</td>
+                <td>${order.totalAmount.toLocaleString('vi-VN')} ₫</td>
+                <td>
+                    <button class="btn btn-sm btn-info view-order-detail" data-order='${JSON.stringify(order)}'>Xem</button>
+                </td>
+            `;
+                tbody.appendChild(row);
+            });
+
+            document.querySelectorAll('.view-order-detail').forEach(button => {
+                button.addEventListener('click', function () {
+                    const order = JSON.parse(this.getAttribute('data-order'));
+                    let html = '';
+
+                    order.orderDetails.forEach(detail => {
+                        html += `
+                        <div class="mb-3">
+                            <strong>${detail.shoeCustom?.shoeName || '---'}</strong><br/>
+                            SL: ${detail.quantityBuy} | Giá: ${detail.costaShoe?.toLocaleString('vi-VN')} ₫<br/>
+                            <img src="${detail.shoeCustom?.images?.[0]?.imageLink || '#'}" width="80" height="80" style="margin-top:5px;">
+                        </div>
+                    `;
+                    });
+
+                    Swal.fire({
+                        title: `Chi tiết đơn hàng ${order.orderId}`,
+                        html: html,
+                        width: 600,
+                        confirmButtonText: 'Đóng'
+                    });
+                });
+            });
+
+        } catch (err) {
+            console.error('Lỗi khi lấy đơn hàng:', err);
+            await Swal.fire('Lỗi', 'Không thể tải đơn hàng của bạn.', 'error');
+        }
+    }
+
+    loadUserOrders();
 
     avatarInput.addEventListener('change', () => {
         const file = avatarInput.files[0];
@@ -134,7 +231,6 @@
 
 });
 
-// Đặt ở ngoài DOMContentLoaded
 const showSuccessAlert = (message) => {
     Swal.fire({
         icon: 'success',
@@ -214,3 +310,4 @@ changePwdForm.addEventListener('submit', async (e) => {
         console.error(err);
     }
 });
+

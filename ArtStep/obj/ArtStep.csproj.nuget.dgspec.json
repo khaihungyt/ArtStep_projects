@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\FPT\\K8\\EXE2\\clone_T\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {}
+    "D:\\FPT\\K8\\EXE2\\clone_K\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {}
   },
   "projects": {
-    "D:\\FPT\\K8\\EXE2\\clone_T\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {
+    "D:\\FPT\\K8\\EXE2\\clone_K\\ArtStep_projects\\ArtStep\\ArtStep.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\FPT\\K8\\EXE2\\clone_T\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+        "projectUniqueName": "D:\\FPT\\K8\\EXE2\\clone_K\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
         "projectName": "ArtStep",
-        "projectPath": "D:\\FPT\\K8\\EXE2\\clone_T\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+        "projectPath": "D:\\FPT\\K8\\EXE2\\clone_K\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\FPT\\K8\\EXE2\\clone_T\\ArtStep_projects\\ArtStep\\obj\\",
+        "outputPath": "D:\\FPT\\K8\\EXE2\\clone_K\\ArtStep_projects\\ArtStep\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -53,6 +53,10 @@
             "CloudinaryDotNet": {
               "target": "Package",
               "version": "[1.27.5, )"
+            },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.70.0, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
