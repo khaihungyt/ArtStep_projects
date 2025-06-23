@@ -176,7 +176,53 @@ app.UseWebSockets(new Microsoft.AspNetCore.Builder.WebSocketOptions
 {
     KeepAliveInterval = TimeSpan.FromSeconds(15)
 });
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
 
+    if (response.StatusCode == 404)
+    {
+        response.ContentType = "text/html";
+        await response.SendFileAsync("wwwroot/html/page/404error.html");
+    }
+});
+
+app.UseStatusCodePages(async context =>
+{
+    var request = context.HttpContext.Request;
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == 404 &&
+        request.Headers["Accept"].ToString().Contains("text/html"))
+    {
+        response.ContentType = "text/html";
+        await response.SendFileAsync("wwwroot/html/page/404error.html");
+    }
+});
+
+app.UseExceptionHandler(errorApp =>
+{
+errorApp.Run(async context =>
+{
+    var response = context.Response;
+    var request = context.Request;
+
+    response.StatusCode = 500;
+
+    // Trả HTML nếu browser (Accept: text/html)
+    if (request.Headers["Accept"].ToString().Contains("text/html"))
+    {
+        response.ContentType = "text/html";
+        await context.Response.SendFileAsync("wwwroot/html/page/500error.html");
+    }
+    else
+    {
+        // Trả JSON nếu là API
+        response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"status\":500,\"message\":\"Internal Server Error\"}");
+    }
+ });
+});
 app.UseRouting();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
