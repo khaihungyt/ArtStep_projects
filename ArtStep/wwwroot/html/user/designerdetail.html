@@ -157,48 +157,7 @@
     <!-- SignalR Client -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
     <script src="/js/user/designerdetail.js"></script>
-    <script>
-        const navbarAuth = document.getElementById("navbarAuth");
-
-        navbarAuth.innerHTML = `
-          <li class="nav-item">
-              <a href="/wallet.html" class="nav-link">
-                  <i class="bi bi-wallet2"></i> Ví tiền
-              </a>
-          </li>
-          <li class="nav-item">
-              <a href="/cart.html" class="nav-link">
-                  <i class="bi bi-cart4"></i> Giỏ hàng
-              </a>
-          </li>
-          <li class="nav-item">
-              <a href="/profile.html" class="nav-link">
-                  <i class="bi bi-person-circle"></i> Hồ sơ
-              </a>
-          </li>
-          <li class="nav-item">
-              <a href="#" class="nav-link text-danger" id="logoutLink">
-                  <i class="bi bi-box-arrow-right"></i> Đăng xuất
-              </a>
-          </li>
-      `;
-
-        document.getElementById("logoutLink").addEventListener("click", function (e) {
-            e.preventDefault();
-            localStorage.removeItem("token");
-            localStorage.removeItem("role");
-            localStorage.removeItem("userId");
-
-            Swal.fire({
-                icon: "success",
-                title: "Đăng xuất thành công",
-                showConfirmButton: false,
-                timer: 1000
-            }).then(() => {
-                window.location.href = "/login.html";
-            });
-        });
-    </script>
+    <script type="module" src="/JS/header.js"></script>
 </body>
 
 </html>

@@ -1,4 +1,3 @@
-console.log('[wallet.js] Loaded');
 import { API_BASE_URL } from './config.js';
 
 // Wallet functionality module
@@ -21,7 +20,7 @@ export class WalletManager {
 
         try {
             this.isLoading = true;
-            const response = await fetch(`/${API_BASE_URL}/wallet/balance`, {
+            const response = await fetch(`${API_BASE_URL}/wallet/balance`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -80,7 +79,7 @@ export class WalletManager {
     // Update wallet display in header
     async updateWalletDisplay() {
         const walletDisplayElement = document.getElementById('walletDisplay');
-        
+
         if (walletDisplayElement) {
             const balance = await this.fetchWalletBalance();
             if (balance !== null) {
@@ -98,7 +97,7 @@ export class WalletManager {
 
     init() {
         this.addWalletStyles();
-        
+
         setInterval(() => {
             if (localStorage.getItem('token')) {
                 this.updateWalletDisplay();
@@ -147,10 +146,10 @@ export class WalletManager {
 }
 window.walletManager = new WalletManager();
 
-window.goToWallet = function() {
+window.goToWallet = function () {
     window.walletManager.goToWallet();
 };
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     window.walletManager.init();
 }); 

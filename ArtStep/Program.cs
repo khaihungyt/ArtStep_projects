@@ -50,8 +50,8 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 builder.Services.AddMemoryCache();
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<ArtStepDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase")));
+
 
 // Enhanced JWT Authentication
 builder.Services.AddAuthentication(options =>
