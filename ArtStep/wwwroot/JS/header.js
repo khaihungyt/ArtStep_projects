@@ -32,7 +32,7 @@ export class HeaderManager {
             navbarAuth.innerHTML = `
                 ${walletBalance !== null ? this.walletManager.createWalletDisplay(walletBalance) : ''}
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="goToCart()">
+                    <a class="nav-link " href="#" onclick="goToCart()">
                         <i class="bi bi-cart"></i> Giỏ hàng
                     </a>
                 </li>
