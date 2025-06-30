@@ -3,6 +3,7 @@ using ArtStep.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Validations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,16 +17,17 @@ namespace ArtStep.Controllers
     public class DesignerController : ControllerBase
     {
         private readonly ArtStepDbContext _context;
+        private readonly IMemoryCache _memoryCache;
 
-        public DesignerController(ArtStepDbContext context)
+        public DesignerController(ArtStepDbContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _memoryCache = memoryCache;
         }
 
-        // GET: api/<DesignerController>
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ShoeCustomDTO>> GetAllDesignAsync()
+        public async Task<ActionResult<List<ShoeCustomDTO>>> GetAllDesignAsync()
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -34,43 +36,62 @@ namespace ArtStep.Controllers
             }
 
             var userId = userIdClaim.Value;
-            var listShoe = await _context.ShoeCustom
-            .AsNoTracking() // Improve performance for read-only operations
-            .Include(sc => sc.Designer)
-            .Include(sc => sc.Category)
-            .Include(sc => sc.Images)
-            .Where(sc => sc.Designer.UserId == userId)
-            .Select(sc => new ShoeCustomDTO
+            string cacheKey = $"user_designs_{userId}";
+
+            // Nếu có cache rồi thì dùng
+            if (_memoryCache.TryGetValue(cacheKey, out List<ShoeCustomDTO> cachedList))
             {
-                ShoeId = sc.ShoeId,
-                ShoeName = sc.ShoeName,
-                ShoeDescription = sc.ShoeDescription,
-                Quantity = sc.Quantity,
-                PriceAShoe = sc.PriceAShoe,
-                IsHidden = sc.IsHidden,
-                Category = new CategoryDTO
+                return Ok(cachedList);
+            }
+
+            // Nếu chưa có thì gọi DB
+            var listShoe = await _context.ShoeCustom
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(sc => sc.Designer)
+                .Include(sc => sc.Category)
+                .Include(sc => sc.Images)
+                .Where(sc => sc.Designer.UserId == userId)
+                .Select(sc => new ShoeCustomDTO
                 {
-                    CategoryId = sc.Category.CategoryId,
-                    CategoryName = sc.Category.CategoryName
-                },
-                ShoeImages = sc.Images.Select(i => new ShoeImageDTO
-                {
-                    ImageId = i.ImageId,
-                    ImageLink = i.ImageLink
-                }).ToList() // Sort thumbnails first
-            }).ToListAsync();
+                    ShoeId = sc.ShoeId,
+                    ShoeName = sc.ShoeName,
+                    ShoeDescription = sc.ShoeDescription,
+                    Quantity = sc.Quantity,
+                    PriceAShoe = sc.PriceAShoe,
+                    IsHidden = sc.IsHidden,
+                    Category = new CategoryDTO
+                    {
+                        CategoryId = sc.Category.CategoryId,
+                        CategoryName = sc.Category.CategoryName
+                    },
+                    ShoeImages = sc.Images.Select(i => new ShoeImageDTO
+                    {
+                        ImageId = i.ImageId,
+                        ImageLink = i.ImageLink
+                    }).ToList()
+                }).ToListAsync();
 
             if (listShoe == null)
             {
                 return NotFound();
             }
+
+            // Cấu hình cache
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+
+            _memoryCache.Set(cacheKey, listShoe, cacheOptions);
+
             return Ok(listShoe);
         }
+
 
         [HttpGet("view_revenue")]
         [Authorize]
         public async Task<ActionResult<OrderRevenueResponseDTO>> GetAllSalesData([FromQuery] DateTime? startDate = null,
-    [FromQuery] DateTime? endDate = null)
+            [FromQuery] DateTime? endDate = null)
         {
             try
             {
@@ -91,15 +112,11 @@ namespace ArtStep.Controllers
                 {
                     return BadRequest("Start date cannot be after end date");
                 }
-
-
-
-
                 var revenueData = await _context.OrderDetail
                     .Include(od => od.ShoeCustom)
                         .ThenInclude(s => s.Designer)
                     .Include(od => od.Order)
-                    .Where(od =>od.ShoeCustom.Designer.UserId == designerId &&
+                    .Where(od => od.ShoeCustom.Designer.UserId == designerId &&
                 od.Order.Status == "Completed" &&
                 od.Order.CreateAt >= startDate &&
                 od.Order.CreateAt <= endDate)
@@ -108,7 +125,7 @@ namespace ArtStep.Controllers
                         ShoeName = od.ShoeCustom.ShoeName,
                         Quantity = od.QuantityBuy,
                         PriceAShoe = od.CostaShoe,
-                        dateTime=od.Order.CreateAt
+                        dateTime = od.Order.CreateAt
                     }).OrderByDescending(x => x.dateTime)
                     .ToListAsync();
 
@@ -222,7 +239,10 @@ namespace ArtStep.Controllers
 
             // 4. Lưu thay đổi
             await _context.SaveChangesAsync();
-
+            // 5. Xoá cache cũ
+            string cacheKey = $"user_designs_{userId}";
+            _memoryCache.Remove(cacheKey);
+            await GetAllDesignAsync();
             // 5. Trả về kết quả
             return Ok(new { Message = "Design has been hidden successfully" });
         }
@@ -232,9 +252,6 @@ namespace ArtStep.Controllers
         [Authorize]
         public async Task<IActionResult> CreateDesign([FromBody] CreateDesignRequestDTO model)
         {
-
-
-
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -280,6 +297,10 @@ namespace ArtStep.Controllers
             // 4. Thêm vào db context và lưu
             _context.ShoeCustom.Add(newDesign);
             await _context.SaveChangesAsync();
+            // 5. Xóa cache danh sách thiết kế cũ của user này
+            string cacheKey = $"user_designs_{userId}";
+            _memoryCache.Remove(cacheKey);
+            await GetAllDesignAsync();
             var response = new ShoeCustomDTO
             {
                 ShoeName = newDesign.ShoeName,
@@ -289,7 +310,7 @@ namespace ArtStep.Controllers
                 Quantity = newDesign.Quantity,
             };
             // 5. Trả về kết quả
-            return Ok(response);
+            return  Ok(response);
         }
 
         private async Task ProcessShoeImages(ShoeCustom design, List<ShoeImageDTO> updateImages)
@@ -428,8 +449,16 @@ namespace ArtStep.Controllers
         {
             try
             {
+                string cacheKey = $"designer_detail_{designerId}";
+                if (_memoryCache.TryGetValue(cacheKey, out DesignerResponseDTO cachedResponse))
+                {
+                    return Ok(cachedResponse);
+                }
+
+
                 var designer = await _context.User
                     .AsNoTracking()
+                    .AsSplitQuery()
                     .Include(u => u.ShoeCustoms)
                         .ThenInclude(sc => sc.Images)
                     .Include(u => u.ReceivedFeedbacks)
@@ -485,7 +514,11 @@ namespace ArtStep.Controllers
                     FeedBackList = feedbackList,
                     ShoeCustomList = shoeCustomList
                 };
-
+                _memoryCache.Set(cacheKey, response, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
+                });
                 return Ok(response);
             }
             catch (Exception ex)

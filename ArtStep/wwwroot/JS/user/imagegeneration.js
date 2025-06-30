@@ -19,7 +19,7 @@
     generateBtn.addEventListener('click', async function () {
         const prompt = document.getElementById('aiPrompt').value.trim();
         const size = document.getElementById('aiSize').value;
-        const number = parseInt(document.getElementById('aiNumber').value);
+        const number = parseInt(document.getElementById('aiNumber').value); 
 
         if (!prompt) {
             alert('Vui lòng nhập mô tả cho hình ảnh');

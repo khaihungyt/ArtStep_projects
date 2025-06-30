@@ -4,19 +4,22 @@ using CloudinaryDotNet;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Text.Json.Serialization;
 using VNPAY.NET;
-using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMemoryCache();
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -50,8 +53,12 @@ builder.Services.AddSingleton<IVnpay, Vnpay>();
 builder.Services.AddMemoryCache();
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<ArtStepDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyDatabase")));
-
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("MyDatabase"),
+        sqlOptions =>
+        {
+            sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+        }));
 
 // Enhanced JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -121,6 +128,22 @@ builder.Services.AddAzureClients(clientBuilder =>
     clientBuilder.AddQueueServiceClient(builder.Configuration["StorageConnection:queueServiceUri"]!).WithName("StorageConnection");
     clientBuilder.AddTableServiceClient(builder.Configuration["StorageConnection:tableServiceUri"]!).WithName("StorageConnection");
 });
+
+
+
+//add gzip for base64 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true; 
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.Fastest;
+});
+
+
 
 var app = builder.Build();
 
@@ -227,7 +250,7 @@ app.UseRouting();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseResponseCompression();
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
 
