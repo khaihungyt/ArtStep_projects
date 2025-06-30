@@ -180,7 +180,7 @@
                         <div class="list-group list-group-flush account-settings-links">
                             <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
                             <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
-                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Orders</a>
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -260,73 +260,26 @@
                                 </form>
                             </div>
 
-                            <!-- Notifications -->
+                            <!-- Order -->
                             <div class="tab-pane fade" id="account-notifications">
                                 <div class="card-body pb-2">
-                                    <h6 class="mb-4">Activity</h6>
-                                    <div class="form-group">
-                                        <label class="switcher">
-                                            <input type="checkbox" class="switcher-input" checked>
-                                            <span class="switcher-indicator">
-                                                <span class="switcher-yes"></span>
-                                                <span class="switcher-no"></span>
-                                            </span>
-                                            <span class="switcher-label">Email me when someone comments on my article</span>
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="switcher">
-                                            <input type="checkbox" class="switcher-input" checked>
-                                            <span class="switcher-indicator">
-                                                <span class="switcher-yes"></span>
-                                                <span class="switcher-no"></span>
-                                            </span>
-                                            <span class="switcher-label">Email me when someone answers on my forum thread</span>
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="switcher">
-                                            <input type="checkbox" class="switcher-input">
-                                            <span class="switcher-indicator">
-                                                <span class="switcher-yes"></span>
-                                                <span class="switcher-no"></span>
-                                            </span>
-                                            <span class="switcher-label">Email me when someone follows me</span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <hr class="border-light m-0">
-                                <div class="card-body pb-2">
-                                    <h6 class="mb-4">Application</h6>
-                                    <div class="form-group">
-                                        <label class="switcher">
-                                            <input type="checkbox" class="switcher-input" checked>
-                                            <span class="switcher-indicator">
-                                                <span class="switcher-yes"></span>
-                                                <span class="switcher-no"></span>
-                                            </span>
-                                            <span class="switcher-label">News and announcements</span>
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="switcher">
-                                            <input type="checkbox" class="switcher-input">
-                                            <span class="switcher-indicator">
-                                                <span class="switcher-yes"></span>
-                                                <span class="switcher-no"></span>
-                                            </span>
-                                            <span class="switcher-label">Weekly product updates</span>
-                                        </label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="switcher">
-                                            <input type="checkbox" class="switcher-input" checked>
-                                            <span class="switcher-indicator">
-                                                <span class="switcher-yes"></span>
-                                                <span class="switcher-no"></span>
-                                            </span>
-                                            <span class="switcher-label">Weekly blog digest</span>
-                                        </label>
+                                    <h6 class="mb-4">Đơn hàng của bạn</h6>
+                                    <div id="userOrderList" class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã đơn hàng</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Chi tiết</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="userOrderTableBody">
+                                                <!-- Render bằng JavaScript -->
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -402,21 +355,6 @@
                 return;
             }
 
-            const user = JSON.parse(localStorage.getItem('user'));
-            const role = user?.Role || user?.role;
-            
-            if (role !== 'user') {
-                Swal.fire({
-                    title: 'Truy cập bị từ chối',
-                    text: 'Bạn không có quyền truy cập trang này.',
-                    icon: 'error',
-                    confirmButtonText: 'Quay lại'
-                }).then(() => {
-                    window.location.href = '/home.html';
-                });
-                return false;
-            }
-            return true;
         });
     </script>
 </body>

@@ -38,14 +38,14 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-shoe-prints"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Custom Shoes Admin</div>
+                <div class="sidebar-brand-text mx-3">Quản trị</div>
             </a>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Dashboard -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link" href="AdminDashboard.html">
                     <i class="fas fa-home"></i>
                     <span>Trang chủ</span>
@@ -60,7 +60,7 @@
 
             <!-- Yêu cầu thiết kế -->
             <li class="nav-item">
-                <a class="nav-link" href="requests.html">
+                <a class="nav-link" href="OrdersView.html">
                     <i class="fas fa-tasks"></i>
                     <span>Yêu cầu thiết kế</span>
                 </a>
@@ -68,9 +68,9 @@
 
             <!-- Tiến độ & File thiết kế -->
             <li class="nav-item">
-                <a class="nav-link" href="designs.html">
+                <a class="nav-link" href="Categories.html">
                     <i class="fas fa-drafting-compass"></i>
-                    <span>Tiến độ & File thiết kế</span>
+                    <span>Giày</span>
                 </a>
             </li>
 
@@ -83,8 +83,8 @@
             </li>
 
             <!-- Quản lý nạp tiền -->
-            <li class="nav-item active">
-                <a class="nav-link" href="wallet-charges.html">
+            <li class="nav-item">
+                <a class="nav-link" href="wallet">
                     <i class="fas fa-wallet"></i>
                     <span>Quản lý nạp tiền</span>
                 </a>
@@ -98,7 +98,7 @@
 
             <!-- Danh sách khách hàng -->
             <li class="nav-item">
-                <a class="nav-link" href="customers.html">
+                <a class="nav-link" href="CustomersList.html">
                     <i class="fas fa-user"></i>
                     <span>Khách hàng</span>
                 </a>
@@ -108,7 +108,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="DesignersList.html">
                     <i class="fas fa-user-edit"></i>
-                    <span>Designer</span>
+                    <span>Người thiết kế</span>
                 </a>
             </li>
 
@@ -292,46 +292,46 @@
 
                     <!-- Filter Section -->
                     <!--<div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Bộ lọc</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label for="statusFilter">Trạng thái:</label>
-                                    <select class="form-control" id="statusFilter">
-                                        <option value="">Tất cả</option>
-                                        <option value="pending">Chờ duyệt</option>
-                                        <option value="completed">Đã duyệt</option>
-                                        <option value="failed">Đã từ chối</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="dateFrom">Từ ngày:</label>
-                                    <input type="date" class="form-control" id="dateFrom">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="dateTo">Đến ngày:</label>
-                                    <input type="date" class="form-control" id="dateTo">
-                                </div>
-                                <div class="col-md-3">
-                                    <label>&nbsp;</label>
-                                    <div>
-                                        <button class="btn btn-primary btn-block" onclick="applyFilters()">
-                                            <i class="fas fa-filter"></i> Áp dụng bộ lọc
-                                        </button>
-                                    </div>
-                                </div>
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bộ lọc</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label for="statusFilter">Trạng thái:</label>
+                                <select class="form-control" id="statusFilter">
+                                    <option value="">Tất cả</option>
+                                    <option value="pending">Chờ duyệt</option>
+                                    <option value="completed">Đã duyệt</option>
+                                    <option value="failed">Đã từ chối</option>
+                                </select>
                             </div>
-                            <div class="row mt-2">
-                                <div class="col-md-12">
-                                    <button class="btn btn-secondary" onclick="clearFilters()">
-                                        <i class="fas fa-times"></i> Xóa bộ lọc
+                            <div class="col-md-3">
+                                <label for="dateFrom">Từ ngày:</label>
+                                <input type="date" class="form-control" id="dateFrom">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="dateTo">Đến ngày:</label>
+                                <input type="date" class="form-control" id="dateTo">
+                            </div>
+                            <div class="col-md-3">
+                                <label>&nbsp;</label>
+                                <div>
+                                    <button class="btn btn-primary btn-block" onclick="applyFilters()">
+                                        <i class="fas fa-filter"></i> Áp dụng bộ lọc
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    </div>-->
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <button class="btn btn-secondary" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i> Xóa bộ lọc
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
 
                     <!-- Wallet Charges Table -->
                     <div class="card shadow mb-4">
