@@ -79,7 +79,7 @@ export class WalletManager {
     // Update wallet display in header
     async updateWalletDisplay() {
         const walletDisplayElement = document.getElementById('walletDisplay');
-        
+
         if (walletDisplayElement) {
             const balance = await this.fetchWalletBalance();
             if (balance !== null) {
@@ -97,7 +97,7 @@ export class WalletManager {
 
     init() {
         this.addWalletStyles();
-        
+
         setInterval(() => {
             if (localStorage.getItem('token')) {
                 this.updateWalletDisplay();
@@ -144,12 +144,11 @@ export class WalletManager {
         document.head.appendChild(style);
     }
 }
-window.walletManager = new WalletManager();
 
-window.goToWallet = function() {
-    window.walletManager.goToWallet();
-};
+// Create and export a singleton instance
+export const walletManager = new WalletManager();
 
-document.addEventListener('DOMContentLoaded', function() {
-    window.walletManager.init();
+// Initialize wallet manager when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    walletManager.init();
 }); 

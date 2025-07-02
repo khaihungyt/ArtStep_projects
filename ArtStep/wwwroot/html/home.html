@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="vie port" content="width=device-width, initial-scale=1" />
     <title>ArtStep - Thị Trường Giày Tùy Chỉnh</title>
 
     <!-- Bootstrap CSS + Icons -->
@@ -15,6 +15,8 @@
     <!-- <link rel="stylesheet" href="../CSS/chat.css" /> -->
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <!-- AI Chat CSS -->
+    <link rel="stylesheet" href="../CSS/ai-chat.css" />
     
     <!-- Best Sellers Styling -->
     <style>
@@ -118,6 +120,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="/user/AIgeneration.html">Tạo AI</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav" id="navbarAuth">
@@ -263,10 +268,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
     <!-- SignalR Client -->
     <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
-    <!-- Chat System -->
-    
     <!-- Custom JS -->
+    <script type="module" src="../JS/header.js"></script>
     <script type="module" src="../JS/home.js"></script>
+    <!-- Chat System -->
+    <script type="module" src="../JS/ai-chat.js"></script>
+    <script type="module" src="../JS/chat-initializer.js"></script>
 </body>
 
 </html>

@@ -1,9 +1,9 @@
-// Import the base chat functionality
+﻿// Import the base chat functionality
 import { API_BASE_URL } from '../config.js';
 
 class DesignerChatSystem {
     constructor() {
-        
+
         this.connection = null;
         this.currentUserId = null;
         this.currentUserName = null;
@@ -87,7 +87,7 @@ class DesignerChatSystem {
             await connection.start();
             this.connection = connection;
             this.isConnected = true;
-            
+
             // Join user group for the designer
             const designerId = localStorage.getItem('userId');
             if (designerId) {
@@ -158,7 +158,7 @@ class DesignerChatSystem {
     async loadConversations() {
         try {
             this.token = localStorage.getItem('token');
-            
+
             if (!this.token) {
                 this.showError('Please login to view conversations');
                 this.displayConversations([]);
@@ -199,7 +199,7 @@ class DesignerChatSystem {
 
     displayConversations(conversations) {
         const container = document.getElementById('conversations-list');
-        
+
         if (!conversations || !Array.isArray(conversations) || conversations.length === 0) {
             container.innerHTML = '<div class="loading">No conversations yet</div>';
             return;
@@ -269,18 +269,18 @@ class DesignerChatSystem {
             document.getElementById('conversations-panel').classList.add('mobile-show');
             document.getElementById('chat-panel').classList.remove('mobile-show');
         }
-        
+
         this.currentUserId = null;
         this.currentUserName = null;
-        
+
         const chatHeader = document.getElementById('chat-header');
         const chatInput = document.getElementById('chat-input');
         const mobileBackBtn = document.getElementById('mobile-back-btn');
-        
+
         if (chatHeader) chatHeader.style.display = 'none';
         if (chatInput) chatInput.style.display = 'none';
         if (mobileBackBtn) mobileBackBtn.style.display = 'none';
-        
+
         const chatMessages = document.getElementById('chat-messages');
         if (chatMessages) {
             chatMessages.innerHTML = `
@@ -292,7 +292,7 @@ class DesignerChatSystem {
                 </div>
             `;
         }
-        
+
         document.querySelectorAll('.conversation-item').forEach(item => {
             item.classList.remove('active');
         });
@@ -301,7 +301,7 @@ class DesignerChatSystem {
     async loadChatHistory(userId) {
         try {
             this.token = localStorage.getItem('token');
-            
+
             if (!this.token) {
                 this.showError('Please login to view chat history');
                 this.displayMessages([]);
@@ -340,7 +340,7 @@ class DesignerChatSystem {
 
     displayMessages(messages) {
         const container = document.getElementById('chat-messages');
-        
+
         if (!messages || !Array.isArray(messages) || messages.length === 0) {
             container.innerHTML = `
                 <div class="empty-chat">
@@ -372,18 +372,18 @@ class DesignerChatSystem {
     async sendMessage() {
         const input = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
-        
+
         if (!input || !this.currentUserId) return;
         const messageContent = input.innerHTML.trim();
         const messageText = input.innerText.trim();
-        
+
         if (!messageText && !messageContent.includes('<img')) return;
 
         if (sendBtn) sendBtn.disabled = true;
 
         try {
             this.token = localStorage.getItem('token');
-            
+
             if (!this.token) {
                 this.showError('Please login to send messages');
                 return;
@@ -410,7 +410,7 @@ class DesignerChatSystem {
             if (response.ok) {
                 input.innerHTML = '';
                 this.addMessageToUI(finalMessageContent, true);
-                
+
                 this.loadConversations();
             } else {
                 this.showError('Failed to send message');
@@ -425,7 +425,7 @@ class DesignerChatSystem {
 
     addMessageToUI(messageText, isFromCurrentUser) {
         const container = document.getElementById('chat-messages');
-        
+
         const emptyChat = container.querySelector('.empty-chat');
         if (emptyChat) {
             emptyChat.remove();
@@ -433,7 +433,7 @@ class DesignerChatSystem {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${isFromCurrentUser ? 'sent' : 'received'}`;
-        
+
         messageDiv.innerHTML = `
             <div class="message-bubble">
                 <div>${this.formatMessageContent(messageText)}</div>
@@ -446,11 +446,11 @@ class DesignerChatSystem {
     }
 
     handleIncomingMessage(data) {
-        
+
         if (this.currentUserId === data.senderId) {
             this.addMessageToUI(data.message, false);
         }
-        
+
         this.loadConversations();
     }
 
@@ -469,7 +469,7 @@ class DesignerChatSystem {
     async markMessagesAsRead(senderId) {
         try {
             this.token = localStorage.getItem('token');
-            
+
             if (!this.token || !senderId) return;
 
             const response = await fetch(`${API_BASE_URL}/Chat/mark-read/${senderId}`, {
@@ -493,24 +493,24 @@ class DesignerChatSystem {
 
     formatTime(dateString) {
         if (!dateString) return 'Unknown time';
-        
+
         const date = new Date(dateString);
         if (isNaN(date.getTime())) return 'Invalid date';
-        
+
         const now = new Date();
         const diff = now - date;
-        
+
         // Time formatting logic
         if (diff < 30000) return 'Just now';
         if (diff < 60000) return `${Math.floor(diff / 1000)}s ago`;
         if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
         if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
         if (diff < 604800000) return `${Math.floor(diff / 86400000)}d ago`;
-        
+
         const today = new Date();
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
-        
+
         if (date.toDateString() === today.toDateString()) {
             return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         } else if (date.toDateString() === yesterday.toDateString()) {
@@ -538,7 +538,7 @@ class DesignerChatSystem {
         localStorage.removeItem('username');
         localStorage.removeItem('role');
         this.showError('Session expired. Please login again.');
-        
+
         setTimeout(() => {
             window.location.href = '/login.html';
         }, 2000);
@@ -546,7 +546,7 @@ class DesignerChatSystem {
 
     showError(message) {
         console.error(message);
-        
+
         let toast = document.getElementById('error-toast');
         if (!toast) {
             toast = document.createElement('div');
@@ -581,27 +581,27 @@ class DesignerChatSystem {
 
     formatMessageContent(messageText) {
         if (!messageText) return '';
-        
+
         if (messageText.includes('<img') || messageText.includes('<br>')) {
             return messageText; // Return as is if it contains HTML
         }
-        
+
         return this.escapeHtml(messageText); // Escape plain text
     }
 
     getDisplayMessageForList(messageText) {
         if (!messageText) return 'No messages';
-        
+
         if (messageText.includes('<img')) {
             return 'Sent you a picture';
         }
-        
+
         if (messageText.includes('<br>') && messageText.includes('<img')) {
             const textPart = messageText.split('<br>')[0];
             return textPart.length > 30 ? textPart.substring(0, 30) + '... and a picture' : textPart + ' and a picture';
         }
-        
-        const plainText = messageText.replace(/<[^>]*>/g, ''); 
+
+        const plainText = messageText.replace(/<[^>]*>/g, '');
         return plainText.length > 50 ? plainText.substring(0, 50) + '...' : plainText;
     }
 
@@ -636,7 +636,7 @@ class DesignerChatSystem {
 
     insertImageAtCursor(imageSrc, file) {
         const editor = document.getElementById('message-input');
-        
+
         const img = document.createElement('img');
         img.src = imageSrc;
         img.style.maxWidth = '200px';
@@ -645,15 +645,15 @@ class DesignerChatSystem {
         img.style.margin = '4px 2px';
         img.setAttribute('data-file-name', file.name);
         img.setAttribute('data-file-size', file.size);
-        
+
         editor.focus();
-        
+
         const selection = window.getSelection();
         let range;
-        
+
         if (selection.rangeCount > 0) {
             const currentRange = selection.getRangeAt(0);
-            if (editor.contains(currentRange.commonAncestorContainer) || 
+            if (editor.contains(currentRange.commonAncestorContainer) ||
                 currentRange.commonAncestorContainer === editor) {
                 range = currentRange;
             } else {
@@ -666,25 +666,25 @@ class DesignerChatSystem {
             range.selectNodeContents(editor);
             range.collapse(false);
         }
-        
+
         range.deleteContents();
         range.insertNode(img);
-        
+
         const textNode = document.createTextNode(' ');
         range.setStartAfter(img);
         range.insertNode(textNode);
-        
+
         range.setStartAfter(textNode);
         range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
-        
+
         editor.focus();
     }
 
     handlePaste(event) {
         const items = event.clipboardData.items;
-        
+
         for (let item of items) {
             if (item.type.indexOf('image') !== -1) {
                 event.preventDefault();
@@ -697,18 +697,18 @@ class DesignerChatSystem {
     async processMessageContent(htmlContent) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = htmlContent;
-        
+
         const images = tempDiv.querySelectorAll('img[src^="data:"]');
-        
+
         for (const img of images) {
             const base64Data = img.src;
             const fileName = img.getAttribute('data-file-name') || 'image.png';
-            
+
             const response = await fetch(base64Data);
             const blob = await response.blob();
-            
+
             const file = new File([blob], fileName, { type: blob.type });
-            
+
             const imageUrl = await this.uploadImage(file);
             if (imageUrl) {
                 img.src = imageUrl;
@@ -718,7 +718,7 @@ class DesignerChatSystem {
                 img.style.maxHeight = '200px';
             }
         }
-        
+
         return tempDiv.innerHTML;
     }
 
@@ -768,10 +768,10 @@ class DesignerChatSystem {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
-    
+
     if (token && role === 'designer') {
         window.designerChat = new DesignerChatSystem();
     } else {

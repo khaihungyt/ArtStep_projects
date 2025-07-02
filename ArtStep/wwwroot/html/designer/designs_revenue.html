@@ -1,9 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sales Revenue | Designer Portal</title>
+    <title>Doanh Thu Bán Hàng | Cổng Thiết Kế</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/CSS/designer/styles.css">
     <link rel="stylesheet" href="/CSS/designer/designs_revenue.css" />
@@ -14,7 +14,7 @@
         <span class="loader"><span class="loader-inner"></span></span>
     </div>
     <div class="layout">
-        <!-- Sidebar (same as your original) -->
+        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span class="sidebar-title">Cổng Thông Tin Thiết Kế</span>
@@ -33,7 +33,7 @@
                 </a>
                 <a href="designs_revenue.html" class="sidebar-link active">
                     <i class="fas fa-chart-line"></i>
-                    <span>Doanh thu </span>
+                    <span>Doanh thu</span>
                 </a>
                 <a href="designs_new.html" class="sidebar-link">
                     <i class="fas fa-pen-fancy"></i>
@@ -47,6 +47,10 @@
                     <i class="fas fa-message"></i>
                     <span>Tin nhắn</span>
                 </a>
+                <a href="designer_feedback.html" class="sidebar-link">
+                    <i class="fas fa-star"></i>
+                    <span>Đánh giá</span>
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <button class="sidebar-logout" id="logout-btn">
@@ -56,18 +60,18 @@
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Nội dung chính -->
         <main class="main-content">
             <div class="container">
                 <div class="sales-header">
-                    <h1 class="page-title">Sales Revenue</h1>
+                    <h1 class="page-title">Doanh Thu Bán Hàng</h1>
 
                     <div class="sales-filters">
                         <div class="date-range">
-                            <label for="start-date">From:</label>
+                            <label for="start-date">Từ:</label>
                             <input type="date" id="start-date" class="date-input">
 
-                            <label for="end-date">To:</label>
+                            <label for="end-date">Đến:</label>
                             <input type="date" id="end-date" class="date-input">
 
                             <button id="apply-filter" class="btn btn-primary">
@@ -77,33 +81,33 @@
 
                         <div class="view-options">
                             <button id="view-summary" class="btn btn-outline active">
-                                <i class="fas fa-list"></i> Summary
+                                <i class="fas fa-list"></i> Tóm tắt
                             </button>
                             <button id="view-chart" class="btn btn-outline">
-                                <i class="fas fa-chart-bar"></i> Chart
+                                <i class="fas fa-chart-bar"></i> Biểu đồ
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Summary View -->
+                <!-- Chế độ Tóm tắt -->
                 <div id="summary-view" class="sales-view">
                     <div class="sales-stats">
                         <div class="stat-card">
-                            <div class="stat-value" id="total-revenue">$0.00</div>
-                            <div class="stat-label">Total Revenue</div>
+                            <div class="stat-value" id="total-revenue">0₫</div>
+                            <div class="stat-label">Tổng doanh thu</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-value" id="total-sales">0</div>
-                            <div class="stat-label">Total Sales</div>
+                            <div class="stat-label">Tổng lượt bán</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" id="avg-price">$0.00</div>
-                            <div class="stat-label">Avg. Price</div>
+                            <div class="stat-value" id="avg-price">0₫</div>
+                            <div class="stat-label">Giá trung bình</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-value" id="top-product">-</div>
-                            <div class="stat-label">Top Product</div>
+                            <div class="stat-label">Sản phẩm bán chạy</div>
                         </div>
                     </div>
 
@@ -111,21 +115,21 @@
                         <table class="sales-table">
                             <thead>
                                 <tr>
-                                    <th>Shoe Name</th>
-                                    <th>Quantity Sold</th>
-                                    <th>Price Each</th>
-                                    <th>Total Revenue</th>
-                                    <th>Profit Margin</th>
+                                    <th>Tên giày</th>
+                                    <th>Số lượng bán</th>
+                                    <th>Giá mỗi đôi</th>
+                                    <th>Doanh thu</th>
+                                    <th>Biên lợi nhuận</th>
                                 </tr>
                             </thead>
                             <tbody id="sales-table-body">
-                                <!-- Will be populated by JavaScript -->
+                                <!-- Dữ liệu sẽ được chèn bằng JavaScript -->
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Chart View (hidden by default) -->
+                <!-- Chế độ Biểu đồ (ẩn mặc định) -->
                 <div id="chart-view" class="sales-view" style="display: none;">
                     <div class="chart-container">
                         <canvas id="sales-chart"></canvas>

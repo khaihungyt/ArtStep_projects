@@ -1,5 +1,5 @@
 import { API_BASE_URL } from './config.js';
-import './header.js';
+import { headerManager } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     await loadDesigners();
@@ -711,8 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
-window.viewDesignerProducts = function(designerId, designerName) {
+window.viewDesignerProducts = function (designerId, designerName) {
     // Redirect to home page with designer filter
-    window.location.href = `home.html?designer=${designerId}&designerName=${encodeURIComponent(designerName)}`;
-}; 
-//a
+    window.location.href = `user/designerdetail.html?designerId=${designerId}`;
+};

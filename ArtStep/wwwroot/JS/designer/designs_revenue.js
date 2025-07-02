@@ -1,189 +1,241 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
+    // DOM Elements
+    const summaryView = document.getElementById('summary-view');
+    const chartView = document.getElementById('chart-view');
+    const viewSummaryBtn = document.getElementById('view-summary');
+    const viewChartBtn = document.getElementById('view-chart');
+    const applyFilterBtn = document.getElementById('apply-filter');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const salesTableBody = document.getElementById('sales-table-body');
+
+    // Chart variables
+    let salesChart = null;
+
     // Set default dates (last 30 days)
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 30);
+    setDefaultDates();
 
-    document.getElementById('start-date').valueAsDate = startDate;
-    document.getElementById('end-date').valueAsDate = endDate;
+    // Event Listeners
+    viewSummaryBtn.addEventListener('click', () => toggleView('summary'));
+    viewChartBtn.addEventListener('click', () => toggleView('chart'));
+    applyFilterBtn.addEventListener('click', fetchSalesData);
 
-    // View toggle buttons
-    document.getElementById('view-summary').addEventListener('click', function () {
-        document.getElementById('summary-view').style.display = 'block';
-        document.getElementById('chart-view').style.display = 'none';
-        this.classList.add('active');
-        document.getElementById('view-chart').classList.remove('active');
-    });
+    // Initial data load
+    fetchSalesData();
 
-    document.getElementById('view-chart').addEventListener('click', function () {
-        document.getElementById('summary-view').style.display = 'none';
-        document.getElementById('chart-view').style.display = 'block';
-        this.classList.add('active');
-        document.getElementById('view-summary').classList.remove('active');
-        renderChart(); // Ensure chart is rendered when switching to chart view
-    });
+    function setDefaultDates() {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 365);
 
-    // Apply filter button
-    document.getElementById('apply-filter').addEventListener('click', function () {
-        loadSalesData();
-    });
+        endDateInput.valueAsDate = endDate;
+        startDateInput.valueAsDate = startDate;
+    }
 
-    // Initial load of data
-    loadSalesData();
-});
+    function toggleView(view) {
+        if (view === 'summary') {
+            summaryView.style.display = 'block';
+            chartView.style.display = 'none';
+            viewSummaryBtn.classList.add('active');
+            viewChartBtn.classList.remove('active');
+        } else {
+            summaryView.style.display = 'none';
+            chartView.style.display = 'block';
+            viewSummaryBtn.classList.remove('active');
+            viewChartBtn.classList.add('active');
+            // Ensure chart is rendered when switching to chart view
+            if (salesChart) {
+                salesChart.update();
+            }
+        }
+    }
 
-// Mock data - in a real app, this would come from an API
-function fetchSalesData(startDate, endDate) {
-    // Simulate API call delay
-    return new Promise(resolve => {
-        setTimeout(() => {
-            // Sample data structure
-            const data = {
-                summary: {
-                    totalRevenue: 5840.50,
-                    totalSales: 42,
-                    avgPrice: 139.06,
-                    topProduct: "Urban Runner Pro"
-                },
-                products: [
-                    {
-                        id: 1,
-                        name: "Urban Runner Pro",
-                        quantitySold: 15,
-                        price: 149.99,
-                        profitMargin: 0.35
-                    },
-                    {
-                        id: 2,
-                        name: "Classic Canvas Sneaker",
-                        quantitySold: 12,
-                        price: 79.99,
-                        profitMargin: 0.25
-                    },
-                    {
-                        id: 3,
-                        name: "Performance Trail Shoe",
-                        quantitySold: 8,
-                        price: 129.99,
-                        profitMargin: 0.30
-                    },
-                    {
-                        id: 4,
-                        name: "Minimalist Walking Shoe",
-                        quantitySold: 7,
-                        price: 89.99,
-                        profitMargin: 0.28
-                    }
-                ]
-            };
+    async function fetchSalesData() {
+        try {
+            // Show loading state
+            document.querySelector('.loader-wrapper').style.display = 'flex';
 
-            // Filter by date range in a real app
-            resolve(data);
-        }, 500);
-    });
-}
+            // Get date range
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            // Get token từ localStorage hoặc cookie
+            const token = localStorage.getItem('token') || getCookie('token');
+            // Fetch data from API
+            const response = await fetch(`/api/Designer/view_revenue?startDate=${startDate}&endDate=${endDate}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch sales data');
+            }
 
-async function loadSalesData() {
-    const startDate = document.getElementById('start-date').value;
-    const endDate = document.getElementById('end-date').value;
+            const salesData = await response.json();
 
-    // Show loading state
-    const tableBody = document.getElementById('sales-table-body');
-    tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading data...</td></tr>';
+            // Update UI with the fetched data
+            updateSummaryStats(salesData);
+            populateSalesTable(salesData);
+            renderSalesChart(salesData);
 
-    try {
-        const data = await fetchSalesData(startDate, endDate);
+        } catch (error) {
+            console.error('Error fetching sales data:', error);
+            alert('Could not load sales data. Please try again.');
+        } finally {
+            // Hide loading state
+            document.querySelector('.loader-wrapper').style.display = 'none';
+        }
+    }
 
-        // Update summary stats
-        document.getElementById('total-revenue').textContent = `$${data.summary.totalRevenue.toFixed(2)}`;
-        document.getElementById('total-sales').textContent = data.summary.totalSales;
-        document.getElementById('avg-price').textContent = `$${data.summary.avgPrice.toFixed(2)}`;
-        document.getElementById('top-product').textContent = data.summary.topProduct;
+    function updateSummaryStats(data) {
+        if (!data || data.length === 0) {
+            // Reset stats if no data
+            document.getElementById('total-revenue').textContent = '0.00đ';
+            document.getElementById('total-sales').textContent = '0';
+            document.getElementById('avg-price').textContent = '0.00đ';
+            document.getElementById('top-product').textContent = '-';
+            return;
+        }
 
-        // Populate table
-        tableBody.innerHTML = '';
-        data.products.forEach(product => {
-            const totalRevenue = product.quantitySold * product.price;
-            const profitPercentage = (product.profitMargin * 100).toFixed(1);
+        // Calculate summary statistics
+        const totalRevenue = data.reduce((sum, item) => sum + (item.PriceAShoe * item.Quantity), 0);
+        const totalSales = data.reduce((sum, item) => sum + item.Quantity, 0);
+        const avgPrice = totalRevenue / totalSales;
+
+        // Find top product
+        const topProduct = data.reduce((top, item) =>
+            item.Quantity > top.quantity ? { name: item.ShoeName, quantity: item.Quantity } : top,
+            { name: '', quantity: 0 }
+        );
+
+        // Update DOM
+        document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}đ`;
+        document.getElementById('total-sales').textContent = totalSales;
+        document.getElementById('avg-price').textContent = `${avgPrice.toFixed(2)}đ`;
+        document.getElementById('top-product').textContent = topProduct.name || '-';
+    }
+
+    function populateSalesTable(data) {
+        // Clear existing rows
+        salesTableBody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="5" class="no-data">No sales data available for the selected period</td>';
+            salesTableBody.appendChild(row);
+            return;
+        }
+
+        // Create and append rows for each sales item
+        data.forEach(item => {
+            const totalRevenue = item.PriceAShoe * item.Quantity;
+            const profitMargin = calculateProfitMargin(item.PriceAShoe); // Implement this based on your business logic
 
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${product.name}</td>
-                <td>${product.quantitySold}</td>
-                <td>$${product.price.toFixed(2)}</td>
-                <td class="highlight">$${totalRevenue.toFixed(2)}</td>
-                <td>${profitPercentage}%</td>
+                <td>${item.ShoeName || 'N/A'}</td>
+                <td>${item.Quantity}</td>
+                <td>${item.PriceAShoe.toFixed(2)} đ</td>
+                <td>${totalRevenue.toFixed(2)} đ</td>
+                <td>${profitMargin}%</td>
             `;
-            tableBody.appendChild(row);
+            salesTableBody.appendChild(row);
         });
+    }
 
-        // Update chart if it's visible
-        if (document.getElementById('chart-view').style.display !== 'none') {
-            renderChart(data);
+    function renderSalesChart(data) {
+        const ctx = document.getElementById('sales-chart').getContext('2d');
+
+        // Prepare chart data
+        const labels = data.map(item => item.ShoeName);
+        const revenueData = data.map(item => item.PriceAShoe * item.Quantity);
+        const quantityData = data.map(item => item.Quantity);
+
+        // Destroy previous chart if it exists
+        if (salesChart) {
+            salesChart.destroy();
         }
-    } catch (error) {
-        tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: #d32f2f;">Error loading data. Please try again.</td></tr>';
-        console.error('Error loading sales data:', error);
-    }
-}
 
-let salesChart = null;
-
-function renderChart(data) {
-    const ctx = document.getElementById('sales-chart').getContext('2d');
-
-    // Destroy previous chart if it exists
-    if (salesChart) {
-        salesChart.destroy();
-    }
-
-    // Sample data - in a real app, use the data parameter
-    const chartData = {
-        labels: ["Urban Runner Pro", "Classic Canvas Sneaker", "Performance Trail Shoe", "Minimalist Walking Shoe"],
-        datasets: [{
-            label: 'Revenue by Product',
-            data: [2249.85, 959.88, 1039.92, 629.93],
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.6)',
-                'rgba(255, 99, 132, 0.6)',
-                'rgba(75, 192, 192, 0.6)',
-                'rgba(255, 206, 86, 0.6)'
-            ],
-            borderColor: [
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 99, 132, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(255, 206, 86, 1)'
-            ],
-            borderWidth: 1
-        }]
-    };
-
-    salesChart = new Chart(ctx, {
-        type: 'bar',
-        data: chartData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function (value) {
-                            return '$' + value;
+        // Create new chart
+        salesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Revenue ($)',
+                        data: revenueData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Quantity Sold',
+                        data: quantityData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y1',
+                        type: 'line'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Sales Performance'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.dataset.yAxisID === 'y') {
+                                    label += '$' + context.parsed.y.toFixed(2);
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
                         }
                     }
-                }
-            },
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return '$' + context.raw.toFixed(2);
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Revenue ($)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Quantity Sold'
+                        },
+                        grid: {
+                            drawOnChartArea: false
                         }
                     }
                 }
             }
-        }
-    });
-}
+        });
+    }
+
+    function calculateProfitMargin(price) {
+        // Implement your actual profit margin calculation logic here
+        // This is just a placeholder example
+        const cost = price * 0.6; // Assuming 40% margin
+        return ((price - cost) / price * 100).toFixed(1);
+    }
+});

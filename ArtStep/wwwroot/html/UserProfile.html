@@ -4,11 +4,16 @@
     <meta charset="utf-8">
     <title>Personal Account Settings</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- AI Chat CSS -->
+    <link rel="stylesheet" href="../CSS/ai-chat.css">
     <style type="text/css">
         body {
-            background: #f5f5f5;
-            margin-top: 20px;
+            background: url('https://png.pngtree.com/background/20220723/original/pngtree-background-biru-keren-dan-kosong-abstract-untuk-template-desain-powerpoint-ppt-picture-image_1738466.jpg') no-repeat center center fixed;
+            background-size: cover;
+           
         }
 
         .ui-w-80 {
@@ -116,214 +121,259 @@
             padding: 0.85rem 1.5rem;
             border-color: rgba(24,28,33,0.03) !important;
         }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container light-style flex-grow-1 container-p-y">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">
+                <i class="bi bi-boot"></i> ArtStep
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/AIgeneration.html">Tạo AI</a>
+                    </li>
+                </ul>
+               <ul class="navbar-nav ml-auto" id="navbarAuth"></ul>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="font-weight-bold mb-0">
-                Account Settings
-            </h4>
-            <!-- Nút Home dẫn về home.html -->
-            <a href="home.html" class="btn btn-secondary">Home</a>
-        </div>
-
-        <div class="card overflow-hidden">
-            <div class="row no-gutters row-bordered row-border-light">
-                <div class="col-md-3 pt-0">
-                    <div class="list-group list-group-flush account-settings-links">
-                        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-social-links">Social links</a>
-                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Notifications</a>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    <div class="tab-content">
-
-                        <!-- General -->
-                        <div class="tab-pane fade active show" id="account-general">
-                            <form id="generalForm" action="/api/Profile/UpdateProfile" method="post" enctype="multipart/form-data">
-                                <div class="card-body media align-items-center">
-                                    <img id="avatarPreview" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Avatar" class="d-block ui-w-80">
-                                    <div class="media-body ml-4">
-                                        <label class="btn btn-outline-primary">
-                                            Upload new photo
-                                            <input type="file" name="avatar" id="avatarInput" class="account-settings-fileinput">
-                                        </label>
-                                        &nbsp;
-                                        <button type="button" class="btn btn-default md-btn-flat" onclick="document.querySelector('#avatarInput').value = ''">Reset</button>
-                                        <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
-                                    </div>
-                                </div>
-                                <hr class="border-light m-0">
-
-                                <div class="card-body">
-                                    <div class="form-group">
-                                        <label class="form-label" for="fullName">Name</label>
-                                        <input type="text" id="fullName" name="name" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label" for="email">E-mail</label>
-                                        <input type="email" id="email" name="email" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label" for="phoneNo">Phone Number</label>
-                                        <input type="text" id="phoneNo" name="phoneNo" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="form-label" for="role">Role</label>
-                                        <input type="text" id="role" class="form-control" readonly>
-                                    </div>
-                                    <div class="form-group form-check">
-                                        <input type="checkbox" id="isActive" class="form-check-input" disabled>
-                                        <label class="form-check-label" for="isActive">Active</label>
-                                    </div>
-                                </div>
-
-                                <div class="text-right p-3 border-top">
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                                    <button type="reset" class="btn btn-default">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Change password -->
-                        <div class="tab-pane fade" id="account-change-password">
-                            <form id="changePasswordForm" action="#" method="post">
-                                <div class="card-body pb-2">
-                                    <div class="form-group">
-                                        <label class="form-label" for="currentPassword">Current password</label>
-                                        <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="newPassword">New password</label>
-                                        <input type="password" id="newPassword" name="newPassword" class="form-control" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="confirmPassword">Repeat new password</label>
-                                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
-                                    </div>
-                                </div>
-
-                                <div class="text-right p-3 border-top">
-                                    <button type="submit" class="btn btn-primary">Change password</button>
-                                    <button type="reset" class="btn btn-default">Cancel</button>
-                                </div>
-                            </form>
-                        </div>
-
-
-                        <!-- Social links -->
-                        <div class="tab-pane fade" id="account-social-links">
-                            <div class="card-body pb-2">
-                                <div class="form-group">
-                                    <label class="form-label" for="twitter">Twitter</label>
-                                    <input type="text" id="twitter" class="form-control" value="https://twitter.com/user">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="facebook">Facebook</label>
-                                    <input type="text" id="facebook" class="form-control" value="https://www.facebook.com/user">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="googleplus">Google+</label>
-                                    <input type="text" id="googleplus" class="form-control" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="linkedin">LinkedIn</label>
-                                    <input type="text" id="linkedin" class="form-control" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label" for="instagram">Instagram</label>
-                                    <input type="text" id="instagram" class="form-control" value="https://www.instagram.com/user">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Notifications -->
-                        <div class="tab-pane fade" id="account-notifications">
-                            <div class="card-body pb-2">
-                                <h6 class="mb-4">Activity</h6>
-                                <div class="form-group">
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher-input" checked>
-                                        <span class="switcher-indicator">
-                                            <span class="switcher-yes"></span>
-                                            <span class="switcher-no"></span>
-                                        </span>
-                                        <span class="switcher-label">Email me when someone comments on my article</span>
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher-input" checked>
-                                        <span class="switcher-indicator">
-                                            <span class="switcher-yes"></span>
-                                            <span class="switcher-no"></span>
-                                        </span>
-                                        <span class="switcher-label">Email me when someone answers on my forum thread</span>
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher-input">
-                                        <span class="switcher-indicator">
-                                            <span class="switcher-yes"></span>
-                                            <span class="switcher-no"></span>
-                                        </span>
-                                        <span class="switcher-label">Email me when someone follows me</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <hr class="border-light m-0">
-                            <div class="card-body pb-2">
-                                <h6 class="mb-4">Application</h6>
-                                <div class="form-group">
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher-input" checked>
-                                        <span class="switcher-indicator">
-                                            <span class="switcher-yes"></span>
-                                            <span class="switcher-no"></span>
-                                        </span>
-                                        <span class="switcher-label">News and announcements</span>
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher-input">
-                                        <span class="switcher-indicator">
-                                            <span class="switcher-yes"></span>
-                                            <span class="switcher-no"></span>
-                                        </span>
-                                        <span class="switcher-label">Weekly product updates</span>
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label class="switcher">
-                                        <input type="checkbox" class="switcher-input" checked>
-                                        <span class="switcher-indicator">
-                                            <span class="switcher-yes"></span>
-                                            <span class="switcher-no"></span>
-                                        </span>
-                                        <span class="switcher-label">Weekly blog digest</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div> 
             </div>
         </div>
+    </nav>
 
-    </div> 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    
+        <main class="container light-style flex-grow-1 container-p-y">
+
+            
+
+            <div class="card overflow-hidden">
+                <div class="row no-gutters row-bordered row-border-light">
+                    <div class="col-md-3 pt-0">
+                        <div class="list-group list-group-flush account-settings-links">
+                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Orders</a>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="tab-content">
+
+                            <!-- General -->
+                            <div class="tab-pane fade active show" id="account-general">
+                                <form id="generalForm" action="/api/Profile/UpdateProfile" method="post" enctype="multipart/form-data">
+                                    <div class="card-body media align-items-center">
+                                        <img id="avatarPreview" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Avatar" class="d-block ui-w-80">
+                                        <div class="media-body ml-4">
+                                            <label class="btn btn-outline-primary">
+                                                Upload new photo
+                                                <input type="file" name="avatar" id="avatarInput" class="account-settings-fileinput">
+                                            </label>
+                                            &nbsp;
+                                            <button type="button" class="btn btn-default md-btn-flat" onclick="document.querySelector('#avatarInput').value = ''">Reset</button>
+                                            <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
+                                        </div>
+                                    </div>
+                                    <hr class="border-light m-0">
+
+                                    <div class="card-body">
+                                        <div class="form-group">
+                                            <label class="form-label" for="fullName">Name</label>
+                                            <input type="text" id="fullName" name="name" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="email">E-mail</label>
+                                            <input type="email" id="email" name="email" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="phoneNo">Phone Number</label>
+                                            <input type="text" id="phoneNo" name="phoneNo" class="form-control">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="role">Role</label>
+                                            <input type="text" id="role" class="form-control" readonly>
+                                        </div>
+                                        <div class="form-group form-check">
+                                            <input type="checkbox" id="isActive" class="form-check-input" disabled>
+                                            <label class="form-check-label" for="isActive">Active</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right p-3 border-top">
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <button type="reset" class="btn btn-default">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Change password -->
+                            <div class="tab-pane fade" id="account-change-password">
+                                <form id="changePasswordForm" action="#" method="post">
+                                    <div class="card-body pb-2">
+                                        <div class="form-group">
+                                            <label class="form-label" for="currentPassword">Current password</label>
+                                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="newPassword">New password</label>
+                                            <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="confirmPassword">Repeat new password</label>
+                                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right p-3 border-top">
+                                        <button type="submit" class="btn btn-primary">Change password</button>
+                                        <button type="reset" class="btn btn-default">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Order -->
+                            <div class="tab-pane fade" id="account-notifications">
+                                <div class="card-body pb-2">
+                                    <h6 class="mb-4">Đơn hàng của bạn</h6>
+                                    <div id="userOrderList" class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Mã đơn hàng</th>
+                                                    <th>Ngày tạo</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Tổng tiền</th>
+                                                    <th>Chi tiết</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="userOrderTableBody">
+                                                <!-- Render bằng JavaScript -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><i class="bi bi-boot"></i> ArtStep</h5>
+                    <p>Thị trường giày tùy chỉnh của bạn, kết nối các nhà thiết kế, nhà sản xuất và khách hàng.</p>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h5>Cửa Hàng</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Tất Cả Thiết Kế</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Nhà Thiết Kế</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h5>Hỗ Trợ</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Câu Hỏi Thường Gặp</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Vận Chuyển</a></li>
+                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Đổi Trả</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Liên Hệ</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link p-0 text-white">Email: info@artstep.com</a>
+                        </li>
+                        <li class="nav-item"><p class="nav-link p-0 text-white">SĐT: 0983596630</p></li>
+                    </ul>
+                    <div class="d-flex mt-3">
+                        <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <p class="text-center text-muted mb-0">&copy; 2023 ArtStep. Bảo lưu mọi quyền.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="../JS/userProfile.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script type="module" src="../JS/header.js"></script>
+    <script type="module" src="../JS/userProfile.js"></script>
+    <!-- Chat System -->
+    <script src="../JS/ai-chat.js"></script>
+    <script src="../JS/chat-initializer.js"></script>
+    <script>
+        $(document).ready(function () {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                Swal.fire({
+                    title: 'Phiên đăng nhập đã hết hạn',
+                    text: 'Vui lòng đăng nhập lại để tiếp tục sử dụng hệ thống.',
+                    icon: 'warning',
+                    confirmButtonText: 'Đăng nhập lại'
+                }).then(() => {
+                    window.location.href = '/login.html';
+                });
+                return;
+            }
 
+        });
+    </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <!-- SignalR Client -->
+    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <!-- Custom JS -->
+    <script type="module" src="../JS/header.js"></script>
+    <script type="module" src="../JS/userProfile.js"></script>
+    <!-- Chat System -->
+    <script type="module" src="../JS/ai-chat.js"></script>
+    <script type="module" src="../JS/chat-initializer.js"></script>
+</body>
 </html>

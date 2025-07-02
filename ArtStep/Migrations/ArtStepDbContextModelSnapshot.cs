@@ -18,23 +18,25 @@ namespace ArtStep.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("ArtStep.Data.Account", b =>
                 {
                     b.Property<string>("AccountId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Password")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("isStatus")
                         .HasColumnType("smallint");
@@ -42,7 +44,8 @@ namespace ArtStep.Migrations
                     b.HasKey("AccountId");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Accounts");
                 });
@@ -50,12 +53,18 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
                 {
                     b.Property<string>("CartId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("CartId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Carts");
                 });
@@ -63,16 +72,19 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
                 {
                     b.Property<string>("CartDetailID")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("CartId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("QuantityBuy")
                         .HasColumnType("int");
 
                     b.Property<string>("ShoeCustomId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("CartDetailID");
 
@@ -86,10 +98,11 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Category", b =>
                 {
                     b.Property<string>("CategoryId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("CategoryName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CategoryId");
 
@@ -99,22 +112,26 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Feedback", b =>
                 {
                     b.Property<string>("FeedbackId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("DesignerReceiveFeedbackId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FeedbackDescription")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("FeedbackStars")
                         .HasColumnType("int");
 
                     b.Property<string>("OrderId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("UserSendFeedbackId")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("FeedbackId");
 
@@ -122,36 +139,41 @@ namespace ArtStep.Migrations
 
                     b.HasIndex("OrderId");
 
+                    b.HasIndex("UserSendFeedbackId");
+
                     b.ToTable("feedback", (string)null);
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
                 {
                     b.Property<string>("MessageId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<bool>("IsRead")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<string>("MessageDescription")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("MessageType")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("ReadTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ReceivedId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("SendAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("SenderId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("MessageId");
 
@@ -165,18 +187,20 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Order", b =>
                 {
                     b.Property<string>("OrderId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("CreateAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Status")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<long?>("VNPayPaymentId")
                         .HasColumnType("bigint");
@@ -191,19 +215,22 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.OrderDetail", b =>
                 {
                     b.Property<string>("OrderDetailId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<double?>("CostaShoe")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<string>("OrderId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<int?>("QuantityBuy")
                         .HasColumnType("int");
 
                     b.Property<string>("ShoeCustomId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("OrderDetailId");
 
@@ -217,28 +244,30 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.ShoeCustom", b =>
                 {
                     b.Property<string>("ShoeId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("CategoryId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("DesignerUserId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<short?>("IsHidden")
                         .HasColumnType("smallint");
 
                     b.Property<double?>("PriceAShoe")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<int?>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("ShoeDescription")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShoeName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ShoeId");
 
@@ -252,13 +281,15 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.ShoeImage", b =>
                 {
                     b.Property<string>("ImageId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ImageLink")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ShoeCustomId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("ImageId");
 
@@ -270,22 +301,23 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.User", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Email")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageProfile")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNo")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<short?>("isActive")
                         .HasColumnType("smallint");
@@ -298,33 +330,36 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Wallet", b =>
                 {
                     b.Property<string>("WalletId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<double>("Balance")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("double")
+                        .HasColumnType("float")
                         .HasDefaultValue(0.0);
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<short>("IsActive")
                         .HasColumnType("smallint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("WalletId");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Wallets");
                 });
@@ -332,45 +367,48 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.WalletTransaction", b =>
                 {
                     b.Property<string>("TransactionId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<double>("Amount")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("BalanceAfter")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<double>("BalanceBefore")
-                        .HasColumnType("double");
+                        .HasColumnType("float");
 
                     b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("timestamp");
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExternalTransactionId")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PaymentMethod")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TransactionType")
-                        .HasColumnType("longtext");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WalletId")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("TransactionId");
 
@@ -388,6 +426,16 @@ namespace ArtStep.Migrations
                         .HasForeignKey("ArtStep.Data.Account", "UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ArtStep.Data.Cart", b =>
+                {
+                    b.HasOne("ArtStep.Data.User", "Users")
+                        .WithOne("Cart")
+                        .HasForeignKey("ArtStep.Data.Cart", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ArtStep.Data.CartDetail", b =>
@@ -417,9 +465,15 @@ namespace ArtStep.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("ArtStep.Data.User", "UserSend")
+                        .WithMany("SentFeedbacks")
+                        .HasForeignKey("UserSendFeedbackId");
+
                     b.Navigation("DesignersReceived");
 
                     b.Navigation("Order");
+
+                    b.Navigation("UserSend");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Message", b =>
@@ -487,25 +541,6 @@ namespace ArtStep.Migrations
                     b.Navigation("ShoeCustom");
                 });
 
-            modelBuilder.Entity("ArtStep.Data.User", b =>
-                {
-                    b.HasOne("ArtStep.Data.Cart", "Cart")
-                        .WithOne("Users")
-                        .HasForeignKey("ArtStep.Data.User", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ArtStep.Data.Feedback", "SentFeedbacks")
-                        .WithOne("UserSend")
-                        .HasForeignKey("ArtStep.Data.User", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cart");
-
-                    b.Navigation("SentFeedbacks");
-                });
-
             modelBuilder.Entity("ArtStep.Data.Wallet", b =>
                 {
                     b.HasOne("ArtStep.Data.User", "User")
@@ -536,18 +571,11 @@ namespace ArtStep.Migrations
             modelBuilder.Entity("ArtStep.Data.Cart", b =>
                 {
                     b.Navigation("CartDetails");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Category", b =>
                 {
                     b.Navigation("ShoeCustoms");
-                });
-
-            modelBuilder.Entity("ArtStep.Data.Feedback", b =>
-                {
-                    b.Navigation("UserSend");
                 });
 
             modelBuilder.Entity("ArtStep.Data.Order", b =>
@@ -572,9 +600,13 @@ namespace ArtStep.Migrations
                 {
                     b.Navigation("Account");
 
+                    b.Navigation("Cart");
+
                     b.Navigation("Orders");
 
                     b.Navigation("ReceivedFeedbacks");
+
+                    b.Navigation("SentFeedbacks");
 
                     b.Navigation("ShoeCustoms");
 

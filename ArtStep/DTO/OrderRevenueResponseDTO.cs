@@ -7,5 +7,7 @@
 
         public double? PriceAShoe { get; set; }
 
+        public DateTime? dateTime { get; set; }
+
     }
 }

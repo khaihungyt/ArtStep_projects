@@ -3,9 +3,11 @@ using ArtStep.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Validations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ArtStep.Controllers
@@ -15,15 +17,17 @@ namespace ArtStep.Controllers
     public class DesignerController : ControllerBase
     {
         private readonly ArtStepDbContext _context;
+        private readonly IMemoryCache _memoryCache;
 
-        public DesignerController(ArtStepDbContext context)
+        public DesignerController(ArtStepDbContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _memoryCache = memoryCache;
         }
-        // GET: api/<DesignerController>
+
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ShoeCustomDTO>> GetAllDesignAsync()
+        public async Task<ActionResult<List<ShoeCustomDTO>>> GetAllDesignAsync()
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
@@ -32,64 +36,105 @@ namespace ArtStep.Controllers
             }
 
             var userId = userIdClaim.Value;
-            var listShoe = await _context.ShoeCustom
-            .AsNoTracking() // Improve performance for read-only operations
-            .Include(sc => sc.Designer)
-            .Include(sc => sc.Category)
-            .Include(sc => sc.Images)
-            .Where(sc => sc.Designer.UserId == userId)
-            .Select(sc => new ShoeCustomDTO
+            string cacheKey = $"user_designs_{userId}";
+
+            // Nếu có cache rồi thì dùng
+            if (_memoryCache.TryGetValue(cacheKey, out List<ShoeCustomDTO> cachedList))
             {
-                ShoeId = sc.ShoeId,
-                ShoeName = sc.ShoeName,
-                ShoeDescription = sc.ShoeDescription,
-                Quantity = sc.Quantity,
-                PriceAShoe = sc.PriceAShoe,
-                IsHidden = sc.IsHidden,
-                Category = new CategoryDTO
+                return Ok(cachedList);
+            }
+
+            // Nếu chưa có thì gọi DB
+            var listShoe = await _context.ShoeCustom
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(sc => sc.Designer)
+                .Include(sc => sc.Category)
+                .Include(sc => sc.Images)
+                .Where(sc => sc.Designer.UserId == userId)
+                .Select(sc => new ShoeCustomDTO
                 {
-                    CategoryId = sc.Category.CategoryId,
-                    CategoryName = sc.Category.CategoryName
-                },
-                ShoeImages = sc.Images.Select(i => new ShoeImageDTO
-                {
-                    ImageId = i.ImageId,
-                    ImageLink = i.ImageLink
-                }).ToList() // Sort thumbnails first
-            }).ToListAsync();
+                    ShoeId = sc.ShoeId,
+                    ShoeName = sc.ShoeName,
+                    ShoeDescription = sc.ShoeDescription,
+                    Quantity = sc.Quantity,
+                    PriceAShoe = sc.PriceAShoe,
+                    IsHidden = sc.IsHidden,
+                    Category = new CategoryDTO
+                    {
+                        CategoryId = sc.Category.CategoryId,
+                        CategoryName = sc.Category.CategoryName
+                    },
+                    ShoeImages = sc.Images.Select(i => new ShoeImageDTO
+                    {
+                        ImageId = i.ImageId,
+                        ImageLink = i.ImageLink
+                    }).ToList()
+                }).ToListAsync();
 
             if (listShoe == null)
             {
                 return NotFound();
             }
+
+            // Cấu hình cache
+            var cacheOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(10))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(2));
+
+            _memoryCache.Set(cacheKey, listShoe, cacheOptions);
+
             return Ok(listShoe);
         }
 
 
         [HttpGet("view_revenue")]
         [Authorize]
-        public async Task<ActionResult<OrderRevenueResponseDTO>> GetAllSalesData()
+        public async Task<ActionResult<OrderRevenueResponseDTO>> GetAllSalesData([FromQuery] DateTime? startDate = null,
+            [FromQuery] DateTime? endDate = null)
         {
             try
             {
-                var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
+                var designerIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+                if (designerIdClaim == null || string.IsNullOrEmpty(designerIdClaim.Value))
                 {
-                    return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+                    return Unauthorized(new { message = "Invalid or expired token" });
                 }
 
-                var userId = userIdClaim.Value;
-                if (string.IsNullOrEmpty(userId))
+                var designerId = designerIdClaim.Value;
+
+                // Set default date range if not provided
+                endDate ??= DateTime.UtcNow;
+                startDate ??= endDate.Value.AddMonths(-1); // Default to last 30 days
+
+                // Validate date range
+                if (startDate > endDate)
                 {
-                    return Unauthorized(new { Message = "Invalid token" });
+                    return BadRequest("Start date cannot be after end date");
                 }
-                var revenue = await _context.OrderDetail
-                                     .Include(od => od.ShoeCustom).ToListAsync();
-                return Ok(revenue);
+                var revenueData = await _context.OrderDetail
+                    .Include(od => od.ShoeCustom)
+                        .ThenInclude(s => s.Designer)
+                    .Include(od => od.Order)
+                    .Where(od => od.ShoeCustom.Designer.UserId == designerId &&
+                od.Order.Status == "Completed" &&
+                od.Order.CreateAt >= startDate &&
+                od.Order.CreateAt <= endDate)
+                    .Select(od => new OrderRevenueResponseDTO
+                    {
+                        ShoeName = od.ShoeCustom.ShoeName,
+                        Quantity = od.QuantityBuy,
+                        PriceAShoe = od.CostaShoe,
+                        dateTime = od.Order.CreateAt
+                    }).OrderByDescending(x => x.dateTime)
+                    .ToListAsync();
+
+                return Ok(revenueData);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "An error occurred list" });
+                // Consider logging the exception (ex) here for debugging
+                return StatusCode(500, new { Message = "An error occurred while retrieving sales data" });
             }
         }
 
@@ -169,7 +214,7 @@ namespace ArtStep.Controllers
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
-        {
+            {
                 return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
             }
 
@@ -194,7 +239,10 @@ namespace ArtStep.Controllers
 
             // 4. Lưu thay đổi
             await _context.SaveChangesAsync();
-
+            // 5. Xoá cache cũ
+            string cacheKey = $"user_designs_{userId}";
+            _memoryCache.Remove(cacheKey);
+            await GetAllDesignAsync();
             // 5. Trả về kết quả
             return Ok(new { Message = "Design has been hidden successfully" });
         }
@@ -204,9 +252,6 @@ namespace ArtStep.Controllers
         [Authorize]
         public async Task<IActionResult> CreateDesign([FromBody] CreateDesignRequestDTO model)
         {
-
-
-
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
@@ -252,6 +297,10 @@ namespace ArtStep.Controllers
             // 4. Thêm vào db context và lưu
             _context.ShoeCustom.Add(newDesign);
             await _context.SaveChangesAsync();
+            // 5. Xóa cache danh sách thiết kế cũ của user này
+            string cacheKey = $"user_designs_{userId}";
+            _memoryCache.Remove(cacheKey);
+            await GetAllDesignAsync();
             var response = new ShoeCustomDTO
             {
                 ShoeName = newDesign.ShoeName,
@@ -259,9 +308,9 @@ namespace ArtStep.Controllers
                 CategoryId = newDesign.CategoryId,
                 PriceAShoe = newDesign.PriceAShoe,
                 Quantity = newDesign.Quantity,
-            };  
+            };
             // 5. Trả về kết quả
-            return Ok(response);
+            return  Ok(response);
         }
 
         private async Task ProcessShoeImages(ShoeCustom design, List<ShoeImageDTO> updateImages)
@@ -341,6 +390,147 @@ namespace ArtStep.Controllers
             return Ok(designDto);
         }
 
+
+        //GET api/DesignerController
+        [HttpGet("get_all_designs")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<DesignerDTO>>> GetAllDesigners()
+        {
+            try
+            {
+                var designers = await _context.User
+                                .Where(u => u.Role == "Designer")
+                                .Select(u => new
+                                {
+                                    UserId = u.UserId,
+                                    Name = u.Name,
+                                    isActive = u.isActive,
+                                    AverageFeedbackStars = _context.Feedbacks
+                                        .Where(f => f.DesignerReceiveFeedbackId == u.UserId)
+                                        .Average(f => (double?)f.FeedbackStars) ?? 0
+                                })
+                                .ToListAsync();
+                return Ok(designers);
+
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while retrieving designers" });
+            }
+        }
+
+        // Put api/DesignerController/update_designer_status
+        [HttpPut("update_designer_status")]
+        [Authorize]
+        public async Task<IActionResult> UpdateDesignerStatus([FromBody] DesignerDTO request)
+        {
+            try
+            {
+                var designer = await _context.User.FindAsync(request.UserId);
+                if (designer == null)
+                {
+                    return NotFound(new { Message = "Designer not found" });
+                }
+                designer.isActive = request.isActive;
+                _context.User.Update(designer);
+                await _context.SaveChangesAsync();
+                return Ok(new { Message = "Designer status updated successfully" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { Message = "An error occurred while updating designer status" });
+            }
+        }
+
+
+
+        [HttpGet("designer_detail/{designerId}")]
+        public async Task<ActionResult<DesignerResponseDTO>> GetDesignerAndFeedbackById(string designerId)
+        {
+            try
+            {
+                string cacheKey = $"designer_detail_{designerId}";
+                if (_memoryCache.TryGetValue(cacheKey, out DesignerResponseDTO cachedResponse))
+                {
+                    return Ok(cachedResponse);
+                }
+
+
+                var designer = await _context.User
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .Include(u => u.ShoeCustoms)
+                        .ThenInclude(sc => sc.Images)
+                    .Include(u => u.ReceivedFeedbacks)
+                        .ThenInclude(fb => fb.UserSend)
+                    .FirstOrDefaultAsync(u => u.UserId == designerId);
+
+                if (designer == null)
+                {
+                    return NotFound(new { Message = "Designer not found" });
+                }
+
+                // Calculate average rating
+                double averageRating = (double)(designer.ReceivedFeedbacks.Any()
+                        ? designer.ReceivedFeedbacks.Average(f => f.FeedbackStars)
+                            : 0);
+
+                var feedbackList = designer.ReceivedFeedbacks?
+                   .Select(fb => new FeedbackDTO
+                   {
+                       FeedbackId = fb.FeedbackId,
+                       FeedbackDescription = fb.FeedbackDescription ?? string.Empty,
+                       FeedbackStars = (int)fb.FeedbackStars,
+                       User = fb.UserSend != null ? new UserDTO
+                       {
+                           UserId = fb.UserSend.UserId ?? string.Empty,
+                           UserName = fb.UserSend.Name ?? "Không xác định",
+                           Avatar = fb.UserSend.ImageProfile ?? string.Empty
+                       } : new UserDTO()
+                   }).ToList();
+
+                var shoeCustomList = designer.ShoeCustoms?
+                    .Select(shoe => new ShoeCustomDTO
+                    {
+                        ShoeId = shoe.ShoeId,
+                        ShoeName = shoe.ShoeName,
+                        PriceAShoe = shoe.PriceAShoe,
+                        ShoeImages = shoe.Images?
+                            .Select(img => new ShoeImageDTO
+                            {
+                                ImageId = img.ImageId,
+                                ImageLink = img.ImageLink
+                            }).ToList() ?? new List<ShoeImageDTO>()
+                    }).ToList() ?? new List<ShoeCustomDTO>();
+
+                var response = new DesignerResponseDTO
+                {
+                    DesignerId = designer.UserId,
+                    DesignerName = designer.Name,
+                    Email = designer.Email,
+                    Phone = designer.PhoneNo,
+                    AvatarImage = designer.ImageProfile,
+                    AverageRating = Math.Round(averageRating, 1),
+                    FeedBackList = feedbackList,
+                    ShoeCustomList = shoeCustomList
+                };
+                _memoryCache.Set(cacheKey, response, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+                    SlidingExpiration = TimeSpan.FromMinutes(2)
+                });
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Error = ex.Message
+                });
+            }
+        }
+
         // GET: api/Designer/public
         [HttpGet("public")]
         public async Task<ActionResult<List<DesignerPublicDTO>>> GetAllDesignersPublic()
@@ -365,6 +555,48 @@ namespace ArtStep.Controllers
             {
                 return StatusCode(500, new { Message = "An error occurred while retrieving designers" });
             }
+        }
+
+
+        [HttpGet("designer_feedback")]
+        [Authorize]
+        public async Task<ActionResult<List<FeedbackDTO>>> GetAllFeedBackForADesigner([FromQuery] int? rating)
+        {
+            var designerIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (designerIdClaim == null)
+            {
+                return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+            }
+
+            var designerId = designerIdClaim.Value;
+
+            var query = _context.Feedbacks
+             .Include(fb => fb.UserSend)
+             .Where(fb => fb.DesignerReceiveFeedbackId == designerId);
+
+
+            if (rating.HasValue)
+            {
+                query = query.Where(fb => fb.FeedbackStars == rating.Value);
+            }
+
+            var feedbackList = await query.ToListAsync();
+
+
+
+            var feedbackDTOs = feedbackList.Select(fb => new FeedbackDTO
+            {
+                FeedbackId = fb.FeedbackId,
+                FeedbackDescription = fb.FeedbackDescription,
+                FeedbackStars = (int)fb.FeedbackStars,
+                User = new UserDTO
+                {
+                    UserName = fb.UserSend.Name,
+                    Avatar = fb.UserSend.ImageProfile
+                }
+            }).ToList();
+
+            return Ok(feedbackDTOs);
         }
     }
 }
