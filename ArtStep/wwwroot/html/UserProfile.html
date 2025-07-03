@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- AI Chat CSS -->
+    <link rel="stylesheet" href="../CSS/ai-chat.css">
     <style type="text/css">
         body {
             background: url('https://png.pngtree.com/background/20220723/original/pngtree-background-biru-keren-dan-kosong-abstract-untuk-template-desain-powerpoint-ppt-picture-image_1738466.jpg') no-repeat center center fixed;
@@ -335,11 +337,15 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="../JS/userProfile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
     <script type="module" src="../JS/header.js"></script>
+    <script type="module" src="../JS/userProfile.js"></script>
+    <!-- Chat System -->
+    <script src="../JS/ai-chat.js"></script>
+    <script src="../JS/chat-initializer.js"></script>
     <script>
         $(document).ready(function () {
             const token = localStorage.getItem('token');
@@ -357,5 +363,17 @@
 
         });
     </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <!-- SignalR Client -->
+    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <!-- Custom JS -->
+    <script type="module" src="../JS/header.js"></script>
+    <script type="module" src="../JS/userProfile.js"></script>
+    <!-- Chat System -->
+    <script type="module" src="../JS/ai-chat.js"></script>
+    <script type="module" src="../JS/chat-initializer.js"></script>
 </body>
 </html>

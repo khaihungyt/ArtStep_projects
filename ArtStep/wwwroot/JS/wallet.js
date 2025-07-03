@@ -144,12 +144,11 @@ export class WalletManager {
         document.head.appendChild(style);
     }
 }
-window.walletManager = new WalletManager();
 
-window.goToWallet = function () {
-    window.walletManager.goToWallet();
-};
+// Create and export a singleton instance
+export const walletManager = new WalletManager();
 
-document.addEventListener('DOMContentLoaded', function () {
-    window.walletManager.init();
+// Initialize wallet manager when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    walletManager.init();
 }); 

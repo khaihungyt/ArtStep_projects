@@ -1,5 +1,5 @@
 ﻿import { API_BASE_URL } from './config.js';
-import './header.js';
+import { headerManager } from './header.js';
 
 function formatPriceVND(price) {
     if (typeof price !== 'number') {
