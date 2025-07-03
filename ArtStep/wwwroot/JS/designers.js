@@ -179,7 +179,7 @@ window.startChat = function(designerId, designerName, profileImage) {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = '/account/login.html';
+                    window.location.href = '/login.html';
                 }
             });
             return;

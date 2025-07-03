@@ -68,7 +68,7 @@ export class WalletManager {
     createWalletDisplay(balance) {
         return `
             <li class="nav-item">
-                <a class="nav-link wallet-link" href="wallet.html" id="walletDisplay">
+                <a class="nav-link wallet-link" href="/wallet.html" id="walletDisplay">
                     <i class="bi bi-wallet2"></i> 
                     <span class="wallet-balance">${this.formatCurrency(balance)}</span>
                 </a>
@@ -92,7 +92,7 @@ export class WalletManager {
     }
 
     goToWallet() {
-        window.location.href = 'wallet';
+        window.location.href = 'wallet.html';
     }
 
     init() {

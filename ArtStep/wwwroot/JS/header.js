@@ -32,7 +32,7 @@ class HeaderManager {
             navbarAuth.innerHTML = `
                 ${walletBalance !== null ? this.walletManager.createWalletDisplay(walletBalance) : ''}
                 <li class="nav-item">
-                    <a class="nav-link " href="#" onclick="headerManager.goToCart()">
+                    <a class="nav-link " href="/Cart.html">
                         <i class="bi bi-cart"></i> Giỏ hàng
                     </a>
                 </li>
@@ -55,7 +55,7 @@ class HeaderManager {
             console.error('Lỗi khi hiển thị header người dùng:', error);
             navbarAuth.innerHTML = `
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="headerManager.goToCart()">
+                    <a class="nav-link" href="/Cart.html">
                         <i class="bi bi-cart"></i> Giỏ hàng
                     </a>
                 </li>
@@ -119,11 +119,11 @@ class HeaderManager {
 
     // Navigation functions
     goToCart() {
-        window.location.href = '/cart';
+        window.location.href = '/Cart.html';
     }
 
     goToWallet() {
-        window.location.href = '/wallet';
+        window.location.href = '/wallet.html';
     }
 }
 

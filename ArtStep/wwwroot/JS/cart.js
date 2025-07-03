@@ -711,7 +711,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Add wallet link functionality
     window.goToWallet = function() {
-        window.location.href = 'wallet.html';
+        window.location.href = '/wallet.html';
     };
 
     // Feedback functionality
