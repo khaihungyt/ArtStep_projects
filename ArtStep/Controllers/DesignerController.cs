@@ -1,12 +1,16 @@
 ﻿using ArtStep.Data;
 using ArtStep.DTO;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Validations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,12 +21,14 @@ namespace ArtStep.Controllers
     public class DesignerController : ControllerBase
     {
         private readonly ArtStepDbContext _context;
+        private readonly Cloudinary _cloudinary;
         private readonly IMemoryCache _memoryCache;
 
-        public DesignerController(ArtStepDbContext context, IMemoryCache memoryCache)
+        public DesignerController(ArtStepDbContext context, IMemoryCache memoryCache, Cloudinary cloudinary)
         {
             _context = context;
             _memoryCache = memoryCache;
+            _cloudinary=cloudinary;
         }
 
         [HttpGet]
@@ -172,6 +178,7 @@ namespace ArtStep.Controllers
                 design.ShoeDescription = updateDto.ShoeDescription;
                 design.PriceAShoe = updateDto.PriceAShoe;
                 design.Quantity = updateDto.Quantity;
+                design.IsHidden = 0; // Giả sử bạn muốn hiển thị thiết kế sau khi cập nhật
                 // 4. Cập nhật category
                 var category = await _context.Categories.FindAsync(updateDto.CategoryId);
 
@@ -248,6 +255,74 @@ namespace ArtStep.Controllers
         }
 
 
+        //[HttpPost("Create_Design")]
+        //[Authorize]
+        //public async Task<IActionResult> CreateDesign([FromBody] CreateDesignRequestDTO model)
+        //{
+        //    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+        //    if (userIdClaim == null)
+        //    {
+        //        return Unauthorized(new { message = "Token không hợp lệ hoặc đã hết hạn." });
+        //    }
+
+        //    var userId = userIdClaim.Value;
+
+        //    // 1. Xác thực người dùng (giả lập userId)
+        //    // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    // userId = "user002";
+        //    if (string.IsNullOrEmpty(userId))
+        //    {
+        //        return Unauthorized(new { Message = "Invalid token" });
+        //    }
+
+        //    // 2. Tìm designer trong database (giả sử Designer có UserId)
+        //    var designer = await _context.User.FirstOrDefaultAsync(d => d.UserId == userId);
+        //    if (designer == null)
+        //    {
+        //        return BadRequest(new { Message = "Designer not found" });
+        //    }
+
+        //    // 3. Tạo design mới
+        //    var newDesign = new ShoeCustom
+        //    {
+        //        ShoeId = Guid.NewGuid().ToString(), // hoặc tuỳ thuộc key của bạn
+        //        ShoeName = model.ShoeName,
+        //        ShoeDescription = model.ShoeDescription,
+        //        CategoryId = model.CategoryId,
+        //        PriceAShoe = model.PriceAShoe,
+        //        Quantity = model.Quantity,
+        //        IsHidden = 0,
+        //        Designer = designer,
+        //        // Nếu bạn có ảnh base64 thì lưu vào trường tương ứng ở đây
+        //        Images = model.Images.Select(base64 => new ShoeImage
+        //        {
+        //            ImageId = Guid.NewGuid().ToString(),
+        //            ImageLink = base64,
+        //        }).ToList(),
+        //    };
+
+        //    // 4. Thêm vào db context và lưu
+        //    _context.ShoeCustom.Add(newDesign);
+        //    await _context.SaveChangesAsync();
+        //    // 5. Xóa cache danh sách thiết kế cũ của user này
+        //    string cacheKey = $"user_designs_{userId}";
+        //    _memoryCache.Remove(cacheKey);
+        //    await GetAllDesignAsync();
+        //    var response = new ShoeCustomDTO
+        //    {
+        //        ShoeName = newDesign.ShoeName,
+        //        ShoeDescription = newDesign.ShoeDescription,
+        //        CategoryId = newDesign.CategoryId,
+        //        PriceAShoe = newDesign.PriceAShoe,
+        //        Quantity = newDesign.Quantity,
+        //    };
+        //    // 5. Trả về kết quả
+        //    return  Ok(response);
+        //}
+
+
+
+
         [HttpPost("Create_Design")]
         [Authorize]
         public async Task<IActionResult> CreateDesign([FromBody] CreateDesignRequestDTO model)
@@ -259,26 +334,20 @@ namespace ArtStep.Controllers
             }
 
             var userId = userIdClaim.Value;
-
-            // 1. Xác thực người dùng (giả lập userId)
-            // var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // userId = "user002";
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { Message = "Invalid token" });
             }
 
-            // 2. Tìm designer trong database (giả sử Designer có UserId)
             var designer = await _context.User.FirstOrDefaultAsync(d => d.UserId == userId);
             if (designer == null)
             {
                 return BadRequest(new { Message = "Designer not found" });
             }
 
-            // 3. Tạo design mới
             var newDesign = new ShoeCustom
             {
-                ShoeId = Guid.NewGuid().ToString(), // hoặc tuỳ thuộc key của bạn
+                ShoeId = Guid.NewGuid().ToString(),
                 ShoeName = model.ShoeName,
                 ShoeDescription = model.ShoeDescription,
                 CategoryId = model.CategoryId,
@@ -286,63 +355,121 @@ namespace ArtStep.Controllers
                 Quantity = model.Quantity,
                 IsHidden = 0,
                 Designer = designer,
-                // Nếu bạn có ảnh base64 thì lưu vào trường tương ứng ở đây
-                Images = model.Images.Select(base64 => new ShoeImage
-                {
-                    ImageId = Guid.NewGuid().ToString(),
-                    ImageLink = base64,
-                }).ToList(),
+                Images = new List<ShoeImage>() // sẽ thêm từng ảnh sau khi upload
             };
 
-            // 4. Thêm vào db context và lưu
+            // Upload từng ảnh base64 lên Cloudinary và thêm vào newDesign.Images
+            foreach (var base64 in model.Images)
+            {
+                if (string.IsNullOrWhiteSpace(base64)) continue;
+
+                var match = Regex.Match(base64, @"data:image/(?<type>.+?);base64,(?<data>.+)");
+                if (!match.Success) continue;
+
+                var imageBytes = Convert.FromBase64String(match.Groups["data"].Value);
+                using var ms = new MemoryStream(imageBytes);
+
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription($"{Guid.NewGuid()}.png", ms),
+                    Folder = "image_shoe",
+                    UseFilename = true,
+                    UniqueFilename = true,
+                    Overwrite = false
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                if (uploadResult.StatusCode == HttpStatusCode.OK)
+                {
+                    newDesign.Images.Add(new ShoeImage
+                    {
+                        ImageId = Guid.NewGuid().ToString(),
+                        ImageLink = uploadResult.SecureUrl.ToString(),
+                        ShoeCustomId = newDesign.ShoeId
+                    });
+                }
+            }
+
             _context.ShoeCustom.Add(newDesign);
             await _context.SaveChangesAsync();
-            // 5. Xóa cache danh sách thiết kế cũ của user này
+
+            // Xoá cache danh sách thiết kế cũ
             string cacheKey = $"user_designs_{userId}";
             _memoryCache.Remove(cacheKey);
             await GetAllDesignAsync();
+
             var response = new ShoeCustomDTO
             {
                 ShoeName = newDesign.ShoeName,
                 ShoeDescription = newDesign.ShoeDescription,
                 CategoryId = newDesign.CategoryId,
                 PriceAShoe = newDesign.PriceAShoe,
-                Quantity = newDesign.Quantity,
+                Quantity = newDesign.Quantity
             };
-            // 5. Trả về kết quả
-            return  Ok(response);
+            return Ok(response);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private async Task ProcessShoeImages(ShoeCustom design, List<ShoeImageDTO> updateImages)
         {
-            //// 1. Xóa ảnh không còn tồn tại
-            //var existingImages = design.Images.ToList();
-            //foreach (var existingImg in existingImages)
-            //{
-            //    var updateImg = updateImages.FirstOrDefault(i => i.ImageId == existingImg.ImageId);
-            //    Console.WriteLine(updateImg.ImageId);
-            //    if (updateImg != null && existingImg.ImageLink != updateImg.ImageLink)
-            //    {
-            //        existingImg.ImageLink = updateImg.ImageLink;
-            //    }
-            //}
+            // Xóa tất cả ảnh hiện tại
             design.Images.Clear();
 
-            var image = _context.ShoeImages.Where(s => s.ShoeCustomId == null).ToList();
-            image.Clear();
-            // 2. Thêm ảnh mới
+            // Xóa các ảnh chưa gán vào bất kỳ thiết kế nào (tùy bạn có cần hay không)
+            var orphanImages = _context.ShoeImages.Where(s => s.ShoeCustomId == null).ToList();
+            _context.ShoeImages.RemoveRange(orphanImages);
+
             foreach (var imgDto in updateImages)
             {
-                // Lưu trực tiếp base64 vào database
-                design.Images.Add(new ShoeImage
-                {
+                if (string.IsNullOrEmpty(imgDto.ImageLink)) continue;
 
-                    ImageId = Guid.NewGuid().ToString(),
-                    ImageLink = imgDto.ImageLink, // Lưu base64
-                    ShoeCustomId = design.ShoeId,
-                });
+                // Tách base64 header
+                var base64Data = Regex.Match(imgDto.ImageLink, @"data:image/(?<type>.+?);base64,(?<data>.+)").Groups["data"].Value;
+                var imageBytes = Convert.FromBase64String(base64Data);
+
+                // Upload to Cloudinary
+                using var ms = new MemoryStream(imageBytes);
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription($"{Guid.NewGuid()}.png", ms),
+                    Folder = "image_shoe", // Folder trong Cloudinary
+                    UseFilename = true,
+                    UniqueFilename = true,
+                    Overwrite = false
+                };
+
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                if (uploadResult.StatusCode == HttpStatusCode.OK)
+                {
+                    design.Images.Add(new ShoeImage
+                    {
+                        ImageId = Guid.NewGuid().ToString(),
+                        ImageLink = uploadResult.SecureUrl.ToString(), // Lưu URL
+                        ShoeCustomId = design.ShoeId
+                    });
+                }
             }
         }
+
         // GET api/<DesignerController>/5
         [HttpGet("{DesignerId}")]
         [Authorize]

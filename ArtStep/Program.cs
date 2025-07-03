@@ -38,7 +38,7 @@ builder.Services.AddSignalR(options =>
 });
 
 // Set Cloudinary credentials
-var cloudinaryUrl = "cloudinary://197416554857625:K45aVL5lAnF2Tz0MbWc-X0jw5Wo@dx4ghr0fn";
+var cloudinaryUrl = "cloudinary://257566718254257:9Ewrs_9Mnbj1AMcLg1jJ7Vll3G4@do1pq91yg";
 var cloudinary = new Cloudinary(cloudinaryUrl)
 {
     Api = { Secure = true }
