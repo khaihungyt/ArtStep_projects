@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 return;
             }
             if (designerFilter) {
-                designerFilter.innerHTML = '<option value="">All Designers</option>';
+                designerFilter.innerHTML = '<option value="">Các nhà thiết kế</option>';
                 designers.forEach(designer => {
                     const option = document.createElement('option');
                     option.value = designer.UserId;
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             const categories = Array.isArray(data) ? data : [];
 
-            styleFilter.innerHTML = '<option value="">All Categories</option>';
+            styleFilter.innerHTML = '<option value="">Các loại giày</option>';
 
             categories.forEach(category => {
                 const option = document.createElement('option');

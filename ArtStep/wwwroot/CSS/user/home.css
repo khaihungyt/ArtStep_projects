@@ -1,4 +1,4 @@
-/* Global Styles */
+﻿/* Global Styles */
 :root {
     --primary-color: #0d6efd;
     --secondary-color: #6c757d;
@@ -15,6 +15,43 @@ body {
     color: #333;
     line-height: 1.6;
 }
+
+
+
+/*Banner*/
+.carousel-slide-bg {
+    height: 60vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 15px;
+}
+
+.overlay-content {
+    background-color: rgba(0, 0, 0, 0.25);   
+    padding: 40px 20px;
+    border-radius: 12px;
+    max-width: 800px;
+    width: 90%;
+    margin: 0 auto;
+    color: #fff;
+}
+
+.overlay-content h3 {
+        font-size: clamp(1.75rem, 5vw, 3rem);
+        line-height: 1.2;
+        margin-bottom: 1rem;
+}
+
+.overlay-content p {
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        line-height: 1.5;
+}
+
 
 /* Transitions */
 .product-card,

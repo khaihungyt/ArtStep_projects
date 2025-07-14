@@ -145,6 +145,19 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 
 
+//add gzip for base64 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true; 
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.Fastest;
+});
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

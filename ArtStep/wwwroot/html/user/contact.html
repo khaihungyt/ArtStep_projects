@@ -26,25 +26,48 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top"
+         style="background-color: #212529; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-boot"></i> ArtStep
+            <a class="navbar-brand" href="../home.html" style="display: flex; align-items: center; gap: 4px;">
+                <h4 style="margin: 0; font-weight: bold; color: white;">
+                    Art<em style="color: chocolate;">Step</em>
+                </h4>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    style="border: none;">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/home.html">Trang Chủ</a>
+                        <a class="nav-link active"
+                           href="../home.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Trang Chủ
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/designers.html">Các nhà thiết kế</a>
+                        <a class="nav-link"
+                           href="../designers.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Các nhà thiết kế
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/user/AIgeneration.html">Tạo AI</a>
+                        <a class="nav-link"
+                           href="/user/AIgeneration.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Tạo AI
+                        </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav" id="navbarAuth">
@@ -205,44 +228,12 @@
         </div>
     </div>
 
-    <!--Footer-->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <h5><i class="bi bi-boot"></i> ArtStep</h5>
-                    <p>Thị trường giày tùy chỉnh của bạn, kết nối các nhà thiết kế, nhà sản xuất và khách hàng.</p>
-                </div>
-                <div class="col-md-2 mb-3">
-                    <h5>Cửa Hàng</h5>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a href="/designers.html" class="nav-link p-0 text-white">Tất Cả Thiết Kế</a></li>
-                        <li class="nav-item"><a href="/user/AIgeneration.html" class="nav-link p-0 text-white">Tạo AI</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-2 mb-3">
-                    <h5>Hỗ Trợ</h5>
-                    <ul class="nav flex-column">
-                        <li class="nav-item"><a href="/user/contact.html" class="nav-link p-0 text-white">Liên hệ chúng tôi</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <h5>Liên Hệ</h5>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link p-0 text-white">Email: duyv63718@gmail.com</a>
-                        </li>
-                        <li class="nav-item"><p class="nav-link p-0 text-white">SĐT: 0983596630</p></li>
-                    </ul>
-                    <div class="d-flex mt-3">
-                        <a href="https://www.facebook.com/profile.php?id=100093622771750" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-                        <!--<a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>-->
-                    </div>
-                </div>
-            </div>
-            <div class="border-top pt-3 mt-3">
-                <p class="text-center text-muted mb-0">&copy; 2025 ArtStep. Bảo lưu mọi quyền.</p>
-            </div>
+    <footer style="background-color: #2b2e31; margin-top: 50px; padding: 20px; font-family: Arial, sans-serif; font-size: 14px; color: #d0d0d0; text-align: center;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h3 style="margin-top: 0; margin-bottom: 10px; color: #ffffff; font-size: 24px;">ArtStep</h3>
+            <p style="margin-bottom: 5px; color: #ffffff">&copy; 2025 ArtStep.</p>
+            <p style="margin-bottom: 5px; color: #ffffff">Địa chỉ: Trường Đại học FPT Hà Nội, Khu Công nghệ cao Hòa Lạc.</p>
+            <p style="margin-bottom: 15px; color: #ffffff">Giờ làm việc: Thứ 2 - Thứ 7 (8:00 - 17:30). Nghỉ Chủ Nhật và ngày lễ.</p>
         </div>
     </footer>
 

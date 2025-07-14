@@ -356,22 +356,48 @@
 
 <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top"
+         style="background-color: #212529; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
         <div class="container">
-            <a class="navbar-brand" href="home.html">
-                <i class="bi bi-boot"></i> ArtStep
+            <a class="navbar-brand" href="home.html" style="display: flex; align-items: center; gap: 4px;">
+                <h4 style="margin: 0; font-weight: bold; color: white;">
+                    Art<em style="color: chocolate;">Step</em>
+                </h4>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    style="border: none;">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="home.html">Trang Chủ</a>
+                        <a class="nav-link active"
+                           href="home.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Trang Chủ
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="designers.html">Các nhà thiết kế</a>
+                        <a class="nav-link"
+                           href="designers.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Các nhà thiết kế
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="/user/AIgeneration.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Tạo AI
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link  " href="/user/AIgeneration.html">Tạo AI</a>
@@ -390,7 +416,7 @@
                     <h1 class="display-4 fw-bold mb-3">
                         <i class="bi bi-palette"></i> Các Nhà Thiết Kế
                     </h1>
-                    <p class="lead mb-0">Khám phá những tài năng thiết kế xuất sắc và kết nối với những người sáng tạo ra những đôi giày độc đáo</p>
+                    <p class="lead mb-0">Kết nối với những nhà thiết kế giày tài năng và độc đáo.</p>
                 </div>
                 <div class="col-md-4 text-center">
                     <i class="bi bi-people-fill" style="font-size: 8rem; opacity: 0.3;"></i>

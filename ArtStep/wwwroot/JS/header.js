@@ -32,18 +32,33 @@ class HeaderManager {
             navbarAuth.innerHTML = `
                 ${walletBalance !== null ? this.walletManager.createWalletDisplay(walletBalance) : ''}
                 <li class="nav-item">
-                    <a class="nav-link " href="/Cart.html">
-                        <i class="bi bi-cart"></i> Giỏ hàng
+                    <a class="nav-link"
+                       href="/Cart.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-cart" style="margin-right: 6px;"></i> Giỏ hàng
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="/UserProfile.html">
-                        <i class="bi bi-person-circle"></i> Hồ sơ
+                    <a class="nav-link"
+                       href="UserProfile.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-person-circle" style="margin-right: 6px;"></i> Hồ sơ
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="logoutBtn">
-                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    <a class="nav-link"
+                       href="#"
+                       id="logoutBtn"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-box-arrow-right" style="margin-right: 6px;"></i> Đăng xuất
                     </a>
                 </li>
             `;
@@ -55,18 +70,33 @@ class HeaderManager {
             console.error('Lỗi khi hiển thị header người dùng:', error);
             navbarAuth.innerHTML = `
                 <li class="nav-item">
-                    <a class="nav-link" href="/Cart.html">
-                        <i class="bi bi-cart"></i> Giỏ hàng
+                    <a class="nav-link"
+                       href="/Cart.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-cart" style="margin-right: 6px;"></i> Giỏ hàng
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="UserProfile.html">
-                        <i class="bi bi-person-circle"></i> Hồ sơ
+                    <a class="nav-link"
+                       href="UserProfile.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-person-circle" style="margin-right: 6px;"></i> Hồ sơ
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="logoutBtn">
-                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    <a class="nav-link"
+                       href="#"
+                       id="logoutBtn"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-box-arrow-right" style="margin-right: 6px;"></i> Đăng xuất
                     </a>
                 </li>
             `;
@@ -78,13 +108,22 @@ class HeaderManager {
     renderUnauthenticatedHeader(navbarAuth) {
         navbarAuth.innerHTML = `
             <li class="nav-item">
-                <a class="nav-link" href="/Login.html">
-                    <i class="bi bi-person-circle"></i> Đăng nhập
+                <a class="nav-link"
+                   href="/Login.html"
+                   style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                   onmouseover="this.style.color='chocolate';"
+                   onmouseout="this.style.color='white';">
+                   <i class="bi bi-person-circle" style="margin-right: 6px;"></i> Đăng nhập
                 </a>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link" href="/Register.html">
-                    <i class="bi bi-person-plus"></i> Đăng ký
+                <a class="nav-link"
+                   href="/Register.html"
+                   style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                   onmouseover="this.style.color='chocolate';"
+                   onmouseout="this.style.color='white';">
+                   <i class="bi bi-person-plus" style="margin-right: 6px;"></i> Đăng ký
                 </a>
             </li>
         `;

@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
     <!-- AI Chat CSS -->
     <link rel="stylesheet" href="../CSS/ai-chat.css" />
-    
     <!-- Best Sellers Styling -->
     <style>
         .bestseller-card {
@@ -28,12 +27,12 @@
             overflow: hidden;
             background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
         }
-        
-        .bestseller-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-        
+
+            .bestseller-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            }
+
         .bestseller-badge {
             position: absolute;
             top: 15px;
@@ -47,23 +46,23 @@
             z-index: 2;
             box-shadow: 0 2px 10px rgba(255,107,107,0.3);
         }
-        
+
         .bestseller-image {
             height: 250px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-        
+
         .bestseller-card:hover .bestseller-image {
             transform: scale(1.05);
         }
-        
+
         .bestseller-price {
             color: #e74c3c !important;
             font-size: 1.5rem;
             font-weight: bold;
         }
-        
+
         .order-now-btn {
             background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
             border: none;
@@ -76,21 +75,21 @@
             letter-spacing: 1px;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
-        
-        .order-now-btn:hover {
-            background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
-            color: white;
-        }
-        
+
+            .order-now-btn:hover {
+                background: linear-gradient(45deg, #764ba2 0%, #667eea 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+                color: white;
+            }
+
         .bestseller-title {
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .sold-count {
             background: rgba(102, 126, 234, 0.1);
             color: #667eea;
@@ -104,25 +103,48 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top"
+         style="background-color: #212529; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-boot"></i> ArtStep
+            <a class="navbar-brand" href="#" style="display: flex; align-items: center; gap: 4px;">
+                <h4 style="margin: 0; font-weight: bold; color: white;">
+                    Art<em style="color: chocolate;">Step</em>
+                </h4>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    style="border: none;">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link active">Trang Chủ</a>
+                        <a class="nav-link active"
+                           href="#"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Trang Chủ
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
+                        <a class="nav-link"
+                           href="designers.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Các nhà thiết kế
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="/user/AIgeneration.html">Tạo AI</a>
+                        <a class="nav-link"
+                           href="/user/AIgeneration.html"
+                           style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                           onmouseover="this.style.color='chocolate';"
+                           onmouseout="this.style.color='white';">
+                            Tạo AI
+                        </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav" id="navbarAuth">
@@ -132,19 +154,54 @@
     </nav>
 
     <!--Header-->
-    <header class="bg-primary text-white py-5">
-        <div class="container">
-            <div class="row align-items-center g-4">
-                <div class="col-md-6">
-                    <h1 class="display-5 fw-bold">Bước Vào Phong Cách Của Bạn</h1>
-                    <p class="lead">Khám phá các thiết kế giày tùy chỉnh và biến chúng thành hiện thực với mạng lưới nhà thiết kế và nhà máy tài năng của chúng tôi.</p>
+    <header>
+        <div id="headerCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="carousel-slide-bg" style="background-image: url('../images/img_shoes1.jpg');">
+                        <div class="overlay-content text-center text-white">
+                            <h3 class="display-4 fw-bold">Bước Vào Phong Cách Của Bạn</h3>
+                            <p class="lead">Khám phá các thiết kế giày tùy chỉnh và biến chúng thành hiện thực với mạng lưới nhà thiết kế và nhà máy tài năng của chúng tôi.</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 text-center">
-                    <img src="images/icons/Icon.jpg" alt="Logo ArtStep" class="img-fluid rounded shadow-sm" style="max-height: 300px;">
+
+                <!-- Slide 2 -->
+                <div class="carousel-item">
+                    <div class="carousel-slide-bg" style="background-image: url('../images/img_shoes2.jpg');">
+                        <div class="overlay-content text-center text-white">
+                            <h3 class="display-4 fw-bold">Thể Hiện Cá Tính Riêng</h3>
+                            <p class="lead">Đừng hòa tan, hãy nổi bật với từng đôi giày bạn tạo ra.</p>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Slide 3 -->
+                <div class="carousel-item">
+                    <div class="carousel-slide-bg" style="background-image: url('../images/img_shoes3.jpg');">
+                        <div class="overlay-content text-center text-white">
+                            <h3 class="display-4 fw-bold">Hợp Tác Cùng Nghệ Nhân</h3>
+                            <p class="lead">Mang giấc mơ thời trang của bạn thành hiện thực với sự hỗ trợ từ đội ngũ chuyên gia.</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <!-- Controls -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#headerCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#headerCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Sau</span>
+            </button>
         </div>
     </header>
+
     <!-- Top Sản phẩm bán chạy -->
     <div class="container my-5">
         <div class="text-center mb-4">
