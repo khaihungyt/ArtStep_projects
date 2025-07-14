@@ -37,7 +37,7 @@ public class AIImangeController : ControllerBase
         var payload = new
         {
             model = "dall-e-3",
-            prompt = request.Prompt,
+            prompt ="giày custom có "+ request.Prompt,
             n = request.NumImages,
             size = request.Size
         };

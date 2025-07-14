@@ -9,8 +9,6 @@ class ChatSystem {
         this.isConnected = false;
         this.markingAsRead = new Set(); // Track which conversations are being marked as read
         
-     
-        
         if (this.currentUserRole) {
             // Only initialize chat for users with 'user' role
             if (this.currentUserRole.toLowerCase() !== 'user') {

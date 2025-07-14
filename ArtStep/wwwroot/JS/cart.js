@@ -1,5 +1,6 @@
 import { API_BASE_URL } from './config.js';
-import { HeaderManager } from './header.js';
+import { headerManager } from './header.js';
+import { walletManager } from './wallet.js';
 
 // Helper to get query params
 function getQueryParam(name) {
@@ -9,11 +10,7 @@ function getQueryParam(name) {
 
 document.addEventListener('DOMContentLoaded', async function () {
     // Initialize header
-    const headerManager = new HeaderManager();
     await headerManager.initializeHeader();
-    
-    // Store headerManager globally for access from other functions
-    window.headerManager = headerManager;
 
     // Handle VNPay callback result
     const paymentInfo = getQueryParam('payment_info');
@@ -218,8 +215,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             }
 
             // Update wallet balance display in header and cart
-            if (window.headerManager) {
-                await window.headerManager.updateWalletBalance();
+            if (headerManager) {
+                await headerManager.updateWalletBalance();
             }
             loadWalletBalance();
             
@@ -630,88 +627,72 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     function formatVND(value) {
-        return value.toLocaleString('vi-VN') + ' VND';
+        return walletManager.formatCurrency(value);
     }
 
     // Load wallet balance for payment option
     async function loadWalletBalance() {
-        if (!token) return;
-
         try {
-            const response = await fetch(`${API_BASE_URL}/wallet/balance`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token.trim()}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                const balanceDisplay = document.getElementById('wallet-balance-display');
-                
-                if (balanceDisplay) {
-                    balanceDisplay.textContent = formatVND(data.balance);
-                    balanceDisplay.className = 'text-success fw-bold';
-                }
-
-                // Store wallet balance for later use
-                window.walletBalance = data.balance;
-
-                // Enable/disable checkout button based on balance and cart total
-                updateWalletPaymentOption(data.balance);
-            } else {
-                // Wallet not found or error
-                const balanceDisplay = document.getElementById('wallet-balance-display');
-                
-                if (balanceDisplay) {
-                    balanceDisplay.textContent = formatVND(0);
-                    balanceDisplay.className = 'text-warning fw-bold';
-                }
-                window.walletBalance = 0;
-                updateWalletPaymentOption(0);
+            const balance = await walletManager.fetchWalletBalance();
+            if (balance !== null) {
+                window.walletBalance = balance;
+                updateWalletPaymentOption(balance);
             }
         } catch (error) {
             console.error('Error loading wallet balance:', error);
-            const balanceDisplay = document.getElementById('wallet-balance-display');
-            if (balanceDisplay) {
-                balanceDisplay.textContent = 'Lỗi tải số dư';
-                balanceDisplay.className = 'text-danger fw-bold';
-            }
-            window.walletBalance = 0;
-            updateWalletPaymentOption(0);
+            showToast('Error', 'Failed to load wallet balance', 'error');
         }
     }
 
     // Update wallet payment option based on balance and cart total
     function updateWalletPaymentOption(walletBalance) {
-        const cartTotalElement = document.getElementById('cart-total');
-        const checkoutBtn = document.getElementById('checkout-btn');
-        const walletStatus = document.getElementById('wallet-status');
-        
-        if (!cartTotalElement || !checkoutBtn) return;
+        const balanceDisplay = document.getElementById('wallet-balance-display');
+        if (balanceDisplay) {
+            balanceDisplay.textContent = walletManager.formatCurrency(walletBalance);
+            balanceDisplay.className = walletBalance > 0 ? 'text-success fw-bold' : 'text-warning fw-bold';
+        }
 
-        // Extract numeric value from cart total (remove 'VND' and commas)
+        const cartTotalElement = document.getElementById('cart-total');
+        if (!cartTotalElement) return;
+
         const cartTotalText = cartTotalElement.textContent.replace(/[^0-9]/g, '');
         const cartTotal = parseFloat(cartTotalText) || 0;
 
-        if (walletBalance >= cartTotal && cartTotal > 0) {
-            checkoutBtn.disabled = false;
-            if (walletStatus) {
-                walletStatus.className = 'alert alert-success';
-                walletStatus.innerHTML = '<small><i class="bi bi-check-circle"></i> Số dư đủ để thanh toán</small>';
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (checkoutBtn) {
+            const hasEnoughBalance = walletBalance >= cartTotal;
+            checkoutBtn.disabled = !hasEnoughBalance;
+            
+            if (!hasEnoughBalance) {
+                checkoutBtn.title = `Số dư không đủ. Cần thêm ${walletManager.formatCurrency(cartTotal - walletBalance)}`;
+            } else {
+                checkoutBtn.title = '';
             }
-        } else if (cartTotal > 0) {
-            checkoutBtn.disabled = true;
-            if (walletStatus) {
-                walletStatus.className = 'alert alert-warning';
-                walletStatus.innerHTML = `<small><i class="bi bi-exclamation-triangle"></i> Số dư không đủ. Cần thêm: ${formatVND(cartTotal - walletBalance)}</small>`;
-            }
-        } else {
-            checkoutBtn.disabled = true;
-            if (walletStatus) {
-                walletStatus.className = 'alert alert-info';
-                walletStatus.innerHTML = '<small><i class="bi bi-info-circle"></i> Thanh toán sẽ được thực hiện qua ví điện tử</small>';
+        }
+
+        // Update wallet payment option display
+        const walletPaymentOption = document.getElementById('wallet-payment-option');
+        if (walletPaymentOption) {
+            walletPaymentOption.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-wallet2"></i> Thanh toán bằng ví
+                        <br>
+                        <small class="text-muted">Số dư: <span id="wallet-balance-display">${walletManager.formatCurrency(walletBalance)}</span></small>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" id="checkout-btn" ${!hasEnoughBalance ? 'disabled' : ''} 
+                                title="${!hasEnoughBalance ? `Số dư không đủ. Cần thêm ${walletManager.formatCurrency(cartTotal - walletBalance)}` : ''}">
+                            <i class="bi bi-wallet2"></i> Thanh toán
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Re-attach event listener
+            const newCheckoutBtn = document.getElementById('checkout-btn');
+            if (newCheckoutBtn) {
+                newCheckoutBtn.onclick = window.checkout;
             }
         }
     }
@@ -730,7 +711,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Add wallet link functionality
     window.goToWallet = function() {
-        window.location.href = 'wallet.html';
+        window.location.href = '/wallet.html';
     };
 
     // Feedback functionality

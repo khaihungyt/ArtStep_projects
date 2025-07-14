@@ -274,7 +274,7 @@
                     <div class="modal fade" id="designerModal" tabindex="-1" role="dialog" aria-labelledby="designerModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
                             <div class="modal-content">
-                                <form id="registerDesignerForm">
+                                <form id="registerDesignerForm" method="post" enctype="application/x-www-form-urlencoded">
                                     <div class="modal-header">
                                         <h5 class="modal-title text-primary" id="designerModalLabel">Đăng ký Designer mới</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Đóng">
@@ -285,27 +285,27 @@
                                     <div class="modal-body">
                                         <div class="form-group">
                                             <label for="name">Họ và tên</label>
-                                            <input type="text" id="name" name="name" class="form-control" required />
+                                            <input type="text" id="name" name="Name" class="form-control" required />
                                         </div>
-                                        <input type="hidden" name="role" value="designer" />
+                                        <input type="hidden" name="Role" value="designer" />
                                         <div class="form-group">
                                             <label for="email">Email</label>
-                                            <input type="email" id="email" name="email" class="form-control" required />
+                                            <input type="email" id="email" name="Email" class="form-control" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label for="phoneNo">Số điện thoại</label>
-                                            <input type="text" id="phoneNo" name="phoneNo" class="form-control" />
+                                            <input type="text" id="phoneNo" name="PhoneNo" class="form-control" />
                                         </div>
 
                                         <div class="form-group">
                                             <label for="username">Tên đăng nhập</label>
-                                            <input type="text" id="username" name="username" class="form-control" required />
+                                            <input type="text" id="username" name="UserName" class="form-control" required />
                                         </div>
 
                                         <div class="form-group">
                                             <label for="password">Mật khẩu</label>
-                                            <input type="password" id="password" name="password" class="form-control" required />
+                                            <input type="password" id="password" name="Password" class="form-control" required />
                                         </div>
                                     </div>
 
@@ -422,9 +422,6 @@
 
             fetch('/api/auth/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: formData
             })
                 .then(response => {

@@ -68,7 +68,7 @@ export class WalletManager {
     createWalletDisplay(balance) {
         return `
             <li class="nav-item">
-                <a class="nav-link wallet-link" href="wallet.html" id="walletDisplay">
+                <a class="nav-link wallet-link" href="/wallet.html" id="walletDisplay">
                     <i class="bi bi-wallet2"></i> 
                     <span class="wallet-balance">${this.formatCurrency(balance)}</span>
                 </a>
@@ -79,7 +79,7 @@ export class WalletManager {
     // Update wallet display in header
     async updateWalletDisplay() {
         const walletDisplayElement = document.getElementById('walletDisplay');
-        
+
         if (walletDisplayElement) {
             const balance = await this.fetchWalletBalance();
             if (balance !== null) {
@@ -92,12 +92,12 @@ export class WalletManager {
     }
 
     goToWallet() {
-        window.location.href = 'wallet';
+        window.location.href = 'wallet.html';
     }
 
     init() {
         this.addWalletStyles();
-        
+
         setInterval(() => {
             if (localStorage.getItem('token')) {
                 this.updateWalletDisplay();
@@ -144,12 +144,11 @@ export class WalletManager {
         document.head.appendChild(style);
     }
 }
-window.walletManager = new WalletManager();
 
-window.goToWallet = function() {
-    window.walletManager.goToWallet();
-};
+// Create and export a singleton instance
+export const walletManager = new WalletManager();
 
-document.addEventListener('DOMContentLoaded', function() {
-    window.walletManager.init();
+// Initialize wallet manager when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    walletManager.init();
 }); 

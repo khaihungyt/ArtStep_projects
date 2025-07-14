@@ -1,5 +1,13 @@
 ﻿import { API_BASE_URL } from './config.js';
-import './header.js';
+import { headerManager } from './header.js';
+
+function formatPriceVND(price) {
+    if (typeof price !== 'number') {
+        price = parseFloat(price);
+    }
+
+    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
 
 document.addEventListener('DOMContentLoaded', async function () {
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -21,7 +29,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 return;
             }
             if (designerFilter) {
-                designerFilter.innerHTML = '<option value="">All Designers</option>';
+                designerFilter.innerHTML = '<option value="">Các nhà thiết kế</option>';
                 designers.forEach(designer => {
                     const option = document.createElement('option');
                     option.value = designer.UserId;
@@ -46,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             const categories = Array.isArray(data) ? data : [];
 
-            styleFilter.innerHTML = '<option value="">All Categories</option>';
+            styleFilter.innerHTML = '<option value="">Các loại giày</option>';
 
             categories.forEach(category => {
                 const option = document.createElement('option');
@@ -99,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         console.log('Rendering best sellers:', products);
 
-        const bestSellersHTML = products.map((product, index) => {
+        const bestSellersHTML = products.slice(0, 4).map((product, index) => {
             const designerId = product.DesignerUserId;
             const designerName = product.Designer;
             const shoeId = product.ShoeId;
@@ -125,7 +133,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                             <div class="sold-count mb-2">
                                 <i class="bi bi-fire"></i> ${totalSold} đã bán
                             </div>
-                            <h5 class="bestseller-price mb-3">$${productPrice}</h5>
+                                <h5 class="bestseller-price mb-3">${formatPriceVND(product.price || product.Price || 0)}</h5>
                             <button onclick="orderNow('${shoeId}')" 
                                     class="btn order-now-btn mt-auto">
                                 Đặt ngay
@@ -204,14 +212,15 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     Style: ${product.style || product.Style || 'N/A'}<br>
                                     Designer: ${designerName || 'N/A'}
                             </p>
-                                <h4 class="card-subtitle mb-2 text-primary mt-auto">$${product.price || product.Price || 0}</h4>
+                                <h4 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(product.price || product.Price || 0)}</h4>
                                 <div class="d-flex gap-2 mt-2">
                                     <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">View Details</button>
                                     <button onclick="addToCart('${shoeId}')" class="btn btn-outline-primary">
                                         <i class="lnr lnr-cart"></i>
                                     </button>
                         </div>
-                                <div class="mt-2">
+                                <!-- Chat with Designer functionality commented out -->
+                                <!-- <div class="mt-2">
                                     ${designerId && localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'user' ?
                         `<button onclick="chatWithDesigner('${designerId}', '${designerName}')" 
                                                 class="btn btn-outline-success btn-sm w-100">
@@ -230,7 +239,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                             <i class="bi bi-chat-dots"></i> Designer Not Available
                                         </button>`
                     }
-                    </div>
+                    </div> -->
                 </div>
                         </div>
                     </div>
@@ -452,6 +461,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
 
+    // Chat with Designer functionality commented out
+    /*
     window.chatWithDesigner = function (designerUserId, designerName) {
         console.log('chatWithDesigner called with:', designerUserId, designerName);
 
@@ -491,6 +502,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to designers page with chat parameters
         window.location.href = `designers.html?chatWith=${designerUserId}&designerName=${encodeURIComponent(designerName)}`;
     }
+    */
 
     window.goToCart = function () {
         const token = localStorage.getItem('token');
@@ -520,4 +532,5 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Redirect to product detail page for immediate ordering
         window.location.href = `product-detail.html?id=${shoeId}`;
     }
+
 });

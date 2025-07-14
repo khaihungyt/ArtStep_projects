@@ -1,4 +1,9 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿import { headerManager } from './header.js';
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize header
+    await headerManager.initializeHeader();
+
     const generalForm = document.getElementById('generalForm');
     const profileTab = document.getElementById('account-general');
 
@@ -250,6 +255,7 @@ const showErrorAlert = (message) => {
         showConfirmButton: true
     });
 };
+
 
 
 // Change password:

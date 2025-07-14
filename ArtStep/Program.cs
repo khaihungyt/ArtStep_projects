@@ -4,6 +4,7 @@ using CloudinaryDotNet;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -14,6 +15,9 @@ using System.Text.Json.Serialization;
 using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -33,12 +37,12 @@ builder.Services.AddSignalR(options =>
 });
 
 // Set Cloudinary credentials
-DotEnv.Load();
-var cloudinaryUrl = Environment.GetEnvironmentVariable("CLOUDINARY_URL");
+var cloudinaryUrl = "cloudinary://257566718254257:9Ewrs_9Mnbj1AMcLg1jJ7Vll3G4@do1pq91yg";
 var cloudinary = new Cloudinary(cloudinaryUrl)
 {
     Api = { Secure = true }
 };
+
 builder.Services.AddSingleton(cloudinary);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -46,11 +50,14 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IVnpay, Vnpay>();
 builder.Services.AddMemoryCache();
-
 var connectionString = builder.Configuration.GetConnectionString("MyDatabase");
 builder.Services.AddDbContext<ArtStepDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-);
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("MyDatabase"),
+        sqlOptions =>
+        {
+            sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery);
+        }));
 
 // Enhanced JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -105,7 +112,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "https://localhost:7216",
                 "http://localhost:5155",
-                "https://localhost:5155"  
+                "https://localhost:5155",
+                "http://www.artstep.somee.com"
               )
               .AllowAnyMethod()
               .AllowAnyHeader()
@@ -113,6 +121,19 @@ builder.Services.AddCors(options =>
               .SetIsOriginAllowed(origin => true); 
     });
 });
+
+//add gzip for base64 
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true; 
+    options.Providers.Add<GzipCompressionProvider>();
+});
+
+builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+{
+    options.Level = System.IO.Compression.CompressionLevel.Fastest;
+});
+
 
 var app = builder.Build();
 
@@ -168,12 +189,58 @@ app.UseWebSockets(new Microsoft.AspNetCore.Builder.WebSocketOptions
 {
     KeepAliveInterval = TimeSpan.FromSeconds(15)
 });
+app.UseStatusCodePages(async context =>
+{
+    var response = context.HttpContext.Response;
 
+    if (response.StatusCode == 404)
+    {
+        response.ContentType = "text/html";
+        await response.SendFileAsync("wwwroot/html/page/404error.html");
+    }
+});
+
+app.UseStatusCodePages(async context =>
+{
+    var request = context.HttpContext.Request;
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == 404 &&
+        request.Headers["Accept"].ToString().Contains("text/html"))
+    {
+        response.ContentType = "text/html";
+        await response.SendFileAsync("wwwroot/html/page/404error.html");
+    }
+});
+
+app.UseExceptionHandler(errorApp =>
+{
+errorApp.Run(async context =>
+{
+    var response = context.Response;
+    var request = context.Request;
+
+    response.StatusCode = 500;
+
+    // Trả HTML nếu browser (Accept: text/html)
+    if (request.Headers["Accept"].ToString().Contains("text/html"))
+    {
+        response.ContentType = "text/html";
+        await context.Response.SendFileAsync("wwwroot/html/page/500error.html");
+    }
+    else
+    {
+        // Trả JSON nếu là API
+        response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"status\":500,\"message\":\"Internal Server Error\"}");
+    }
+ });
+});
 app.UseRouting();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseResponseCompression();
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
 

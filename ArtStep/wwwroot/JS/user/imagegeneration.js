@@ -1,37 +1,25 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
     // Check authentication
     const token = localStorage.getItem('token');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
+   // const loginBtn = document.getElementById('loginBtn');
+   // const logoutBtn = document.getElementById('logoutBtn');
     const generateBtn = document.getElementById('generateBtn');
 
     if (token) {
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'block';
+       // loginBtn.style.display = 'none';
+       // logoutBtn.style.display = 'block';
     } else {
-        loginBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
+        //loginBtn.style.display = 'block';
+       // logoutBtn.style.display = 'none';
         generateBtn.disabled = true;
         generateBtn.innerHTML = '<i class="bi bi-lock"></i> Vui lòng đăng nhập để sử dụng tính năng này';
     }
-
-    // Login/Logout handlers
-    loginBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
-    });
-
-    logoutBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        localStorage.removeItem('token');
-        window.location.reload();
-    });
 
     // Generate button handler
     generateBtn.addEventListener('click', async function () {
         const prompt = document.getElementById('aiPrompt').value.trim();
         const size = document.getElementById('aiSize').value;
-        const number = parseInt(document.getElementById('aiNumber').value);
+        const number = parseInt(document.getElementById('aiNumber').value); 
 
         if (!prompt) {
             alert('Vui lòng nhập mô tả cho hình ảnh');

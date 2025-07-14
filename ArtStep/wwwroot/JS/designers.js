@@ -1,5 +1,5 @@
 import { API_BASE_URL } from './config.js';
-import './header.js';
+import { headerManager } from './header.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     await loadDesigners();
@@ -179,7 +179,7 @@ window.startChat = function(designerId, designerName, profileImage) {
                 cancelButtonText: 'Hủy'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = '/account/login.html';
+                    window.location.href = '/login.html';
                 }
             });
             return;
@@ -711,7 +711,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
 });
 
-window.viewDesignerProducts = function(designerId, designerName) {
+window.viewDesignerProducts = function (designerId, designerName) {
     // Redirect to home page with designer filter
     window.location.href = `user/designerdetail.html?designerId=${designerId}`;
-}; 
+};

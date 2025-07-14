@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- AI Chat CSS -->
+    <link rel="stylesheet" href="../CSS/ai-chat.css">
     <style type="text/css">
         body {
             background: url('https://png.pngtree.com/background/20220723/original/pngtree-background-biru-keren-dan-kosong-abstract-untuk-template-desain-powerpoint-ppt-picture-image_1738466.jpg') no-repeat center center fixed;
             background-size: cover;
-            margin-top: 20px;
+           
         }
 
         .ui-w-80 {
@@ -118,30 +121,72 @@
             padding: 0.85rem 1.5rem;
             border-color: rgba(24,28,33,0.03) !important;
         }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
+
     </style>
 </head>
 <body>
-    <div class="container light-style flex-grow-1 container-p-y">
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="home.html">
+                <i class="bi bi-boot"></i> ArtStep
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home.html">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="designers.html">Các nhà thiết kế</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/user/AIgeneration.html">Tạo AI</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto" id="navbarAuth"></ul>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="font-weight-bold mb-0">
-                Account Settings
-            </h4>
-            <!-- Nút Home dẫn về home.html -->
-            <a href="home.html" class="btn btn-secondary">Home</a>
+            </div>
         </div>
+    </nav>
 
-            <div class="card overflow-hidden">
-                <div class="row no-gutters row-bordered row-border-light">
-                    <div class="col-md-3 pt-0">
-                        <div class="list-group list-group-flush account-settings-links">
-                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
-                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Orders</a>
-                        </div>
+
+    <main class="container light-style flex-grow-1 container-p-y">
+
+
+
+        <div class="card overflow-hidden">
+            <div class="row no-gutters row-bordered row-border-light">
+                <div class="col-md-3 pt-0">
+                    <div class="list-group list-group-flush account-settings-links">
+                        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Orders</a>
                     </div>
-                    <div class="col-md-9">
-                        <div class="tab-content">
+                </div>
+                <div class="col-md-9">
+                    <div class="tab-content">
 
                         <!-- General -->
                         <div class="tab-pane fade active show" id="account-general">
@@ -217,40 +262,88 @@
                             </form>
                         </div>
 
-                            <!-- Order -->
-                            <div class="tab-pane fade" id="account-notifications">
-                                <div class="card-body pb-2">
-                                    <h6 class="mb-4">Đơn hàng của bạn</h6>
-                                    <div id="userOrderList" class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Mã đơn hàng</th>
-                                                    <th>Ngày tạo</th>
-                                                    <th>Trạng thái</th>
-                                                    <th>Số lượng</th>
-                                                    <th>Tổng tiền</th>
-                                                    <th>Chi tiết</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="userOrderTableBody">
-                                                <!-- Render bằng JavaScript -->
-                                            </tbody>
-                                        </table>
-                                    </div>
+                        <!-- Order -->
+                        <div class="tab-pane fade" id="account-notifications">
+                            <div class="card-body pb-2">
+                                <h6 class="mb-4">Đơn hàng của bạn</h6>
+                                <div id="userOrderList" class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã đơn hàng</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Trạng thái</th>
+                                                <th>Số lượng</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Chi tiết</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="userOrderTableBody">
+                                            <!-- Render bằng JavaScript -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
+                        </div>
 
                     </div>
                 </div>
             </div>
         </div>
 
-    </div>
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><i class="bi bi-boot"></i> ArtStep</h5>
+                    <p>Thị trường giày tùy chỉnh của bạn, kết nối các nhà thiết kế, nhà sản xuất và khách hàng.</p>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h5>Cửa Hàng</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a href="/designers.html" class="nav-link p-0 text-white">Tất Cả Thiết Kế</a></li>
+                        <li class="nav-item"><a href="/user/AIgeneration.html" class="nav-link p-0 text-white">Tạo AI</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-3">
+                    <h5>Hỗ Trợ</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item"><a href="/user/contact.html" class="nav-link p-0 text-white">Liên hệ chúng tôi</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5>Liên Hệ</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link p-0 text-white">Email: duyv63718@gmail.com</a>
+                        </li>
+                        <li class="nav-item"><p class="nav-link p-0 text-white">SĐT: 0983596630</p></li>
+                    </ul>
+                    <div class="d-flex mt-3">
+                        <a href="https://www.facebook.com/profile.php?id=100093622771750" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                        <!--<a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>-->
+                    </div>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <p class="text-center text-muted mb-0">&copy; 2025 ArtStep. Bảo lưu mọi quyền.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="../JS/userProfile.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script type="module" src="../JS/header.js"></script>
+    <script type="module" src="../JS/userProfile.js"></script>
+    <!-- Chat System -->
+    <script src="../JS/ai-chat.js"></script>
+    <script src="../JS/chat-initializer.js"></script>
     <script>
         $(document).ready(function () {
             const token = localStorage.getItem('token');
@@ -268,6 +361,17 @@
 
         });
     </script>
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <!-- SignalR Client -->
+    <script src="https://unpkg.com/@microsoft/signalr@latest/dist/browser/signalr.min.js"></script>
+    <!-- Custom JS -->
+    <script type="module" src="../JS/header.js"></script>
+    <script type="module" src="../JS/userProfile.js"></script>
+    <!-- Chat System -->
+    <script type="module" src="../JS/ai-chat.js"></script>
+    <script type="module" src="../JS/chat-initializer.js"></script>
 </body>
-
 </html>

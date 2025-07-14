@@ -1,10 +1,10 @@
 ﻿import { API_BASE_URL } from './config.js';
-import { WalletManager } from './wallet.js';
+import { walletManager } from '/JS/wallet.js';
 
 // Quản lý phần Header (Thanh điều hướng)
-export class HeaderManager {
+class HeaderManager {
     constructor() {
-        this.walletManager = new WalletManager();
+        this.walletManager = walletManager;
     }
 
     // Khởi tạo header tùy theo trạng thái đăng nhập
@@ -32,18 +32,33 @@ export class HeaderManager {
             navbarAuth.innerHTML = `
                 ${walletBalance !== null ? this.walletManager.createWalletDisplay(walletBalance) : ''}
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="goToCart()">
-                        <i class="bi bi-cart"></i> Giỏ hàng
+                    <a class="nav-link"
+                       href="/Cart.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-cart" style="margin-right: 6px;"></i> Giỏ hàng
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="UserProfile.html">
-                        <i class="bi bi-person-circle"></i> Hồ sơ
+                    <a class="nav-link"
+                       href="UserProfile.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-person-circle" style="margin-right: 6px;"></i> Hồ sơ
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="logoutBtn">
-                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    <a class="nav-link"
+                       href="#"
+                       id="logoutBtn"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-box-arrow-right" style="margin-right: 6px;"></i> Đăng xuất
                     </a>
                 </li>
             `;
@@ -55,18 +70,33 @@ export class HeaderManager {
             console.error('Lỗi khi hiển thị header người dùng:', error);
             navbarAuth.innerHTML = `
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="goToCart()">
-                        <i class="bi bi-cart"></i> Giỏ hàng
+                    <a class="nav-link"
+                       href="/Cart.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-cart" style="margin-right: 6px;"></i> Giỏ hàng
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="UserProfile.html">
-                        <i class="bi bi-person-circle"></i> Hồ sơ
+                    <a class="nav-link"
+                       href="UserProfile.html"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-person-circle" style="margin-right: 6px;"></i> Hồ sơ
                     </a>
                 </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="#" id="logoutBtn">
-                        <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                    <a class="nav-link"
+                       href="#"
+                       id="logoutBtn"
+                       style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                       onmouseover="this.style.color='chocolate';"
+                       onmouseout="this.style.color='white';">
+                       <i class="bi bi-box-arrow-right" style="margin-right: 6px;"></i> Đăng xuất
                     </a>
                 </li>
             `;
@@ -78,13 +108,22 @@ export class HeaderManager {
     renderUnauthenticatedHeader(navbarAuth) {
         navbarAuth.innerHTML = `
             <li class="nav-item">
-                <a class="nav-link" href="Login.html">
-                    <i class="bi bi-person-circle"></i> Đăng nhập
+                <a class="nav-link"
+                   href="/Login.html"
+                   style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                   onmouseover="this.style.color='chocolate';"
+                   onmouseout="this.style.color='white';">
+                   <i class="bi bi-person-circle" style="margin-right: 6px;"></i> Đăng nhập
                 </a>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link" href="Register.html">
-                    <i class="bi bi-person-plus"></i> Đăng ký
+                <a class="nav-link"
+                   href="/Register.html"
+                   style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
+                   onmouseover="this.style.color='chocolate';"
+                   onmouseout="this.style.color='white';">
+                   <i class="bi bi-person-plus" style="margin-right: 6px;"></i> Đăng ký
                 </a>
             </li>
         `;
@@ -94,7 +133,7 @@ export class HeaderManager {
     setupLogoutHandler() {
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', function (e) {
+            logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 localStorage.removeItem('token');
                 localStorage.removeItem('role');
@@ -116,22 +155,22 @@ export class HeaderManager {
     async getCurrentWalletBalance() {
         return await this.walletManager.fetchWalletBalance();
     }
+
+    // Navigation functions
+    goToCart() {
+        window.location.href = '/Cart.html';
+    }
+
+    goToWallet() {
+        window.location.href = '/wallet.html';
+    }
 }
 
-// Khởi tạo header manager
-window.headerManager = new HeaderManager();
+// Create and export a singleton instance
+const headerManager = new HeaderManager();
+export { headerManager };
 
-// Chuyển hướng tới trang giỏ hàng
-window.goToCart = function () {
-    window.location.href = 'cart';
-};
-
-// Chuyển hướng tới trang ví
-window.goToWallet = function () {
-    window.location.href = 'wallet';
-};
-
-// Khi trang được tải, khởi tạo header
-document.addEventListener('DOMContentLoaded', async function () {
-    await window.headerManager.initializeHeader();
+// Initialize header when DOM is loaded
+document.addEventListener('DOMContentLoaded', async () => {
+    await headerManager.initializeHeader();
 });

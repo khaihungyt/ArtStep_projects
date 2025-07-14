@@ -7,7 +7,9 @@
 
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+        const termsCheckbox = document.getElementById("termsCheckbox");
 
+        // Kiểm tra mật khẩu khớp
         if (password !== confirmPassword) {
             Swal.fire({
                 icon: 'error',
@@ -17,7 +19,19 @@
             return;
         }
 
+        // Kiểm tra đã đồng ý điều khoản chưa
+        if (!termsCheckbox.checked) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Bạn chưa đồng ý điều khoản!',
+                text: 'Vui lòng đọc và đồng ý với Điều khoản và dịch vụ trước khi đăng ký.'
+            });
+            return;
+        }
+
         const formData = new FormData(form);
+
+        // Chuyển avatar thành base64 nếu có
         if (avatarInput && avatarInput.files.length > 0) {
             const base64 = await toBase64(avatarInput.files[0]);
             formData.append('Avatar', base64);
