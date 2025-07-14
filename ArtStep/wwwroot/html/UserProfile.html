@@ -165,134 +165,134 @@
                         <a class="nav-link" href="/user/AIgeneration.html">Tạo AI</a>
                     </li>
                 </ul>
-               <ul class="navbar-nav ml-auto" id="navbarAuth"></ul>
+                <ul class="navbar-nav ml-auto" id="navbarAuth"></ul>
 
             </div>
         </div>
     </nav>
 
-    
-        <main class="container light-style flex-grow-1 container-p-y">
 
-            
+    <main class="container light-style flex-grow-1 container-p-y">
 
-            <div class="card overflow-hidden">
-                <div class="row no-gutters row-bordered row-border-light">
-                    <div class="col-md-3 pt-0">
-                        <div class="list-group list-group-flush account-settings-links">
-                            <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
-                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
-                            <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Orders</a>
-                        </div>
+
+
+        <div class="card overflow-hidden">
+            <div class="row no-gutters row-bordered row-border-light">
+                <div class="col-md-3 pt-0">
+                    <div class="list-group list-group-flush account-settings-links">
+                        <a class="list-group-item list-group-item-action active" data-toggle="list" href="#account-general">General</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-change-password">Change password</a>
+                        <a class="list-group-item list-group-item-action" data-toggle="list" href="#account-notifications">Orders</a>
                     </div>
-                    <div class="col-md-9">
-                        <div class="tab-content">
+                </div>
+                <div class="col-md-9">
+                    <div class="tab-content">
 
-                            <!-- General -->
-                            <div class="tab-pane fade active show" id="account-general">
-                                <form id="generalForm" action="/api/Profile/UpdateProfile" method="post" enctype="multipart/form-data">
-                                    <div class="card-body media align-items-center">
-                                        <img id="avatarPreview" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Avatar" class="d-block ui-w-80">
-                                        <div class="media-body ml-4">
-                                            <label class="btn btn-outline-primary">
-                                                Upload new photo
-                                                <input type="file" name="avatar" id="avatarInput" class="account-settings-fileinput">
-                                            </label>
-                                            &nbsp;
-                                            <button type="button" class="btn btn-default md-btn-flat" onclick="document.querySelector('#avatarInput').value = ''">Reset</button>
-                                            <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
-                                        </div>
-                                    </div>
-                                    <hr class="border-light m-0">
-
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label class="form-label" for="fullName">Name</label>
-                                            <input type="text" id="fullName" name="name" class="form-control" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="email">E-mail</label>
-                                            <input type="email" id="email" name="email" class="form-control" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="phoneNo">Phone Number</label>
-                                            <input type="text" id="phoneNo" name="phoneNo" class="form-control">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label" for="role">Role</label>
-                                            <input type="text" id="role" class="form-control" readonly>
-                                        </div>
-                                        <div class="form-group form-check">
-                                            <input type="checkbox" id="isActive" class="form-check-input" disabled>
-                                            <label class="form-check-label" for="isActive">Active</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="text-right p-3 border-top">
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
-                                        <button type="reset" class="btn btn-default">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- Change password -->
-                            <div class="tab-pane fade" id="account-change-password">
-                                <form id="changePasswordForm" action="#" method="post">
-                                    <div class="card-body pb-2">
-                                        <div class="form-group">
-                                            <label class="form-label" for="currentPassword">Current password</label>
-                                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="newPassword">New password</label>
-                                            <input type="password" id="newPassword" name="newPassword" class="form-control" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="confirmPassword">Repeat new password</label>
-                                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="text-right p-3 border-top">
-                                        <button type="submit" class="btn btn-primary">Change password</button>
-                                        <button type="reset" class="btn btn-default">Cancel</button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- Order -->
-                            <div class="tab-pane fade" id="account-notifications">
-                                <div class="card-body pb-2">
-                                    <h6 class="mb-4">Đơn hàng của bạn</h6>
-                                    <div id="userOrderList" class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Mã đơn hàng</th>
-                                                    <th>Ngày tạo</th>
-                                                    <th>Trạng thái</th>
-                                                    <th>Số lượng</th>
-                                                    <th>Tổng tiền</th>
-                                                    <th>Chi tiết</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="userOrderTableBody">
-                                                <!-- Render bằng JavaScript -->
-                                            </tbody>
-                                        </table>
+                        <!-- General -->
+                        <div class="tab-pane fade active show" id="account-general">
+                            <form id="generalForm" action="/api/Profile/UpdateProfile" method="post" enctype="multipart/form-data">
+                                <div class="card-body media align-items-center">
+                                    <img id="avatarPreview" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Avatar" class="d-block ui-w-80">
+                                    <div class="media-body ml-4">
+                                        <label class="btn btn-outline-primary">
+                                            Upload new photo
+                                            <input type="file" name="avatar" id="avatarInput" class="account-settings-fileinput">
+                                        </label>
+                                        &nbsp;
+                                        <button type="button" class="btn btn-default md-btn-flat" onclick="document.querySelector('#avatarInput').value = ''">Reset</button>
+                                        <div class="text-light small mt-1">Allowed JPG, GIF or PNG. Max size of 800K</div>
                                     </div>
                                 </div>
-                            </div>
+                                <hr class="border-light m-0">
 
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label class="form-label" for="fullName">Name</label>
+                                        <input type="text" id="fullName" name="name" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="email">E-mail</label>
+                                        <input type="email" id="email" name="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="phoneNo">Phone Number</label>
+                                        <input type="text" id="phoneNo" name="phoneNo" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="role">Role</label>
+                                        <input type="text" id="role" class="form-control" readonly>
+                                    </div>
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" id="isActive" class="form-check-input" disabled>
+                                        <label class="form-check-label" for="isActive">Active</label>
+                                    </div>
+                                </div>
+
+                                <div class="text-right p-3 border-top">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                    <button type="reset" class="btn btn-default">Cancel</button>
+                                </div>
+                            </form>
                         </div>
+
+                        <!-- Change password -->
+                        <div class="tab-pane fade" id="account-change-password">
+                            <form id="changePasswordForm" action="#" method="post">
+                                <div class="card-body pb-2">
+                                    <div class="form-group">
+                                        <label class="form-label" for="currentPassword">Current password</label>
+                                        <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="newPassword">New password</label>
+                                        <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="confirmPassword">Repeat new password</label>
+                                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="text-right p-3 border-top">
+                                    <button type="submit" class="btn btn-primary">Change password</button>
+                                    <button type="reset" class="btn btn-default">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Order -->
+                        <div class="tab-pane fade" id="account-notifications">
+                            <div class="card-body pb-2">
+                                <h6 class="mb-4">Đơn hàng của bạn</h6>
+                                <div id="userOrderList" class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã đơn hàng</th>
+                                                <th>Ngày tạo</th>
+                                                <th>Trạng thái</th>
+                                                <th>Số lượng</th>
+                                                <th>Tổng tiền</th>
+                                                <th>Chi tiết</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="userOrderTableBody">
+                                            <!-- Render bằng JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
+        </div>
 
-        </main>
-    
+    </main>
+
 
     <!-- Footer -->
     <footer class="bg-dark text-white py-4">
@@ -305,34 +305,32 @@
                 <div class="col-md-2 mb-3">
                     <h5>Cửa Hàng</h5>
                     <ul class="nav flex-column">
-                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Tất Cả Thiết Kế</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Nhà Thiết Kế</a></li>
+                        <li class="nav-item"><a href="/designers.html" class="nav-link p-0 text-white">Tất Cả Thiết Kế</a></li>
+                        <li class="nav-item"><a href="/user/AIgeneration.html" class="nav-link p-0 text-white">Tạo AI</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2 mb-3">
                     <h5>Hỗ Trợ</h5>
                     <ul class="nav flex-column">
-                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Câu Hỏi Thường Gặp</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Vận Chuyển</a></li>
-                        <li class="nav-item"><a href="#" class="nav-link p-0 text-white">Đổi Trả</a></li>
+                        <li class="nav-item"><a href="/user/contact.html" class="nav-link p-0 text-white">Liên hệ chúng tôi</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 mb-3">
                     <h5>Liên Hệ</h5>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a href="#" class="nav-link p-0 text-white">Email: info@artstep.com</a>
+                            <a href="#" class="nav-link p-0 text-white">Email: duyv63718@gmail.com</a>
                         </li>
                         <li class="nav-item"><p class="nav-link p-0 text-white">SĐT: 0983596630</p></li>
                     </ul>
                     <div class="d-flex mt-3">
-                        <a href="#" class="text-white me-3"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=100093622771750" class="text-white me-3"><i class="bi bi-facebook"></i></a>
+                        <!--<a href="#" class="text-white me-3"><i class="bi bi-instagram"></i></a>-->
                     </div>
                 </div>
             </div>
             <div class="border-top pt-3 mt-3">
-                <p class="text-center text-muted mb-0">&copy; 2023 ArtStep. Bảo lưu mọi quyền.</p>
+                <p class="text-center text-muted mb-0">&copy; 2025 ArtStep. Bảo lưu mọi quyền.</p>
             </div>
         </div>
     </footer>
