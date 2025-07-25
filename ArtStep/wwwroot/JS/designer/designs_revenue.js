@@ -1,130 +1,230 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '/login.html';
-        return;
-    }
-
-    let salesChart = null;
-
+    // DOM Elements
+    const summaryView = document.getElementById('summary-view');
+    const chartView = document.getElementById('chart-view');
+    const viewSummaryBtn = document.getElementById('view-summary');
+    const viewChartBtn = document.getElementById('view-chart');
+    const applyFilterBtn = document.getElementById('apply-filter');
     const startDateInput = document.getElementById('start-date');
     const endDateInput = document.getElementById('end-date');
-    const applyFilterBtn = document.getElementById('apply-filter');
+    const salesTableBody = document.getElementById('sales-table-body');
 
-    function formatCurrency(amount) {
-        if (typeof amount !== 'number' || isNaN(amount)) {
-            return '0 ₫';
-        }
-        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    // Chart variables
+    let salesChart = null;
+
+    // Set default dates (last 30 days)
+    setDefaultDates();
+
+    // Event Listeners
+    viewSummaryBtn.addEventListener('click', () => toggleView('summary'));
+    viewChartBtn.addEventListener('click', () => toggleView('chart'));
+    applyFilterBtn.addEventListener('click', fetchSalesData);
+
+    // Initial data load
+    fetchSalesData();
+
+    function setDefaultDates() {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 365);
+
+        endDateInput.valueAsDate = endDate;
+        startDateInput.valueAsDate = startDate;
     }
 
-    async function fetchRevenueData(startDate, endDate) {
-        let url = '/api/DesignerDashboard/view_revenue';
-
-        const params = new URLSearchParams();
-        if (startDate) params.append('startDate', startDate);
-        if (endDate) params.append('endDate', endDate);
-
-        url += '?' + params.toString();
-
-        try {
-            const response = await fetch(url, { headers: { 'Authorization': 'Bearer ' + token } });
-            if (!response.ok) {
-                throw new Error('Lỗi mạng hoặc server.');
+    function toggleView(view) {
+        if (view === 'summary') {
+            summaryView.style.display = 'block';
+            chartView.style.display = 'none';
+            viewSummaryBtn.classList.add('active');
+            viewChartBtn.classList.remove('active');
+        } else {
+            summaryView.style.display = 'none';
+            chartView.style.display = 'block';
+            viewSummaryBtn.classList.remove('active');
+            viewChartBtn.classList.add('active');
+            // Ensure chart is rendered when switching to chart view
+            if (salesChart) {
+                salesChart.update();
             }
-            const data = await response.json();
-            updateDashboard(data);
-        } catch (error) {
-            console.error('Lỗi khi tải doanh thu:', error);
-            document.getElementById('sales-table-body').innerHTML = '<tr><td colspan="4">Có lỗi xảy ra khi tải dữ liệu.</td></tr>';
-            Swal.fire('Lỗi', 'Không thể tải dữ liệu doanh thu. Vui lòng thử lại.', 'error');
         }
     }
 
-    function updateDashboard(data) {
-        updateSummary(data);
-        updateTable(data);
-        updateChart(data);
-    }
+    async function fetchSalesData() {
+        try {
+            // Show loading state
+            document.querySelector('.loader-wrapper').style.display = 'flex';
 
-    function updateSummary(data) {
-        // SỬA LẠI TÊN THUỘC TÍNH (chữ hoa đầu)
-        const totalRevenue = data.reduce((sum, item) => sum + (item.pricePerShoe * item.quantitySold), 0);
-        const totalSales = data.reduce((sum, item) => sum + item.quantitySold, 0);
-        const avgPrice = totalSales > 0 ? totalRevenue / totalSales : 0;
-
-        let topProduct = '-';
-        if (data.length > 0) {
-            const productSales = {};
-            data.forEach(item => {
-                // SỬA LẠI TÊN THUỘC TÍNH (chữ hoa đầu)
-                productSales[item.shoeName] = (productSales[item.shoeName] || 0) + item.quantitySold;
+            // Get date range
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value;
+            // Get token từ localStorage hoặc cookie
+            const token = localStorage.getItem('token') || getCookie('token');
+            // Fetch data from API
+            const response = await fetch(`/api/Designer/view_revenue?startDate=${startDate}&endDate=${endDate}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
-            topProduct = Object.keys(productSales).reduce((a, b) => productSales[a] > productSales[b] ? a : b);
-        }
+            if (!response.ok) {
+                throw new Error('Failed to fetch sales data');
+            }
 
-        document.getElementById('total-revenue').textContent = formatCurrency(totalRevenue);
-        document.getElementById('total-sales').textContent = totalSales;
-        document.getElementById('avg-price').textContent = formatCurrency(avgPrice);
-        document.getElementById('top-product').textContent = topProduct;
+            const salesData = await response.json();
+
+            // Update UI with the fetched data
+            updateSummaryStats(salesData);
+            populateSalesTable(salesData);
+            renderSalesChart(salesData);
+
+        } catch (error) {
+            console.error('Error fetching sales data:', error);
+            alert('Could not load sales data. Please try again.');
+        } finally {
+            // Hide loading state
+            document.querySelector('.loader-wrapper').style.display = 'none';
+        }
     }
 
-    function updateTable(data) {
-        const tbody = document.getElementById('sales-table-body');
-        tbody.innerHTML = '';
-        if (data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4">Không có dữ liệu bán hàng cho khoảng thời gian đã chọn.</td></tr>';
+    function updateSummaryStats(data) {
+        if (!data || data.length === 0) {
+            // Reset stats if no data
+            document.getElementById('total-revenue').textContent = '0.00đ';
+            document.getElementById('total-sales').textContent = '0';
+            document.getElementById('avg-price').textContent = '0.00đ';
+            document.getElementById('top-product').textContent = '-';
             return;
         }
+
+        // Calculate summary statistics
+        const totalRevenue = data.reduce((sum, item) => sum + (item.PriceAShoe * item.Quantity), 0);
+        const totalSales = data.reduce((sum, item) => sum + item.Quantity, 0);
+        const avgPrice = totalRevenue / totalSales;
+
+        // Find top product
+        const topProduct = data.reduce((top, item) =>
+            item.Quantity > top.quantity ? { name: item.ShoeName, quantity: item.Quantity } : top,
+            { name: '', quantity: 0 }
+        );
+
+        // Update DOM
+        document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}đ`;
+        document.getElementById('total-sales').textContent = totalSales;
+        document.getElementById('avg-price').textContent = `${avgPrice.toFixed(2)}đ`;
+        document.getElementById('top-product').textContent = topProduct.name || '-';
+    }
+
+    function populateSalesTable(data) {
+        // Clear existing rows
+        salesTableBody.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="5" class="no-data">No sales data available for the selected period</td>';
+            salesTableBody.appendChild(row);
+            return;
+        }
+
+        // Create and append rows for each sales item
         data.forEach(item => {
-            // SỬA LẠI TÊN THUỘC TÍNH (chữ hoa đầu)
-            const revenue = item.pricePerShoe * item.quantitySold;
-            const row = `
-                <tr>
-                    <td>${item.shoeName || 'N/A'}</td>
-                    <td>${item.quantitySold || 0}</td>
-                    <td>${formatCurrency(item.pricePerShoe)}</td>
-                    <td>${formatCurrency(revenue)}</td>
-                </tr>
+            const totalRevenue = item.PriceAShoe * item.Quantity;
+            const profitMargin = calculateProfitMargin(item.PriceAShoe); // Implement this based on your business logic
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.ShoeName || 'N/A'}</td>
+                <td>${item.Quantity}</td>
+                <td>${item.PriceAShoe.toFixed(2)} đ</td>
+                <td>${totalRevenue.toFixed(2)} đ</td>
+                <td>${profitMargin}%</td>
             `;
-            tbody.innerHTML += row;
+            salesTableBody.appendChild(row);
         });
     }
 
-    function updateChart(data) {
+    function renderSalesChart(data) {
         const ctx = document.getElementById('sales-chart').getContext('2d');
-        const groupedData = {};
 
-        data.forEach(item => {
-            // SỬA LẠI TÊN THUỘC TÍNH (chữ hoa đầu)
-            groupedData[item.shoeName] = (groupedData[item.shoeName] || 0) + (item.pricePerShoe * item.quantitySold);
-        });
+        // Prepare chart data
+        const labels = data.map(item => item.ShoeName);
+        const revenueData = data.map(item => item.PriceAShoe * item.Quantity);
+        const quantityData = data.map(item => item.Quantity);
 
-        const labels = Object.keys(groupedData);
-        const revenues = Object.values(groupedData);
-
+        // Destroy previous chart if it exists
         if (salesChart) {
             salesChart.destroy();
         }
 
+        // Create new chart
         salesChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'Doanh Thu (VND)',
-                    data: revenues,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
+                datasets: [
+                    {
+                        label: 'Revenue ($)',
+                        data: revenueData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Quantity Sold',
+                        data: quantityData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y1',
+                        type: 'line'
+                    }
+                ]
             },
             options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Sales Performance'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.dataset.yAxisID === 'y') {
+                                    label += '$' + context.parsed.y.toFixed(2);
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
                 scales: {
                     y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) { return formatCurrency(value); }
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Revenue ($)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Quantity Sold'
+                        },
+                        grid: {
+                            drawOnChartArea: false
                         }
                     }
                 }
@@ -132,19 +232,10 @@
         });
     }
 
-    applyFilterBtn.addEventListener('click', () => {
-        const startDate = startDateInput.value;
-        const endDate = endDateInput.value;
-        if (startDate && endDate) {
-            fetchRevenueData(startDate, endDate);
-        } else {
-            Swal.fire('Thông báo', 'Vui lòng chọn cả ngày bắt đầu và kết thúc.', 'info');
-        }
-    });
-
-    const today = new Date();
-    const thirtyDaysAgo = new Date(new Date().setDate(today.getDate() - 30));
-    startDateInput.value = thirtyDaysAgo.toISOString().split('T')[0];
-    endDateInput.value = today.toISOString().split('T')[0];
-    fetchRevenueData(startDateInput.value, endDateInput.value);
+    function calculateProfitMargin(price) {
+        // Implement your actual profit margin calculation logic here
+        // This is just a placeholder example
+        const cost = price * 0.6; // Assuming 40% margin
+        return ((price - cost) / price * 100).toFixed(1);
+    }
 });

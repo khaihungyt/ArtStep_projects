@@ -14,6 +14,7 @@
         <span class="loader"><span class="loader-inner"></span></span>
     </div>
     <div class="layout">
+        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <span class="sidebar-title">Cổng Thông Tin Thiết Kế</span>
@@ -59,83 +60,90 @@
             </div>
         </div>
 
+        <!-- Nội dung chính -->
         <main class="main-content">
             <div class="container">
                 <div class="sales-header">
                     <h1 class="page-title">Doanh Thu Bán Hàng</h1>
+
                     <div class="sales-filters">
                         <div class="date-range">
                             <label for="start-date">Từ:</label>
                             <input type="date" id="start-date" class="date-input">
+
                             <label for="end-date">Đến:</label>
                             <input type="date" id="end-date" class="date-input">
+
                             <button id="apply-filter" class="btn btn-primary">
-                                <i class="fas fa-filter"></i> Lọc
+                                <i class="fas fa-filter"></i> Apply
+                            </button>
+                        </div>
+
+                        <div class="view-options">
+                            <button id="view-summary" class="btn btn-outline active">
+                                <i class="fas fa-list"></i> Tóm tắt
+                            </button>
+                            <button id="view-chart" class="btn btn-outline">
+                                <i class="fas fa-chart-bar"></i> Biểu đồ
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="sales-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-revenue">0₫</div>
-                        <div class="stat-label">Tổng doanh thu</div>
+                <!-- Chế độ Tóm tắt -->
+                <div id="summary-view" class="sales-view">
+                    <div class="sales-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-revenue">0₫</div>
+                            <div class="stat-label">Tổng doanh thu</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="total-sales">0</div>
+                            <div class="stat-label">Tổng lượt bán</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="avg-price">0₫</div>
+                            <div class="stat-label">Giá trung bình</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="top-product">-</div>
+                            <div class="stat-label">Sản phẩm bán chạy</div>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-sales">0</div>
-                        <div class="stat-label">Tổng lượt bán</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="avg-price">0₫</div>
-                        <div class="stat-label">Giá trung bình</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="top-product">-</div>
-                        <div class="stat-label">Sản phẩm bán chạy</div>
+
+                    <div class="sales-table-container">
+                        <table class="sales-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên giày</th>
+                                    <th>Số lượng bán</th>
+                                    <th>Giá mỗi đôi</th>
+                                    <th>Doanh thu</th>
+                                    <th>Biên lợi nhuận</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-table-body">
+                                <!-- Dữ liệu sẽ được chèn bằng JavaScript -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Chi tiết bán hàng</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="sales-table-container">
-                            <table class="sales-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tên giày</th>
-                                        <th>Số lượng bán</th>
-                                        <th>Giá mỗi đôi</th>
-                                        <th>Doanh thu</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="sales-table-body">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h3 class="card-title">Biểu đồ doanh thu</h3>
-                    </div>
-                    <div class="card-content">
-                        <div class="chart-container">
-                            <canvas id="sales-chart"></canvas>
-                        </div>
+                <!-- Chế độ Biểu đồ (ẩn mặc định) -->
+                <div id="chart-view" class="sales-view" style="display: none;">
+                    <div class="chart-container">
+                        <canvas id="sales-chart"></canvas>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="/JS/page/pageload.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/designer/designs_revenue.js"></script>
     <script src="/js/designer/sidebar.js"></script>
-    <script src="/js/designer/designs_revenue.js" defer></script>
 </body>
 </html>
