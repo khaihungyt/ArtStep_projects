@@ -81,7 +81,7 @@ class HeaderManager {
 
                 <li class="nav-item">
                     <a class="nav-link"
-                       href="UserProfile.html"
+                       href="/UserProfile.html"
                        style="color: white; padding: 8px 16px; border-radius: 6px; transition: 0.3s;"
                        onmouseover="this.style.color='chocolate';"
                        onmouseout="this.style.color='white';">

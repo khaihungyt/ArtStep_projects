@@ -74,7 +74,7 @@ namespace ArtStep.Controllers
 
             var clientId = _configuration["GoogleAuth:ClientId"];
             var clientSecret = _configuration["GoogleAuth:ClientSecret"];
-            var redirectUri = "http://artstep.somee.com/login-callback.html";
+            var redirectUri = "http://localhost:5155/login-callback.html";
             var httpClient = new HttpClient();
 
             var tokenRequest = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, "https://oauth2.googleapis.com/token");

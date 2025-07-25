@@ -209,12 +209,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                         <div class="card-body d-flex flex-column">
                                 <h5 class="card-title">${product.name || product.Name}</h5>
                             <p class="card-text text-muted">
-                                    Style: ${product.style || product.Style || 'N/A'}<br>
-                                    Designer: ${designerName || 'N/A'}
+                                    Loại: ${product.style || product.Style || 'N/A'}<br>
+                                    Nhà thiết kế: ${designerName || 'N/A'}
                             </p>
                                 <h4 class="card-subtitle mb-2 text-primary mt-auto">${formatPriceVND(product.price || product.Price || 0)}</h4>
                                 <div class="d-flex gap-2 mt-2">
-                                    <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">View Details</button>
+                                    <button onclick="viewProductDetails('${shoeId}')" class="btn btn-dark flex-grow-1">Xem chi tiết</button>
                                     <button onclick="addToCart('${shoeId}')" class="btn btn-outline-primary">
                                         <i class="lnr lnr-cart"></i>
                                     </button>

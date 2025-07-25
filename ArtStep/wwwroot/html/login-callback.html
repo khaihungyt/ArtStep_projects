@@ -21,7 +21,7 @@
                 allowEnterKey: false,
             });
 
-            fetch(`http://artstep.somee.com/api/auth/login-google?code=${encodeURIComponent(code)}`)
+            fetch(`http://localhost:5155/api/auth/login-google?code=${encodeURIComponent(code)}`)
                 .then(async res => {
                     const data = await res.json();
 
