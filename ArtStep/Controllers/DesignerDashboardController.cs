@@ -71,11 +71,11 @@ namespace ArtStep.Controllers
                 .Select(od => new OrderRevenueResponseDTO
                 {
                     ShoeName = od.ShoeCustom.ShoeName,
-                    QuantitySold = od.QuantityBuy,
-                    PricePerShoe = od.ShoeCustom.PriceAShoe,
-                    DateTime = od.Order.CreateAt
+                    Quantity = od.QuantityBuy,
+                    PriceAShoe = od.ShoeCustom.PriceAShoe,
+                    dateTime = od.Order.CreateAt
                 })
-                .OrderByDescending(x => x.DateTime)
+                .OrderByDescending(x => x.dateTime)
                 .ToListAsync();
 
             return Ok(revenueData);
