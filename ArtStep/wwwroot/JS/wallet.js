@@ -5,21 +5,42 @@ export class WalletManager {
     constructor() {
         this.walletBalance = 0;
         this.isLoading = false;
+        this.currentRequest = null;
     }
 
     // Get wallet balance from API
     async fetchWalletBalance() {
+        console.log('WALLET DEBUG: fetchWalletBalance called');
         const token = localStorage.getItem('token');
+        console.log('WALLET DEBUG: Token exists:', !!token);
+        
         if (!token) {
+            console.log('WALLET DEBUG: No token, returning null');
             return null;
         }
 
-        if (this.isLoading) {
-            return this.walletBalance;
+        // If there's already a request in progress, wait for it
+        if (this.currentRequest) {
+            console.log('WALLET DEBUG: Request already in progress, waiting for it...');
+            return await this.currentRequest;
         }
 
+        // Create and store the request promise
+        this.currentRequest = this._makeBalanceRequest(token);
+        
+        try {
+            const result = await this.currentRequest;
+            return result;
+        } finally {
+            this.currentRequest = null;
+        }
+    }
+
+    async _makeBalanceRequest(token) {
         try {
             this.isLoading = true;
+            console.log('WALLET DEBUG: Making API call to:', `${API_BASE_URL}/wallet/balance`);
+            
             const response = await fetch(`${API_BASE_URL}/wallet/balance`, {
                 method: 'GET',
                 headers: {
@@ -28,8 +49,11 @@ export class WalletManager {
                 }
             });
 
+            console.log('WALLET DEBUG: Response status:', response.status, response.ok);
+
             if (!response.ok) {
                 if (response.status === 401) {
+                    console.log('WALLET DEBUG: 401 error, clearing localStorage');
                     // Token expired or invalid, clear localStorage
                     localStorage.removeItem('token');
                     localStorage.removeItem('role');
@@ -42,13 +66,18 @@ export class WalletManager {
             }
 
             const data = await response.json();
+            console.log('WALLET DEBUG: API response data:', data);
+            
             this.walletBalance = data.balance || 0;
+            console.log('WALLET DEBUG: Set this.walletBalance to:', this.walletBalance);
+            
             return this.walletBalance;
         } catch (error) {
-            console.error('Error fetching wallet balance:', error);
+            console.error('WALLET DEBUG: Error fetching wallet balance:', error);
             return null;
         } finally {
             this.isLoading = false;
+            console.log('WALLET DEBUG: Finished fetching, isLoading set to false');
         }
     }
 

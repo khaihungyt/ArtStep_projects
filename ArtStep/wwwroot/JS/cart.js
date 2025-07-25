@@ -632,24 +632,52 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Load wallet balance for payment option
     async function loadWalletBalance() {
+        console.log('CART DEBUG: Starting loadWalletBalance');
+        console.log('CART DEBUG: walletManager object:', walletManager);
+        
         try {
+            console.log('CART DEBUG: About to call walletManager.fetchWalletBalance()');
             const balance = await walletManager.fetchWalletBalance();
-            if (balance !== null) {
+            console.log('CART DEBUG: Received balance from walletManager:', balance, 'Type:', typeof balance);
+            
+            if (balance !== null && balance !== undefined) {
                 window.walletBalance = balance;
+                console.log('CART DEBUG: Set window.walletBalance to:', window.walletBalance);
                 updateWalletPaymentOption(balance);
+            } else {
+                console.log('CART DEBUG: Balance is null or undefined');
+                // Handle case where balance is null (user not authenticated or error)
+                const balanceDisplay = document.getElementById('wallet-balance-display');
+                if (balanceDisplay) {
+                    balanceDisplay.textContent = 'Không thể tải số dư';
+                    balanceDisplay.className = 'text-danger fw-bold';
+                }
             }
         } catch (error) {
-            console.error('Error loading wallet balance:', error);
+            console.error('CART DEBUG: Error in loadWalletBalance:', error);
+            const balanceDisplay = document.getElementById('wallet-balance-display');
+            if (balanceDisplay) {
+                balanceDisplay.textContent = 'Lỗi tải số dư';
+                balanceDisplay.className = 'text-danger fw-bold';
+            }
             showToast('Error', 'Failed to load wallet balance', 'error');
         }
     }
 
     // Update wallet payment option based on balance and cart total
     function updateWalletPaymentOption(walletBalance) {
+        console.log('CART DEBUG: updateWalletPaymentOption called with:', walletBalance);
         const balanceDisplay = document.getElementById('wallet-balance-display');
+        console.log('CART DEBUG: Found balanceDisplay element:', balanceDisplay);
+        
         if (balanceDisplay) {
-            balanceDisplay.textContent = walletManager.formatCurrency(walletBalance);
+            const formattedBalance = walletManager.formatCurrency(walletBalance);
+            console.log('CART DEBUG: Formatted balance:', formattedBalance);
+            balanceDisplay.textContent = formattedBalance;
             balanceDisplay.className = walletBalance > 0 ? 'text-success fw-bold' : 'text-warning fw-bold';
+            console.log('CART DEBUG: Updated element text and class');
+        } else {
+            console.error('CART DEBUG: wallet-balance-display element not found!');
         }
 
         const cartTotalElement = document.getElementById('cart-total');
@@ -678,7 +706,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     <div>
                         <i class="bi bi-wallet2"></i> Thanh toán bằng ví
                         <br>
-                        <small class="text-muted">Số dư: <span id="wallet-balance-display">${walletManager.formatCurrency(walletBalance)}</span></small>
+                        <small class="text-muted">Số dư: <span id="wallet-payment-balance">${walletManager.formatCurrency(walletBalance)}</span></small>
                     </div>
                     <div>
                         <button class="btn btn-primary" id="checkout-btn" ${!hasEnoughBalance ? 'disabled' : ''} 
