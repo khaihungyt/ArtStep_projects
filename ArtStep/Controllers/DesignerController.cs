@@ -93,57 +93,6 @@ namespace ArtStep.Controllers
             return Ok(listShoe);
         }
 
-
-        [HttpGet("view_revenue")]
-        [Authorize]
-        public async Task<ActionResult<OrderRevenueResponseDTO>> GetAllSalesData([FromQuery] DateTime? startDate = null,
-            [FromQuery] DateTime? endDate = null)
-        {
-            try
-            {
-                var designerIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                if (designerIdClaim == null || string.IsNullOrEmpty(designerIdClaim.Value))
-                {
-                    return Unauthorized(new { message = "Invalid or expired token" });
-                }
-
-                var designerId = designerIdClaim.Value;
-
-                // Set default date range if not provided
-                endDate ??= DateTime.UtcNow;
-                startDate ??= endDate.Value.AddMonths(-1); // Default to last 30 days
-
-                // Validate date range
-                if (startDate > endDate)
-                {
-                    return BadRequest("Start date cannot be after end date");
-                }
-                var revenueData = await _context.OrderDetail
-                    .Include(od => od.ShoeCustom)
-                        .ThenInclude(s => s.Designer)
-                    .Include(od => od.Order)
-                    .Where(od => od.ShoeCustom.Designer.UserId == designerId &&
-                od.Order.Status == "Completed" &&
-                od.Order.CreateAt >= startDate &&
-                od.Order.CreateAt <= endDate)
-                    .Select(od => new OrderRevenueResponseDTO
-                    {
-                        ShoeName = od.ShoeCustom.ShoeName,
-                        Quantity = od.QuantityBuy,
-                        PriceAShoe = od.CostaShoe,
-                        dateTime = od.Order.CreateAt
-                    }).OrderByDescending(x => x.dateTime)
-                    .ToListAsync();
-
-                return Ok(revenueData);
-            }
-            catch (Exception ex)
-            {
-                // Consider logging the exception (ex) here for debugging
-                return StatusCode(500, new { Message = "An error occurred while retrieving sales data" });
-            }
-        }
-
         [HttpPut("update")]
         [Authorize]
         public async Task<IActionResult> UpdateDesign([FromBody] EditDesignRequestDTO updateDto)

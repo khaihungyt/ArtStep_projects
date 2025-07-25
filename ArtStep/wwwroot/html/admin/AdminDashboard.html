@@ -11,25 +11,20 @@
 
     <title> Admin Dashboard</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="../../vendor/admin/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../vendor/admin/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet">
 
-    <!-- Custom styles for this template-->
     <link href="../../CSS/admin/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
     <div id="wrapper">
 
-        <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-            <!-- Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-shoe-prints"></i>
@@ -37,10 +32,8 @@
                 <div class="sidebar-brand-text mx-3">Quản trị</div>
             </a>
 
-            <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
-            <!-- Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="AdminDashboard.html">
                     <i class="fas fa-home"></i>
@@ -48,13 +41,10 @@
                 </a>
             </li>
 
-            <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
             <div class="sidebar-heading">Quản lý</div>
 
-            <!-- Yêu cầu thiết kế -->
             <li class="nav-item">
                 <a class="nav-link" href="OrdersView.html">
                     <i class="fas fa-tasks"></i>
@@ -62,37 +52,24 @@
                 </a>
             </li>
 
-            <!-- Tiến độ & File thiết kế -->
             <li class="nav-item">
                 <a class="nav-link" href="Categories.html">
                     <i class="fas fa-drafting-compass"></i>
                     <span>Giày</span>
                 </a>
             </li>
-
-            <!-- Giao tiếp / Tin nhắn -->
+                        
             <li class="nav-item">
-                <a class="nav-link" href="messages.html">
-                    <i class="fas fa-comments"></i>
-                    <span>Trung tâm tin nhắn</span>
-                </a>
-            </li>
-
-            <!-- Quản lý nạp tiền -->
-            <li class="nav-item">
-                <a class="nav-link" href="wallet">
+                <a class="nav-link" href="wallet.html">
                     <i class="fas fa-wallet"></i>
                     <span>Quản lý nạp tiền</span>
                 </a>
             </li>
 
-            <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
             <div class="sidebar-heading">Người dùng</div>
 
-            <!-- Danh sách khách hàng -->
             <li class="nav-item">
                 <a class="nav-link" href="CustomersList.html">
                     <i class="fas fa-user"></i>
@@ -100,7 +77,6 @@
                 </a>
             </li>
 
-            <!-- Danh sách designer -->
             <li class="nav-item">
                 <a class="nav-link" href="DesignersList.html">
                     <i class="fas fa-user-edit"></i>
@@ -108,29 +84,10 @@
                 </a>
             </li>
 
-            <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
             <div class="sidebar-heading">Hệ thống</div>
-
-            <!-- Báo cáo & Vi phạm -->
-            <li class="nav-item">
-                <a class="nav-link" href="reports-violations.html">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span>Báo cáo & Vi phạm</span>
-                </a>
-            </li>
-
-            <!-- Thống kê -->
-            <li class="nav-item">
-                <a class="nav-link" href="reports.html">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Thống kê</span>
-                </a>
-            </li>
-
-            <!-- Cài đặt -->
+            
             <li class="nav-item">
                 <a class="nav-link" href="settings.html">
                     <i class="fas fa-cogs"></i>
@@ -138,40 +95,29 @@
                 </a>
             </li>
 
-            <!-- Sidebar Toggler -->
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline">
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
         </ul>
-        <!-- End of Sidebar -->
-
-        <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
-            <!-- Main Content -->
             <div id="content">
 
-                <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        <!-- Nav Item - Messages -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
                                 <span class="badge badge-danger badge-counter">3</span>
                             </a>
-                            <!-- Dropdown - Messages -->
                             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                  aria-labelledby="messagesDropdown">
                                 <h6 class="dropdown-header">
@@ -225,13 +171,11 @@
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
-                        <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin T</span>
                             </a>
-                            <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                  aria-labelledby="userDropdown">
                                 <a class="dropdown-item" href="#">
@@ -257,23 +201,19 @@
                     </ul>
 
                 </nav>
-                <!-- End of Topbar -->
-                <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Content Row -->
                     <div class="row">
 
-                        <!-- Tổng Doanh Thu Tháng -->
-                        <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="col-xl-6 col-md-6 mb-4">
                             <div class="card border-left-primary shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                Earnings (Monthly)
+                                                Doanh thu (30 ngày qua)
                                             </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">4,000,000 VNĐ</div>
+                                            <div id="monthlyEarnings" class="h5 mb-0 font-weight-bold text-gray-800">Đang tải...</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -283,16 +223,15 @@
                             </div>
                         </div>
 
-                        <!-- Số Đơn Hàng Tuần -->
-                        <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="col-xl-6 col-md-6 mb-4">
                             <div class="card border-left-success shadow h-100 py-2">
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                Đơn Hàng Tuần
+                                                Đơn Hàng (7 ngày qua)
                                             </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">125 đơn</div>
+                                            <div id="weeklyOrders" class="h5 mb-0 font-weight-bold text-gray-800">Đang tải...</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -301,73 +240,15 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Tỷ Lệ Hoàn Thành Custom đúng hạn-->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-info shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                Hoàn Thành Custom Đúng Hạn
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">70%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                             style="width: 70%" aria-valuenow="70" aria-valuemin="0"
-                                                             aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-paint-brush fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Yêu Cầu Đang Chờ
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">36</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clock fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- Content Row -->
                     <div class="row">
 
-                        <!-- Area Chart -->
-                        <div class="col-xl-8 col-lg-7">
+                        <div class="col-12">
                             <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
                                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">Doanh thu theo tháng</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </a>
-                                    </div>
                                 </div>
-                                <!-- Card Body -->
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="myAreaChart"></canvas>
@@ -376,64 +257,10 @@
                             </div>
                         </div>
 
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Direct
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Social
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Referral
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                 </div>
-                <!-- /.container-fluid -->
-
-                <!-- Logout Modal-->
-                <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Bạn có chắc chắn muốn đăng xuất?</h5>
-                                <button class="close" type="button" data-dismiss="modal" aria-label="Đóng">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">Chọn "Logout" để kết thúc phiên làm việc của bạn.</div>
-                            <div class="modal-footer">
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
-                                <button class="btn btn-primary" id="confirmLogout">Logout</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
-            <!-- End of Main Content -->
-            <!-- Footer -->
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
@@ -441,38 +268,96 @@
                     </div>
                 </div>
             </footer>
-            <!-- End of Footer -->
-
         </div>
-        <!-- End of Content Wrapper -->
-
     </div>
-    <!-- End of Page Wrapper -->
-    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bạn có chắc chắn muốn đăng xuất?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Đóng">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Chọn "Logout" để kết thúc phiên làm việc của bạn.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                    <button class="btn btn-primary" id="confirmLogout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Bootstrap core JavaScript-->
+
     <script src="../../vendor/admin/jquery/jquery.min.js"></script>
     <script src="../../vendor/admin/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
     <script src="../../vendor/admin/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
     <script src="../../JS/admin/sb-admin-2.min.js"></script>
 
-    <!-- Page level plugins -->
     <script src="../../vendor/admin/chart.js/Chart.min.js"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="../../JS/admin/demo/chart-area-demo.js"></script>
-    <script src="../../JS/admin/demo/chart-pie-demo.js"></script>
-    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        // Hàm tiện ích để định dạng tiền tệ
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+        }
+
+        // Hàm gọi API để lấy dữ liệu
+        async function fetchData(url, token) {
+            const response = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        }
+
+        // Cập nhật các thẻ thông số
+        function updateSummaryCards(data) {
+            $('#monthlyEarnings').text(formatCurrency(data.monthlyEarnings));
+            $('#weeklyOrders').text(`${data.weeklyOrders} đơn`);
+        }
+
+        // Vẽ biểu đồ Doanh thu (Area Chart)
+        function renderAreaChart(chartData) {
+            var ctx = document.getElementById("myAreaChart");
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: "Doanh thu",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        data: chartData.data,
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        yAxes: [{ ticks: { callback: value => formatCurrency(value) } }]
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: item => `Doanh thu: ${formatCurrency(item.yLabel)}`
+                        }
+                    }
+                }
+            });
+        }
+
         $(document).ready(function () {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -497,16 +382,26 @@
                 }).then(() => {
                     window.location.href = '/home.html';
                 });
-                return false;
+                return;
             }
-            return true;
 
-
+            // Tải tất cả dữ liệu cho dashboard
+            Promise.all([
+                fetchData('/api/dashboard/summary', token),
+                fetchData('/api/dashboard/monthly-revenue', token)
+            ]).then(([summaryData, areaChartData]) => {
+                updateSummaryCards(summaryData);
+                renderAreaChart(areaChartData);
+            }).catch(error => {
+                console.error('Lỗi khi tải dữ liệu dashboard:', error);
+                Swal.fire('Lỗi', 'Không thể tải dữ liệu cho dashboard.', 'error');
+            });
         });
 
         // Logout confirmation
         $('#confirmLogout').on('click', function () {
             localStorage.removeItem('token');
+            localStorage.removeItem('role');
             window.location.href = '/login.html';
         });
     </script>

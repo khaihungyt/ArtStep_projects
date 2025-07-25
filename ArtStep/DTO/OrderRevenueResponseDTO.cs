@@ -3,11 +3,8 @@
     public class OrderRevenueResponseDTO
     {
         public string? ShoeName { get; set; }
-        public int? Quantity {  get; set; }
-
-        public double? PriceAShoe { get; set; }
-
-        public DateTime? dateTime { get; set; }
-
+        public int? QuantitySold { get; set; }
+        public double? PricePerShoe { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 }
