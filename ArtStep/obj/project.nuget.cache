@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fWYQFPmVvcY=",
+  "dgSpecHash": "/4yFznlVJnw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\shogu\\Source\\Repos\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
+  "projectFilePath": "E:\\b\\ArtStep_projects\\ArtStep\\ArtStep.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\shogu\\.nuget\\packages\\azure.core\\1.44.1\\azure.core.1.44.1.nupkg.sha512",
     "C:\\Users\\shogu\\.nuget\\packages\\azure.data.tables\\12.10.0\\azure.data.tables.12.10.0.nupkg.sha512",
